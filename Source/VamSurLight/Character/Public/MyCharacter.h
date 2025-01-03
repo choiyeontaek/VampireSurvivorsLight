@@ -26,4 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	class USpringArmComponent *mainSpringArm;	// spring arm
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent *followCamera;	// camera
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	USkeletalMeshComponent *playerSkeletalMesh;	// skeletal mesh
 };
