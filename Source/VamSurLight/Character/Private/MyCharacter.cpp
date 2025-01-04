@@ -32,7 +32,7 @@ AMyCharacter::AMyCharacter()
 
     // skeletalMesh load
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMeshAsset
-    (TEXT("/Script/Engine.SkeletalMesh'/Engine/Tutorial/SubEditors/TutorialAssets/Character/TutorialTPP.TutorialTPP'"));
+    (TEXT("/Engine/Tutorial/SubEditors/TutorialAssets/Character/TutorialTPP.TutorialTPP"));
     if (skeletalMeshAsset.Succeeded()) {
         playerSkeletalMesh->SetSkeletalMesh(skeletalMeshAsset.Object);
     }
