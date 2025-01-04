@@ -17,6 +17,7 @@ AMyCharacter::AMyCharacter()
     mainSpringArm->SetupAttachment(RootComponent);
     mainSpringArm->TargetArmLength = 2000.0f;
     mainSpringArm->SetRelativeRotation(FRotator(-40.f, 0.f, 0.f));
+    mainSpringArm->bDoCollisionTest = false;
     
     // camera
     followCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
