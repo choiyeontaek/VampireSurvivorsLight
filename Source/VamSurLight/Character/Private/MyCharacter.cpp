@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h" /*movement component*/
 #include "Kismet/GameplayStatics.h" /*apply damage*/
 #include "Components/CapsuleComponent.h" /*overlap*/
+#include "LogUtils.h" /*log*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -90,7 +91,7 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, TEXT("Overlap"));
+		LogUtils::Log("Overlap");
 		UGameplayStatics::ApplyDamage(OtherActor, 10.f, nullptr, nullptr, UBaseDamageType::StaticClass());
 	}
 }
@@ -98,16 +99,19 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,class AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage{Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser)};
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("TakeDamage"));
+	LogUtils::Log("TakeDamage");
+
 	UDamageType const* const DamageType{DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>()};
 	
 	if (!bIsDead) {
 		if (DamageType->IsA(UBaseDamageType::StaticClass())) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, TEXT("BaseDamage"));
+			LogUtils::Log("BaseDamage", DamageAmount, DamageAmount);
 			Health -= Damage;
 		}
 		
 		if (Health <= 0) {
+			LogUtils::Log("playerDead");
+			LogUtils::Log();
 			bIsDead = true;
 		}
 	}
