@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h" /*apply damage*/
 #include "Components/CapsuleComponent.h" /*overlap*/
 #include "LogUtils.h" /*log*/
+#include "CharacterDataAsset.h" /*data asset*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -51,25 +52,35 @@ AMyCharacter::AMyCharacter()
 	if (animBP.Succeeded()) {
 		PlayerSkeletalMesh->SetAnimInstanceClass(animBP.Class);
 	}
+
+	// data asset
+	static ConstructorHelpers::FObjectFinder<UCharacterDataAsset> CharacterDataAsset
+	(TEXT("/Game/player/dataAsset_character.dataAsset_character"));
+	if (CharacterDataAsset.Succeeded()) {
+		CharacterData = CharacterDataAsset.Object;
+	}
 	
     // camera, character movement setting
     MainSpringArm->bInheritYaw = false;
     bUseControllerRotationYaw = false;
     GetCharacterMovement()->bOrientRotationToMovement = true;
 	
-	
 	// bind overlap event
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::OnOverlapBegin);
-	
-	// default player states
-	bIsDead = false;
-	Health = 100.f;
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bIsDead = false;
+
+	// data asset
+	if (CharacterData) {
+		Health = CharacterData->CharacterHealth;
+		BaseAttackDamage = CharacterData->BaseAttackDamage;
+	}
 }
 
 // Called every frame
@@ -92,7 +103,7 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("Overlap");
-		UGameplayStatics::ApplyDamage(OtherActor, 10.f, nullptr, nullptr, UBaseDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
 	}
 }
 
@@ -105,13 +116,12 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	
 	if (!bIsDead) {
 		if (DamageType->IsA(UBaseDamageType::StaticClass())) {
-			LogUtils::Log("BaseDamage", DamageAmount, DamageAmount);
+			LogUtils::Log("BaseDamage", DamageAmount);
 			Health -= Damage;
 		}
 		
 		if (Health <= 0) {
 			LogUtils::Log("playerDead");
-			LogUtils::Log();
 			bIsDead = true;
 		}
 	}

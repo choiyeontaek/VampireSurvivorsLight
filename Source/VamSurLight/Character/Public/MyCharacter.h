@@ -39,10 +39,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	USkeletalMeshComponent *PlayerSkeletalMesh;	// skeletal mesh
 
+	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
+	class UCharacterDataAsset* CharacterData;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
 	float Speed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	bool bIsDead;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Health;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float BaseAttackDamage;
 };
