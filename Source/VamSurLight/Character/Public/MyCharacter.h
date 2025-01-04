@@ -26,10 +26,20 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	class USpringArmComponent *mainSpringArm;	// spring arm
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent *followCamera;	// camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	USkeletalMeshComponent *playerSkeletalMesh;	// skeletal mesh
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
+	float speed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	bool isDead;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float health;
 };

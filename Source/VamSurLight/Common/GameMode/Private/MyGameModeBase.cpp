@@ -5,7 +5,8 @@
 #include "MyCharacterPlayerController.h"	/*player controller*/
 #include "MyCharacter.h"	/*character*/
 
-AMyGameModeBase::AMyGameModeBase() {
+AMyGameModeBase::AMyGameModeBase()
+{
 	PlayerControllerClass = AMyCharacterPlayerController::StaticClass();
 	DefaultPawnClass = AMyCharacter::StaticClass();
 }

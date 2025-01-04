@@ -7,13 +7,16 @@
 #include "EnhancedInputComponent.h" /*UEnhancedInputComponent*/
 #include "Kismet/KismetMathLibrary.h" /*getRightVector*/
 
-AMyCharacterPlayerController::AMyCharacterPlayerController() {
+AMyCharacterPlayerController::AMyCharacterPlayerController()
+{
+	// input mapping context load
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> imcPlayer
 		(TEXT("/Game/player/input/imc_player.imc_player"));
 	if (imcPlayer.Succeeded()) {
 		inputMappingContext = imcPlayer.Object;
 	}
-	
+
+	// input action load
 	static ConstructorHelpers::FObjectFinder<UInputAction> inputActionMove
 		(TEXT("/Game/player/input/ia_move.ia_move"));
 	if (inputActionMove.Succeeded()) {
@@ -21,21 +24,25 @@ AMyCharacterPlayerController::AMyCharacterPlayerController() {
 	}
 }
 
-void AMyCharacterPlayerController::BeginPlay() {
+void AMyCharacterPlayerController::BeginPlay()
+{
 	Super::BeginPlay();
 	if (UEnhancedInputLocalPlayerSubsystem* subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())}) {
 		subsystem->AddMappingContext(inputMappingContext, 0);
 	}
 }
 
-void AMyCharacterPlayerController::SetupInputComponent() {
+void AMyCharacterPlayerController::SetupInputComponent()
+{
 	Super::SetupInputComponent();
 	if (UEnhancedInputComponent* enhancedInputComponent{CastChecked<UEnhancedInputComponent>(InputComponent)}) {
 		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AMyCharacterPlayerController::MovePlayer);
 	}
 }
 
-void AMyCharacterPlayerController::MovePlayer(const FInputActionValue& value) {
+// character movement
+void AMyCharacterPlayerController::MovePlayer(const FInputActionValue& value)
+{
 	const FVector2D movementVector{value.Get<FVector2D>()};
 	if (APawn* ControlledPawn{GetPawn()}) {
 		FVector moveXAxis{UKismetMathLibrary::GetForwardVector(FRotator(0.f, GetControlRotation().Yaw, 0.f))};
