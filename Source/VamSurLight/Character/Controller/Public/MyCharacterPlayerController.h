@@ -20,12 +20,12 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
-    void MovePlayer(const FInputActionValue &value);
+    void MovePlayer(const FInputActionValue &Value);
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputMappingContext* inputMappingContext;
+	class UInputMappingContext* InputMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* moveAction;
+	class UInputAction* MoveAction;
 };

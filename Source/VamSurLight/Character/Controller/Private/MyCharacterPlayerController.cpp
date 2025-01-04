@@ -10,17 +10,17 @@
 AMyCharacterPlayerController::AMyCharacterPlayerController()
 {
 	// input mapping context load
-	static ConstructorHelpers::FObjectFinder<UInputMappingContext> imcPlayer
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> ImcPlayer
 		(TEXT("/Game/player/input/imc_player.imc_player"));
-	if (imcPlayer.Succeeded()) {
-		inputMappingContext = imcPlayer.Object;
+	if (ImcPlayer.Succeeded()) {
+		InputMappingContext = ImcPlayer.Object;
 	}
 
 	// input action load
-	static ConstructorHelpers::FObjectFinder<UInputAction> inputActionMove
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionMove
 		(TEXT("/Game/player/input/ia_move.ia_move"));
-	if (inputActionMove.Succeeded()) {
-		moveAction = inputActionMove.Object;
+	if (InputActionMove.Succeeded()) {
+		MoveAction = InputActionMove.Object;
 	}
 }
 
@@ -28,26 +28,26 @@ void AMyCharacterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	if (UEnhancedInputLocalPlayerSubsystem* subsystem{ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())}) {
-		subsystem->AddMappingContext(inputMappingContext, 0);
+		subsystem->AddMappingContext(InputMappingContext, 0);
 	}
 }
 
 void AMyCharacterPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	if (UEnhancedInputComponent* enhancedInputComponent{CastChecked<UEnhancedInputComponent>(InputComponent)}) {
-		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AMyCharacterPlayerController::MovePlayer);
+	if (UEnhancedInputComponent* EnhancedInputComponent{CastChecked<UEnhancedInputComponent>(InputComponent)}) {
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyCharacterPlayerController::MovePlayer);
 	}
 }
 
 // character movement
-void AMyCharacterPlayerController::MovePlayer(const FInputActionValue& value)
+void AMyCharacterPlayerController::MovePlayer(const FInputActionValue& Value)
 {
-	const FVector2D movementVector{value.Get<FVector2D>()};
+	const FVector2D MovementVector{Value.Get<FVector2D>()};
 	if (APawn* ControlledPawn{GetPawn()}) {
-		FVector moveXAxis{UKismetMathLibrary::GetForwardVector(FRotator(0.f, GetControlRotation().Yaw, 0.f))};
-		FVector moveYAxis{UKismetMathLibrary::GetRightVector(FRotator(0.f, GetControlRotation().Yaw, GetControlRotation().Roll))};
-		ControlledPawn->AddMovementInput(moveXAxis, movementVector.X);
-		ControlledPawn->AddMovementInput(moveYAxis, movementVector.Y);
+		FVector MoveXAxis{UKismetMathLibrary::GetForwardVector(FRotator(0.f, GetControlRotation().Yaw, 0.f))};
+		FVector MoveYAxis{UKismetMathLibrary::GetRightVector(FRotator(0.f, GetControlRotation().Yaw, GetControlRotation().Roll))};
+		ControlledPawn->AddMovementInput(MoveXAxis, MovementVector.X);
+		ControlledPawn->AddMovementInput(MoveYAxis, MovementVector.Y);
 	}
 }

@@ -27,19 +27,22 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	class USpringArmComponent *mainSpringArm;	// spring arm
+	class USpringArmComponent *MainSpringArm;	// spring arm
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent *followCamera;	// camera
+	class UCameraComponent *FollowCamera;	// camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-	USkeletalMeshComponent *playerSkeletalMesh;	// skeletal mesh
+	USkeletalMeshComponent *PlayerSkeletalMesh;	// skeletal mesh
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
-	float speed;
+	float Speed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	bool isDead;
+	bool bIsDead;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	float health;
+	float Health;
 };
