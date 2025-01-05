@@ -17,9 +17,10 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Common/GameMode/Public",
             "VamSurLight/Character/Public",
             "VamSurLight/Character/Controller/Public",
-            "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Utility/Public",
-            "VamSurLight/Character/Data/Public"
+            "VamSurLight/Character/Data/Public",
+            "VamSurLight/Character/DamageType/Public"
+            
         });
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

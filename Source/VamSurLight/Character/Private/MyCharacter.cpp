@@ -2,7 +2,6 @@
 
 
 #include "MyCharacter.h"
-#include "BaseDamageType.h"
 #include "GameFramework/SpringArmComponent.h"   /*spring arm*/
 #include "Camera/CameraComponent.h" /*camera*/
 #include "Engine/DamageEvents.h" /*damage event*/
@@ -11,6 +10,9 @@
 #include "Components/CapsuleComponent.h" /*overlap*/
 #include "LogUtils.h" /*log*/
 #include "CharacterDataAsset.h" /*data asset*/
+#include "BaseDamageType.h"	/*baseDamage*/
+#include "AutoAttackDamageType.h"	/*autoAttack*/
+#include "SkillGuardianDamageType.h"	/*skillGuardian*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -76,7 +78,7 @@ void AMyCharacter::BeginPlay()
 
 	bIsDead = false;
 
-	// data asset
+	// initialize with data asset
 	if (CharacterData) {
 		Health = CharacterData->CharacterHealth;
 		BaseAttackDamage = CharacterData->BaseAttackDamage;
@@ -103,21 +105,28 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("Overlap");
-		UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
+		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
 	}
 }
 
 float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,class AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage{Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser)};
-	LogUtils::Log("TakeDamage");
+	LogUtils::Log("character::takeDamage - TakeDamage");
 
-	UDamageType const* const DamageType{DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>()};
+	const UDamageType* DamageTypeRaw{DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>()};
+	const UBaseDamageType* DamageType = Cast<UBaseDamageType>(DamageTypeRaw);
 	
-	if (!bIsDead) {
-		if (DamageType->IsA(UBaseDamageType::StaticClass())) {
-			LogUtils::Log("BaseDamage", DamageAmount);
+	if (!bIsDead && DamageType) {
+		if (DamageType->IsA(UAutoAttackDamageType::StaticClass())) {
+			LogUtils::Log("character::takeDamage - AutoAttackDamageType");
+			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
 			Health -= Damage;
+		}
+		else if (DamageType->IsA(USkillGuardianDamageType::StaticClass())) {
+			LogUtils::Log("character::takeDamage - SkillGuardianDamageType");
+			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
 		}
 		
 		if (Health <= 0) {

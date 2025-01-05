@@ -18,4 +18,6 @@ public:
 	float CharacterHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseAttackDamage;
+	
+
 };

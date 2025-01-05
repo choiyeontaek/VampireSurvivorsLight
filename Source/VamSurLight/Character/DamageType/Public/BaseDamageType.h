@@ -13,5 +13,8 @@ UCLASS()
 class VAMSURLIGHT_API UBaseDamageType : public UDamageType
 {
 	GENERATED_BODY()
-	
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "Damage")
+	void ApplyDamageEffect(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const;
+	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const; 
 };
