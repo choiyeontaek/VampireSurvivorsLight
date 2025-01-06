@@ -31,6 +31,14 @@ public:
 	
 	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	void UpdateHealthUI();
+	
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TSubclassOf<UUserWidget> CharacterMainUIClass;
+	UPROPERTY()
+	UUserWidget* CharacterWidget;
+	UPROPERTY()
+	class UCharacterHealthUI* HealthUI;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	class USpringArmComponent *MainSpringArm;	// spring arm
@@ -46,7 +54,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	bool bIsDead;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float MaxHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float BaseAttackDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float Exp;
 };

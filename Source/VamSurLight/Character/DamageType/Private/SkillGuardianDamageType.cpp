@@ -10,6 +10,6 @@ void USkillGuardianDamageType::ApplyDamageEffect_Implementation(AActor* DamagedA
 
 	AMyCharacter* Character{Cast<AMyCharacter>(DamagedActor)};
 	if (Character) {
-		LogUtils::Log("skillGuardianDamageType::ApplyDamageEffect -> SkillGuardian");
+		LogUtils::Log("SkillGuardianDamageType::ApplyDamageEffect");
 	}
 }

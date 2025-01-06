@@ -13,6 +13,8 @@
 #include "BaseDamageType.h"	/*baseDamage*/
 #include "AutoAttackDamageType.h"	/*autoAttack*/
 #include "SkillGuardianDamageType.h"	/*skillGuardian*/
+#include "Blueprint/UserWidget.h"	/*widget*/
+#include "CharacterHealthUI.h" /*healthUI*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -57,7 +59,7 @@ AMyCharacter::AMyCharacter()
 
 	// data asset
 	static ConstructorHelpers::FObjectFinder<UCharacterDataAsset> CharacterDataAsset
-	(TEXT("/Game/player/dataAsset_character.dataAsset_character"));
+	(TEXT("/Game/player/data/dataAsset_character.dataAsset_character"));
 	if (CharacterDataAsset.Succeeded()) {
 		CharacterData = CharacterDataAsset.Object;
 	}
@@ -69,20 +71,41 @@ AMyCharacter::AMyCharacter()
 	
 	// bind overlap event
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::OnOverlapBegin);
+
+	// get widget
+	static ConstructorHelpers::FClassFinder<UUserWidget> Widget
+	(TEXT("/Game/player/widget/widget_characterMainUI.widget_characterMainUI_C"));
+	if (Widget.Succeeded()) {
+		CharacterMainUIClass = Widget.Class;
+	}
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	bIsDead = false;
 
 	// initialize with data asset
 	if (CharacterData) {
+		MaxHealth = CharacterData->CharacterMaxHealth;
 		Health = CharacterData->CharacterHealth;
 		BaseAttackDamage = CharacterData->BaseAttackDamage;
+		Exp = CharacterData->CharacterExp;
 	}
+	
+	// add viewport widget
+	CharacterWidget = CreateWidget(GetWorld()->GetFirstPlayerController(), CharacterMainUIClass);
+	if (CharacterWidget) {
+		CharacterWidget->AddToViewport();
+
+		HealthUI = Cast<UCharacterHealthUI>(CharacterWidget->GetWidgetFromName(TEXT("widget_healthUI")));
+		if (HealthUI) {
+			UpdateHealthUI();
+		}
+	}
+	LogUtils::Log("need remove");
 }
 
 // Called every frame
@@ -113,27 +136,37 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,class AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage{Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser)};
-	LogUtils::Log("character::takeDamage - TakeDamage");
+	LogUtils::Log("Character::TakeDamage");
 
+	// damageType -> my custom damageType
 	const UDamageType* DamageTypeRaw{DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>()};
-	const UBaseDamageType* DamageType = Cast<UBaseDamageType>(DamageTypeRaw);
+	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
 	
 	if (!bIsDead && DamageType) {
 		if (DamageType->IsA(UAutoAttackDamageType::StaticClass())) {
-			LogUtils::Log("character::takeDamage - AutoAttackDamageType");
+			LogUtils::Log("Character::TakeDamage - AutoAttackDamageType");
 			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
 			Health -= Damage;
 		}
 		else if (DamageType->IsA(USkillGuardianDamageType::StaticClass())) {
-			LogUtils::Log("character::takeDamage - SkillGuardianDamageType");
+			LogUtils::Log("Character::TakeDamage - SkillGuardianDamageType");
 			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
+			Health -= Damage;
 		}
 		
+		UpdateHealthUI();
+		
 		if (Health <= 0) {
-			LogUtils::Log("playerDead");
+			LogUtils::Log("PlayerDead");
 			bIsDead = true;
 		}
 	}
 	
 	return Damage;
+}
+
+void AMyCharacter::UpdateHealthUI() {
+	if (HealthUI) {
+		HealthUI->UpdateHealthBar();
+	}
 }

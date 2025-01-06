@@ -11,6 +11,6 @@ void UAutoAttackDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 	
 	AMyCharacter* Character{Cast<AMyCharacter>(DamagedActor)};
 	if (Character) {
-		LogUtils::Log("autoAttackDamageType::ApplyDamageEffect -> AutoAttack");
+		LogUtils::Log("AutoAttackDamageType::ApplyDamageEffect");
 	}
 };

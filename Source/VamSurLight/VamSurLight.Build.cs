@@ -8,19 +8,24 @@ public class VamSurLight : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", 
+			"UMG" /*widget*/
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
         PublicIncludePaths.AddRange(new string[] {
             "VamSurLight/Common/Default/Public",
             "VamSurLight/Common/GameMode/Public",
+            "VamSurLight/DropItem/Experience/Public",
             "VamSurLight/Character/Public",
             "VamSurLight/Character/Controller/Public",
-            "VamSurLight/Utility/Public",
             "VamSurLight/Character/Data/Public",
-            "VamSurLight/Character/DamageType/Public"
-            
+            "VamSurLight/Character/DamageType/Public",
+            "VamSurLight/Character/Widget/Public",
+            "VamSurLight/Utility/Public"
         });
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

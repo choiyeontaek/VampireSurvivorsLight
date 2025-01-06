@@ -15,9 +15,13 @@ class VAMSURLIGHT_API UCharacterDataAsset : public UDataAsset
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CharacterMaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseAttackDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CharacterExp;
 	
 
 };
