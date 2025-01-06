@@ -4,8 +4,8 @@
 #include "CharacterHealthUI.h"
 #include "LogUtils.h" /*log*/
 #include "MyCharacter.h" /*character*/
-#include "Components/ProgressBar.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/ProgressBar.h" /*progress bar*/
+#include "Kismet/GameplayStatics.h" /*get player character*/
 
 UCharacterHealthUI::UCharacterHealthUI(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
 {

@@ -20,9 +20,9 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Common/Default/Public",
             "VamSurLight/Common/GameMode/Public",
             "VamSurLight/DropItem/Experience/Public",
+            "VamSurLight/Data/Public",
             "VamSurLight/Character/Public",
             "VamSurLight/Character/Controller/Public",
-            "VamSurLight/Character/Data/Public",
             "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Character/Widget/Public",
             "VamSurLight/Utility/Public"

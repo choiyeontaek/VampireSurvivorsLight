@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Experience.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -32,13 +33,19 @@ public:
 	UFUNCTION()
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	void UpdateHealthUI();
-	
+	void UpdateExpUI();
+	void AddExperience(float ExpAmount);
+	void LevelUp();
+
+	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
 	UPROPERTY()
 	UUserWidget* CharacterWidget;
 	UPROPERTY()
 	class UCharacterHealthUI* HealthUI;
+	UPROPERTY()
+	class UCharacterExpUI* ExpUI;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	class USpringArmComponent *MainSpringArm;	// spring arm
@@ -47,8 +54,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	USkeletalMeshComponent *PlayerSkeletalMesh;	// skeletal mesh
 
+	// character data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UCharacterDataAsset* CharacterData;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
 	float Speed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
@@ -59,6 +68,8 @@ public:
 	float Health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float BaseAttackDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float MaxExp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Exp;
 };

@@ -15,6 +15,7 @@
 #include "SkillGuardianDamageType.h"	/*skillGuardian*/
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
+#include "CharacterExpUI.h" /*expUI*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -59,7 +60,7 @@ AMyCharacter::AMyCharacter()
 
 	// data asset
 	static ConstructorHelpers::FObjectFinder<UCharacterDataAsset> CharacterDataAsset
-	(TEXT("/Game/player/data/dataAsset_character.dataAsset_character"));
+	(TEXT("/Game/Data/dataAsset_character.dataAsset_character"));
 	if (CharacterDataAsset.Succeeded()) {
 		CharacterData = CharacterDataAsset.Object;
 	}
@@ -92,6 +93,7 @@ void AMyCharacter::BeginPlay()
 		MaxHealth = CharacterData->CharacterMaxHealth;
 		Health = CharacterData->CharacterHealth;
 		BaseAttackDamage = CharacterData->BaseAttackDamage;
+		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
 	}
 	
@@ -103,6 +105,11 @@ void AMyCharacter::BeginPlay()
 		HealthUI = Cast<UCharacterHealthUI>(CharacterWidget->GetWidgetFromName(TEXT("widget_healthUI")));
 		if (HealthUI) {
 			UpdateHealthUI();
+		}
+		
+		ExpUI = Cast<UCharacterExpUI>(CharacterWidget->GetWidgetFromName(TEXT("widget_expUI")));
+		if (ExpUI) {
+			UpdateExpUI();
 		}
 	}
 	LogUtils::Log("need remove");
@@ -127,7 +134,7 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("Overlap");
+		LogUtils::Log("AMyCharacter::OnOverlapBegin ");
 		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
 		UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
 	}
@@ -169,4 +176,32 @@ void AMyCharacter::UpdateHealthUI() {
 	if (HealthUI) {
 		HealthUI->UpdateHealthBar();
 	}
+}
+
+void AMyCharacter::UpdateExpUI() {
+	if (ExpUI) {
+		ExpUI->UpdateExpBar();
+	}
+}
+
+void AMyCharacter::AddExperience(float ExpAmount)
+{
+	Exp += ExpAmount;
+	LogUtils::Log("AMyCharacter::AddExperience", Exp);
+	// level up
+	if (Exp > MaxExp) {
+		Exp =  Exp - MaxExp;
+		LevelUp();	
+	}
+	if (ExpUI) {
+		ExpUI->UpdateExpBar();
+	}
+}
+
+void AMyCharacter::LevelUp()
+{
+	MaxExp *= CharacterData->CharacterExpMul;
+	ExpUI->UpdateLevelText();
+
+	LogUtils::Log("LAMyCharacter::LevelUp", MaxExp);
 }

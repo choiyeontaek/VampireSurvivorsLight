@@ -16,11 +16,17 @@ public:
 	UCharacterExpUI(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 
-	//UPROPERTY()
-	//class AMyCharacter* Character;
+	UPROPERTY()
+	class AMyCharacter* Character;
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	class UProgressBar* CharacterHealthBar;
-	//UFUNCTION()
-	//float GetHealthPercentage() const;
-	//void UpdateHealthBar();
+	class UProgressBar* CharacterExpBar;
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	class UTextBlock* LevelText;
+
+	int32 Level;
+	
+	UFUNCTION()
+	float GetExpPercentage() const;
+	void UpdateExpBar();
+	void UpdateLevelText();
 };

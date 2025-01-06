@@ -21,4 +21,20 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	// dropItem data asset
+	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
+	class UDropItemDataAsset* DropItemData;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* ExpCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* ExpMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float ExpAmount;
+	UPROPERTY()
+	class AMyCharacter* Character;
 };
