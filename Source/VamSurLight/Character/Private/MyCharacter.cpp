@@ -24,6 +24,7 @@ AMyCharacter::AMyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// collision settings
+	GetCapsuleComponent()->SetCollisionProfileName(FName("Player"));
 	
     // springArm
     MainSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
