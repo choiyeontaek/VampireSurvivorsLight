@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "InputActionValue.h" /*inputActionValue*/
 #include "MyCharacterPlayerController.generated.h"
 
 /**
@@ -19,8 +20,12 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
+    void MovePlayer(const FInputActionValue &Value);
+	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputMappingContext* InputMappingContext;
 
-private:
-    UPROPERTY(EditDefaultsOnly, Category = "Input")
-    class UInputMappingContext *inputMappingContext;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* MoveAction;
 };
