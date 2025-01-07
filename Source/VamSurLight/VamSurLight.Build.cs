@@ -23,6 +23,7 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Data/Public",
             "VamSurLight/Character/Public",
             "VamSurLight/Character/Controller/Public",
+            "VamSurLight/Character/Weapon/Public",
             "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Character/Widget/Public",
             "VamSurLight/Utility/Public"

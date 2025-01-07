@@ -6,16 +6,17 @@
 #include "Camera/CameraComponent.h" /*camera*/
 #include "Engine/DamageEvents.h" /*damage event*/
 #include "GameFramework/CharacterMovementComponent.h" /*movement component*/
-#include "Kismet/GameplayStatics.h" /*apply damage*/
 #include "Components/CapsuleComponent.h" /*overlap*/
 #include "LogUtils.h" /*log*/
-#include "CharacterDataAsset.h" /*data asset*/
+#include "CharacterDataAsset.h" /*character data asset*/
+#include "WeaponDataAsset.h" /*weapon data asset*/
 #include "BaseDamageType.h"	/*baseDamage*/
 #include "AutoAttackDamageType.h"	/*autoAttack*/
 #include "SkillGuardianDamageType.h"	/*skillGuardian*/
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
+#include "AutoAttackWeapon.h" /**/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -59,12 +60,20 @@ AMyCharacter::AMyCharacter()
 		PlayerSkeletalMesh->SetAnimInstanceClass(animBP.Class);
 	}
 
-	// data asset
+	// character data asset
 	static ConstructorHelpers::FObjectFinder<UCharacterDataAsset> CharacterDataAsset
 	(TEXT("/Game/Data/dataAsset_character.dataAsset_character"));
 	if (CharacterDataAsset.Succeeded()) {
 		CharacterData = CharacterDataAsset.Object;
 	}
+
+	// weapon data asset
+	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
+	(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
+	if (WeaponDataAsset.Succeeded()) {
+		WeaponData = WeaponDataAsset.Object;
+	}
+	
 	
     // camera, character movement setting
     MainSpringArm->bInheritYaw = false;
@@ -80,6 +89,9 @@ AMyCharacter::AMyCharacter()
 	if (Widget.Succeeded()) {
 		CharacterMainUIClass = Widget.Class;
 	}
+
+	// set auto attack weapon class
+	AutoAttackWeapon = AAutoAttackWeapon::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -93,9 +105,10 @@ void AMyCharacter::BeginPlay()
 	if (CharacterData) {
 		MaxHealth = CharacterData->CharacterMaxHealth;
 		Health = CharacterData->CharacterHealth;
-		BaseAttackDamage = CharacterData->BaseAttackDamage;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
+		
+		BaseAttackDamage = WeaponData->BaseAttackDamage;
 	}
 	
 	// add viewport widget
@@ -113,7 +126,11 @@ void AMyCharacter::BeginPlay()
 			UpdateExpUI();
 		}
 	}
-	LogUtils::Log("need remove");
+	
+	LogUtils::Log("need remove");	// when player dead
+
+		
+	GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 3.0f, true);
 }
 
 // Called every frame
@@ -137,7 +154,7 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("AMyCharacter::OnOverlapBegin ");
 		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
-		UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
+		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
 	}
 }
 
@@ -204,5 +221,30 @@ void AMyCharacter::LevelUp()
 	MaxExp *= CharacterData->CharacterExpMul;
 	ExpUI->UpdateLevelText();
 
-	LogUtils::Log("LAMyCharacter::LevelUp", MaxExp);
+	LogUtils::Log("AMyCharacter::LevelUp", MaxExp);
+}
+
+void AMyCharacter::AutoAttack()	// character auto attack
+{
+	LogUtils::Log("AMyCharacter::AutoAttack");
+
+	if (AutoAttackWeapon && GetWorld()) {
+		FVector SpawnLocation = GetActorLocation();
+		FRotator SpawnRotation = GetActorRotation();
+        
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        
+		AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+        
+		if (SpawnedWeapon) {
+			LogUtils::Log("AAutoAttackWeapon spawned successfully");
+		}
+		else {
+			LogUtils::Log("Failed to spawn AAutoAttackWeapon");
+		}
+	}
+	else {
+		LogUtils::Log("AutoAttackWeaponClass is not set or GetWorld() returned null");
+	}
 }
