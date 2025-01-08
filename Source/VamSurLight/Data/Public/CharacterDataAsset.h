@@ -24,5 +24,4 @@ public:
 	float CharacterExp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterExpMul;
-	
 };

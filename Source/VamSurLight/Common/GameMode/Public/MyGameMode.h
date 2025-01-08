@@ -15,4 +15,9 @@ class VAMSURLIGHT_API AMyGameMode : public AGameMode {
 	
 public:
 	AMyGameMode();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	class ASynergyManager* SynergyManager;
 };

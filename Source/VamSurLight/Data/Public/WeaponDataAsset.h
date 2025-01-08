@@ -19,4 +19,6 @@ public:
 	float BaseAttackDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseAttackSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseAttackRange;
 };

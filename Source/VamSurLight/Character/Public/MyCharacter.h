@@ -62,12 +62,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
 	class UWeaponDataAsset* WeaponData;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<class AAutoAttackWeapon> AutoAttackWeapon;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
 	
 	// timer	
 	UPROPERTY()
 	FTimerHandle ActionTimerHandle;
+
+	// synergy check
+	UPROPERTY()
+	class ASynergyManager* SynergyManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
 	float Speed;

@@ -38,4 +38,8 @@ public:
 	float BulletDamage;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float BulletSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BulletRange;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FVector BulletLocation;
 };

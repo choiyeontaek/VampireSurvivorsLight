@@ -16,7 +16,9 @@
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
-#include "AutoAttackWeapon.h" /**/
+#include "SkillAutoAttack.h"	/**/
+#include "SynergyManager.h"	/*check synergy*/
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -90,8 +92,8 @@ AMyCharacter::AMyCharacter()
 		CharacterMainUIClass = Widget.Class;
 	}
 
-	// set auto attack weapon class
-	AutoAttackWeapon = AAutoAttackWeapon::StaticClass();
+	// set class
+	SkillAutoAttack = ASkillAutoAttack::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -129,8 +131,14 @@ void AMyCharacter::BeginPlay()
 	
 	LogUtils::Log("need remove");	// when player dead
 
-		
-	GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 3.0f, true);
+	// start auto attack
+	GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
+
+	// initialize synergyManager
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
+	SynergyManager = Cast<ASynergyManager>(FoundActor);
+	// acquire autoAttackWeapon 
+	SynergyManager->AcquireWeapons(0);
 }
 
 // Called every frame
@@ -228,23 +236,13 @@ void AMyCharacter::AutoAttack()	// character auto attack
 {
 	LogUtils::Log("AMyCharacter::AutoAttack");
 
-	if (AutoAttackWeapon && GetWorld()) {
+	if (SkillAutoAttack && GetWorld()) {
 		FVector SpawnLocation = GetActorLocation();
 		FRotator SpawnRotation = GetActorRotation();
-        
+
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
         
-		AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
-        
-		if (SpawnedWeapon) {
-			LogUtils::Log("AAutoAttackWeapon spawned successfully");
-		}
-		else {
-			LogUtils::Log("Failed to spawn AAutoAttackWeapon");
-		}
-	}
-	else {
-		LogUtils::Log("AutoAttackWeaponClass is not set or GetWorld() returned null");
+		ASkillAutoAttack* SkillActor = GetWorld()->SpawnActor<ASkillAutoAttack>(SkillAutoAttack, SpawnLocation, SpawnRotation, SpawnParams);
 	}
 }

@@ -16,5 +16,6 @@ class VAMSURLIGHT_API UBaseDamageType : public UDamageType
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Damage")
 	void ApplyDamageEffect(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const;
+	UFUNCTION(BlueprintCallable)
 	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const; 
 };

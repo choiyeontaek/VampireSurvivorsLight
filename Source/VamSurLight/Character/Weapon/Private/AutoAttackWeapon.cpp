@@ -13,8 +13,7 @@
 AAutoAttackWeapon::AAutoAttackWeapon() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-
+	
 	// data asset
 	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
 		(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
@@ -52,14 +51,25 @@ void AAutoAttackWeapon::BeginPlay() {
 	if (WeaponData) {
 		BulletDamage = WeaponData->BaseAttackDamage;
 		BulletSpeed = WeaponData->BaseAttackSpeed;
+		BulletRange = WeaponData->BaseAttackRange;
 	}
+
+	BulletLocation = GetActorLocation();
 }
 
 // Called every frame
 void AAutoAttackWeapon::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	
+	FVector Direction{GetActorForwardVector()};
+	SetActorLocation(GetActorLocation() + Direction * BulletSpeed * DeltaTime);
+
+	float Distance = FVector::Dist(GetActorLocation(), BulletLocation);
+
+	if (Distance > BulletRange) {
+		LogUtils::Log("Destroy Bullet");
+		Destroy();
+	}
 }
 
 void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
