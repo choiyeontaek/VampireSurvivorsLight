@@ -24,7 +24,7 @@ void UCharacterHealthUI::NativeConstruct() {
 float UCharacterHealthUI::GetHealthPercentage() const
 {
 	if (Character) {
-		LogUtils::Log("GetHealthPercentage", Character->Health, Character->MaxHealth);
+		//LogUtils::Log("GetHealthPercentage", Character->Health, Character->MaxHealth);
 		return Character->Health / Character->MaxHealth;
 	}
 	

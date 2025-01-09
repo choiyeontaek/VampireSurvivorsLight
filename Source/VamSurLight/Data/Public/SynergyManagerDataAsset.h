@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "SynergyManager.h"
 #include "SynergyManagerDataAsset.generated.h"
 
 /**
@@ -12,12 +13,11 @@
 UCLASS()
 class VAMSURLIGHT_API USynergyManagerDataAsset : public UDataAsset {
 	GENERATED_BODY()
-public:
-	// weapon
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bHasAutoAttackWeapon;
 
-	// status update
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bHasCoolTimeUpdate;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Synergy")
+	TArray<EWeaponType> AcquiredWeapons;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Synergy")
+	TArray<EStatusType> AcquiredStatuses;
 };

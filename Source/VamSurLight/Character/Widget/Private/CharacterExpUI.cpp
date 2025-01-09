@@ -28,7 +28,7 @@ void UCharacterExpUI::NativeConstruct() {
 float UCharacterExpUI::GetExpPercentage() const
 {
 	if (Character) {
-		LogUtils::Log("GetExpPercentage", Character->Exp, Character->MaxExp);
+		//LogUtils::Log("GetExpPercentage", Character->Exp, Character->MaxExp);
 		return Character->Exp / Character->MaxExp;
 	}
 	
