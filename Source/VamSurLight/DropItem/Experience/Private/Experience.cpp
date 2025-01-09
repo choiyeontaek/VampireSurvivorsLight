@@ -14,7 +14,7 @@
 AExperience::AExperience() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	// data asset
 	static ConstructorHelpers::FObjectFinder<UDropItemDataAsset> DropItemDataAsset
 	(TEXT("/Game/Data/dataAsset_dropItem.dataAsset_dropItem"));
@@ -26,6 +26,7 @@ AExperience::AExperience() {
 	ExpCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ExpCollision"));
 	RootComponent = ExpCollision;
 	ExpCollision->SetSphereRadius(50.f);
+	ExpCollision->SetCollisionProfileName(FName("DropItem"));
 
 	// exp mesh
 	ExpMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ExpMesh"));

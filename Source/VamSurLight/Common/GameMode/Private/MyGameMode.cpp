@@ -4,10 +4,23 @@
 #include "MyGameMode.h"
 #include "MyCharacterPlayerController.h"	/*player controller*/
 #include "MyCharacter.h"	/*character*/
+#include "SynergyManager.h"
 
 AMyGameMode::AMyGameMode()
 {
 	PlayerControllerClass = AMyCharacterPlayerController::StaticClass();
 	DefaultPawnClass = AMyCharacter::StaticClass();
 	
+}
+
+void AMyGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FVector SpawnLocation{FVector::ZeroVector};
+	FRotator SpawnRotation{FRotator::ZeroRotator};
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	SynergyManager = GetWorld()->SpawnActor<ASynergyManager>(ASynergyManager::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 }

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Experience.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -36,7 +35,8 @@ public:
 	void UpdateExpUI();
 	void AddExperience(float ExpAmount);
 	void LevelUp();
-
+	void AutoAttack();
+		
 	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
@@ -57,6 +57,21 @@ public:
 	// character data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UCharacterDataAsset* CharacterData;
+
+	// weapon data asset
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
+	class UWeaponDataAsset* WeaponData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
+	
+	// timer	
+	UPROPERTY()
+	FTimerHandle ActionTimerHandle;
+
+	// synergy check
+	UPROPERTY()
+	class ASynergyManager* SynergyManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
 	float Speed;

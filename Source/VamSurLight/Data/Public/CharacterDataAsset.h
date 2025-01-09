@@ -19,12 +19,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackDamage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterMaxExp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterExp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterExpMul;
-	
 };
