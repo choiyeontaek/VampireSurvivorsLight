@@ -23,4 +23,13 @@ void AMyGameMode::BeginPlay()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	SynergyManager = GetWorld()->SpawnActor<ASynergyManager>(ASynergyManager::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+
+	// show mouse cursor
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController)
+	{
+		PlayerController->bShowMouseCursor = true;
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+	}
 }

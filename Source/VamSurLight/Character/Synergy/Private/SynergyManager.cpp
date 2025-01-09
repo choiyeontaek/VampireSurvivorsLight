@@ -5,9 +5,13 @@
 #include "SynergyManagerDataAsset.h"
 
 // Sets default values
-ASynergyManager::ASynergyManager() {
+ASynergyManager::ASynergyManager()
+{
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	WeaponBitmask = 0;
+	StatusBitmask = 0;
 
 	// status data asset
 	static ConstructorHelpers::FObjectFinder<USynergyManagerDataAsset> SynergyDataAsset
@@ -17,68 +21,39 @@ ASynergyManager::ASynergyManager() {
 	}
 }
 
-// Called when the game starts or when spawned
-void ASynergyManager::BeginPlay() {
+void ASynergyManager::BeginPlay()
+{
 	Super::BeginPlay();
 
 	if (SynergyManagerData) {
-		bHasAutoAttackWeapon = SynergyManagerData->bHasAutoAttackWeapon;
-		bHasCoolTimeUpdate = SynergyManagerData->bHasCoolTimeUpdate;
+		for (const auto& Weapon : SynergyManagerData->AcquiredWeapons) {
+			AcquireWeapon(Weapon);
+		}
+		for (const auto& Status : SynergyManagerData->AcquiredStatuses) {
+			AcquireStatus(Status);
+		}
 	}
 }
 
-// Called every frame
-void ASynergyManager::Tick(float DeltaTime) {
+void ASynergyManager::Tick(float DeltaTime)
+{
 	Super::Tick(DeltaTime);
 }
 
-void ASynergyManager::AcquireWeapons(int32 WeaponID)
+void ASynergyManager::AcquireWeapon(EWeaponType WeaponType)
 {
-	switch (WeaponID)
-	{
-	case 0:
-		bHasAutoAttackWeapon = true;
-		break;
-	default:
-		break;
-	}
+	WeaponBitmask |= (1 << static_cast<uint32>(WeaponType));
 }
 
-void ASynergyManager::AcquireStatus(int32 StatusID)
+void ASynergyManager::AcquireStatus(EStatusType StatusType)
 {
-	switch (StatusID)
-	{
-	case 0:
-		bHasCoolTimeUpdate = true;
-		break;
-	default:
-		break;
-	}
+	StatusBitmask |= (1 << static_cast<uint32>(StatusType));
 }
 
-bool ASynergyManager::CheckSynergy(int32 WeaponID, int32 StatusID)
+bool ASynergyManager::CheckSynergy(EWeaponType WeaponType, EStatusType StatusType)
 {
-	bool Weapon{false};
-	bool Status{false};
-
-	switch (WeaponID)
-	{
-	case 0:
-		Weapon = bHasAutoAttackWeapon;
-		break;
-	default:
-		break;
-	}
-	
-	switch (StatusID)
-	{
-	case 0:
-		Status = bHasCoolTimeUpdate;
-		break;
-	default:
-		break;
-	}
-	
-	return (Weapon && Status);
+	// after &, all 0 = false, any 1 = true 
+	bool bHasWeapon = WeaponBitmask & (1 << static_cast<uint32>(WeaponType));
+	bool bHasStatus = StatusBitmask & (1 << static_cast<uint32>(StatusType));
+	return bHasWeapon && bHasStatus;
 }
-
