@@ -27,12 +27,12 @@ AAutoAttackWeapon::AAutoAttackWeapon() {
 	BulletCollision->SetSphereRadius(50.f);
 	BulletCollision->SetCollisionProfileName(FName("Weapon"));
 
-	// exp mesh
+	// bullet mesh
 	BulletMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
 	BulletMesh->SetupAttachment(RootComponent);
 	BulletMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// exp Mesh load
+	// bullet Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
 		(TEXT("/Game/player/weapon/baseWeapon/sm_autoAttack.sm_autoAttack"));
 	if (StaticMeshAsset.Succeeded()) {

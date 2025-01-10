@@ -19,8 +19,8 @@
 #include "SkillAutoAttack.h"	/**/
 #include "SynergyManager.h"	/*check synergy*/
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
+#include "StatusDataAsset.h" /*status data*/
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -78,6 +78,12 @@ AMyCharacter::AMyCharacter()
 		WeaponData = WeaponDataAsset.Object;
 	}
 
+	// status data asset
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
 
 	// camera, character movement setting
 	MainSpringArm->bInheritYaw = false;
@@ -111,8 +117,7 @@ void AMyCharacter::BeginPlay()
 		Health = CharacterData->CharacterHealth;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
-
-		BaseAttackDamage = WeaponData->BaseAttackDamage;
+		HealthRegeneration = CharacterData->CharacterHealthRegeneration;
 	}
 
 	// add viewport widget
@@ -134,7 +139,10 @@ void AMyCharacter::BeginPlay()
 	LogUtils::Log("need remove"); // when player dead
 
 	// start auto attack
-	GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
+	StartAttack(EWeaponType::AutoAttack);
+
+	// health generation
+	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
 
 	// initialize synergyManager
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
@@ -230,6 +238,23 @@ void AMyCharacter::UpdateExpUI()
 	}
 }
 
+void AMyCharacter::RegenerateHealth()
+{
+	LogUtils::Log("Character::RegenerateHealth");
+	
+	if (Health < MaxHealth) {
+		Health += HealthRegeneration;
+		Health = FMath::Min(Health, MaxHealth);
+
+		UpdateHealthUI();
+	}
+}
+
+void AMyCharacter::AddHealth(float AddHp)
+{
+	return;
+}
+
 void AMyCharacter::AddExperience(float ExpAmount)
 {
 	Exp += ExpAmount;
@@ -263,6 +288,20 @@ void AMyCharacter::AutoAttack() // character auto attack
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		ASkillAutoAttack* SkillActor = GetWorld()->SpawnActor<ASkillAutoAttack>(SkillAutoAttack, SpawnLocation, SpawnRotation, SpawnParams);
+		ASkillAutoAttack* SkillActor = GetWorld()->SpawnActor<ASkillAutoAttack>(
+			SkillAutoAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::StartAttack(EWeaponType WeaponType)
+{
+	// start auto attack
+	switch (WeaponType) {
+	case EWeaponType::AutoAttack:
+		GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
+		break;
+
+	default:
+		break;
 	}
 }

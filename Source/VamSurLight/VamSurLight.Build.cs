@@ -28,6 +28,7 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Character/Skill/Public",
             "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Character/Widget/Public",
+            "VamSurLight/Character/Widget/Skill/Public",
             "VamSurLight/Utility/Public"
         });
         // Uncomment if you are using Slate UI

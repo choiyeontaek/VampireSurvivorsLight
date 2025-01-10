@@ -1,28 +1,28 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "AutoAttackWeapon.generated.h"
+#include "GuardianWeapon.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API AAutoAttackWeapon : public AActor
-{
+class VAMSURLIGHT_API AGuardianWeapon : public AActor {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AAutoAttackWeapon();
+	AGuardianWeapon();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
@@ -31,15 +31,13 @@ public:
 	class UWeaponDataAsset* WeaponData;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* BulletCollision;
+	class USphereComponent* GuardianCollision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* BulletMesh;
+	UStaticMeshComponent* GuardianMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float BulletDamage;
+	float GuardianDamage;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float BulletSpeed;
+	float GuardianSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float BulletRange;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	FVector BulletLocation;
+	float GuardianRange;
 };

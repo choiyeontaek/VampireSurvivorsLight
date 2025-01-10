@@ -12,6 +12,7 @@ enum class EWeaponType : uint8 {
 	AutoAttack UMETA(DisplayName = "Auto Attack"),
 	Boomerang UMETA(DisplayName = "Boomerang"),
 	Train UMETA(DisplayName = "Train"),
+	ForceField UMETA(DisplayName = "ForceField"),
 	Guardian UMETA(DisplayName = "Guardian")
 };
 
@@ -21,6 +22,7 @@ enum class EStatusType : uint8 {
 	CoolTimeUpdate UMETA(DisplayName = "Cool Time Update"),
 	MovementSpeedUpdate UMETA(DisplayName = "Movement Speed Update"),
 	DamageUpdate UMETA(DisplayName = "Damage Update"),
+	MaxHealthUpdate UMETA(DisplayName = "Max Health Update"),
 	HealthRegenerationUpdate UMETA(DisplayName = "Health Regeneration Update")
 };
 

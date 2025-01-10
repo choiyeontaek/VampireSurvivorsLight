@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+enum class EWeaponType : uint8;
+
 UCLASS()
 class VAMSURLIGHT_API AMyCharacter : public ACharacter
 {
@@ -33,10 +35,13 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	void UpdateHealthUI();
 	void UpdateExpUI();
+	void RegenerateHealth();
+	void AddHealth(float AddHP);
 	void AddExperience(float ExpAmount);
 	void LevelUp();
 	void AutoAttack();
-		
+	void StartAttack(EWeaponType WeaponType);
+	
 	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
@@ -62,13 +67,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
 	class UWeaponDataAsset* WeaponData;
 
+	// status data asset
+	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
+	class UStatusDataAsset* StatusData;
+
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
 	
 	// timer	
 	UPROPERTY()
 	FTimerHandle ActionTimerHandle;
-
+	UPROPERTY()
+	FTimerHandle HealthRegenerateHandle;
+	
 	// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
@@ -87,4 +99,6 @@ public:
 	float MaxExp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Exp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float HealthRegeneration;
 };

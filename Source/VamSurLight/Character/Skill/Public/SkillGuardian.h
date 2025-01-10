@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SkillAutoAttack.generated.h"
+#include "SkillGuardian.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API ASkillAutoAttack : public AActor {
+class VAMSURLIGHT_API ASkillGuardian : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ASkillAutoAttack();
+	ASkillGuardian();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,13 +21,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	UFUNCTION()
 	void Attack(int32 Count);
-
-	// rotating character
-	void RotateToMouse();
-	void StopRotateToMouse();
+	
 	void DestroyActor();
 
 	UPROPERTY()
@@ -36,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<class AAutoAttackWeapon> AutoAttackWeapon;
+	TSubclassOf<class AGuardianWeapon> GuardianWeapon;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float Projectile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -45,8 +42,4 @@ public:
 	// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
-
-	// timer handle
-	FTimerHandle DestroyTimerHandle;
-	bool bRotateToMouse;
 };

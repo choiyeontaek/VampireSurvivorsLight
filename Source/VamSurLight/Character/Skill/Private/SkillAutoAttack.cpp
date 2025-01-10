@@ -4,7 +4,7 @@
 #include "SkillAutoAttack.h"
 #include "AutoAttackWeapon.h"
 #include "LogUtils.h"	/*log*/
-#include "StatusDateAsset.h"
+#include "StatusDataAsset.h"
 #include "SynergyManager.h"	/*synergyCheck*/
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -21,7 +21,7 @@ ASkillAutoAttack::ASkillAutoAttack()
 	SetRootComponent(Root);
 
 	// status data asset
-	static ConstructorHelpers::FObjectFinder<UStatusDateAsset> StatusDataAsset
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
 		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
 	if (StatusDataAsset.Succeeded()) {
 		StatusData = StatusDataAsset.Object;

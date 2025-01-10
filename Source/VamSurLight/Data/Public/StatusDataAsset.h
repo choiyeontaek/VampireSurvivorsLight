@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "StatusDateAsset.generated.h"
+#include "StatusDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class VAMSURLIGHT_API UStatusDateAsset : public UDataAsset {
+class VAMSURLIGHT_API UStatusDataAsset : public UDataAsset {
 	GENERATED_BODY()
 
 public:

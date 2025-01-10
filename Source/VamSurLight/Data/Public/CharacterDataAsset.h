@@ -24,4 +24,7 @@ public:
 	float CharacterExp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CharacterExpMul;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CharacterHealthRegeneration;
+	
 };
