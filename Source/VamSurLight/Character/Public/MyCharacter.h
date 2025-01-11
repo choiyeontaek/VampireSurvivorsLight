@@ -71,6 +71,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 
+	UPROPERTY()
+	class ULevelUpManager* LevelUpManager;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;

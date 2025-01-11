@@ -1,53 +1,57 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "SynergyManager.h"
 #include "SkillChooseUI.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkillSelected, EWeaponType, SelectedWeapon);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatusSelected, EStatusType, SelectedStatus);
-/**
- * 
- */
-UCLASS()
-class VAMSURLIGHT_API USkillChooseUI : public UUserWidget {
+USTRUCT(BlueprintType)
+struct FCardOption
+{
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EWeaponType WeaponType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EStatusType StatusType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsWeapon;
+
+	FCardOption() : WeaponType(EWeaponType::None), StatusType(EStatusType::None), bIsWeapon(true)
+	{
+	}
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOptionSelected, FCardOption, SelectedOption);
+
+UCLASS()
+class VAMSURLIGHT_API USkillChooseUI : public UUserWidget
+{
+	GENERATED_BODY()
+
 public:
-	USkillChooseUI(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	class USkillCardUI* widget_skillCard_one;
+	class USkillCardUI* SkillCard1;
+
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	class USkillCardUI* widget_skillCard_two;
+	class USkillCardUI* SkillCard2;
+
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	class USkillCardUI* widget_skillCard_three;
-	
+	class USkillCardUI* SkillCard3;
+
 	UFUNCTION(BlueprintCallable)
-	void SetupSkillCards(EWeaponType Weapon1, EWeaponType Weapon2, EWeaponType Weapon3, EStatusType Status);
+	void SetupCards();
 
 	UPROPERTY(BlueprintAssignable)
-	FOnSkillSelected OnWeaponSelected;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnStatusSelected OnStatusSelected;
+	FOnOptionSelected OnOptionSelected;
 
 private:
 	UFUNCTION()
-	void OnSkillCardOneClicked() { OnSkillCardClicked(0); }
+	void OnCardClicked(int32 CardIndex);
 
-	UFUNCTION()
-	void OnSkillCardTwoClicked() { OnSkillCardClicked(1); }
-
-	UFUNCTION()
-	void OnSkillCardThreeClicked() { OnSkillCardClicked(2); }
-	
-	UFUNCTION()
-	void OnSkillCardClicked(int32 CardIndex);
-
-	TArray<EWeaponType> WeaponOptions;
-	EStatusType StatusOption;
+	TArray<FCardOption> CardOptions;
 };

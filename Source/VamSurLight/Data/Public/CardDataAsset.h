@@ -35,4 +35,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText BoomerangText;
 
+	// status 이미지, 텍스트 추가 예정
 };

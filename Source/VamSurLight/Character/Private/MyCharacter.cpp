@@ -16,6 +16,7 @@
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
+#include "LevelUpManager.h"	/*handleLevelUp*/
 #include "SkillAutoAttack.h"	/**/
 #include "SynergyManager.h"	/*check synergy*/
 #include "Kismet/GameplayStatics.h"
@@ -241,7 +242,7 @@ void AMyCharacter::UpdateExpUI()
 void AMyCharacter::RegenerateHealth()
 {
 	LogUtils::Log("Character::RegenerateHealth");
-	
+
 	if (Health < MaxHealth) {
 		Health += HealthRegeneration;
 		Health = FMath::Min(Health, MaxHealth);
@@ -273,6 +274,12 @@ void AMyCharacter::LevelUp()
 {
 	MaxExp *= CharacterData->CharacterExpMul;
 	ExpUI->UpdateLevelText();
+
+	if (!LevelUpManager) {
+		LevelUpManager = NewObject<ULevelUpManager>(this);
+	}
+	
+	LevelUpManager->HandleLevelUp(this);
 
 	//LogUtils::Log("AMyCharacter::LevelUp", MaxExp);
 }
