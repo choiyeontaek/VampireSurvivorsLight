@@ -15,7 +15,7 @@ enum class EWeaponType : uint8 {
 	ForceField UMETA(DisplayName = "ForceField"),
 	Guardian UMETA(DisplayName = "Guardian"),
 
-	MAX UMETA(DisplayName = "MAX") = 6
+	MAX UMETA(DisplayName = "MAX")
 };
 
 UENUM(BlueprintType)
@@ -27,7 +27,7 @@ enum class EStatusType : uint8 {
 	MaxHealthUpdate UMETA(DisplayName = "Max Health Update"),
 	HealthRegenerationUpdate UMETA(DisplayName = "Health Regeneration Update"),
 
-	MAX UMETA(DisplayName = "MAX") = 6
+	MAX UMETA(DisplayName = "MAX")
 };
 
 UCLASS()

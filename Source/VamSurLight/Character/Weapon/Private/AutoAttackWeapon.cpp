@@ -8,12 +8,14 @@
 #include "Components/SphereComponent.h" /*sphere collision*/
 #include "Components/StaticMeshComponent.h" /*static mesh*/
 #include "Kismet/GameplayStatics.h" /*GetPlayerCharacter*/
+#include "LevelUpManager.h"
 
 // Sets default values
-AAutoAttackWeapon::AAutoAttackWeapon() {
+AAutoAttackWeapon::AAutoAttackWeapon()
+{
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// data asset
 	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
 		(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
@@ -41,24 +43,30 @@ AAutoAttackWeapon::AAutoAttackWeapon() {
 
 	// bind overlap event
 	BulletCollision->OnComponentBeginOverlap.AddDynamic(this, &AAutoAttackWeapon::OnOverlapBegin);
+
+	LevelUpManager = CreateDefaultSubobject<ULevelUpManager>(TEXT("LevelUpManager"));
 }
 
 // Called when the game starts or when spawned
-void AAutoAttackWeapon::BeginPlay() {
+void AAutoAttackWeapon::BeginPlay()
+{
 	Super::BeginPlay();
+
+	Level = LevelUpManager->AutoAttackLevel;
 
 	// initialize with data asset
 	if (WeaponData) {
-		BulletDamage = WeaponData->BaseAttackDamage;
-		BulletSpeed = WeaponData->BaseAttackSpeed;
-		BulletRange = WeaponData->BaseAttackRange;
+		BulletDamage = WeaponData->BaseAttackDamage[Level - 1];
+		BulletSpeed = WeaponData->BaseAttackSpeed[Level - 1];
+		BulletRange = WeaponData->BaseAttackRange[Level - 1];
 	}
 
 	BulletLocation = GetActorLocation();
 }
 
 // Called every frame
-void AAutoAttackWeapon::Tick(float DeltaTime) {
+void AAutoAttackWeapon::Tick(float DeltaTime)
+{
 	Super::Tick(DeltaTime);
 
 	FVector Direction{GetActorForwardVector()};
@@ -67,16 +75,17 @@ void AAutoAttackWeapon::Tick(float DeltaTime) {
 	float Distance = FVector::Dist(GetActorLocation(), BulletLocation);
 
 	if (Distance > BulletRange) {
-		LogUtils::Log("Destroy Bullet");
+		//LogUtils::Log("Destroy Bullet");
 		Destroy();
 	}
 }
 
 void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                       const FHitResult& SweepResult) {
+                                       const FHitResult& SweepResult)
+{
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("AAutoAttackWeapon::OnOverlapBegin");
+		LogUtils::Log("AAutoAttackWeapon::OnOverlapBegin", BulletDamage);
 
 		UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
 

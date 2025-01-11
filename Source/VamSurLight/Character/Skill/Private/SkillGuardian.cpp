@@ -42,7 +42,7 @@ void ASkillGuardian::BeginPlay()
 
 	// initialize data
 	if (StatusData) {
-		Projectile = StatusData->Projectile;
+		Projectile = StatusData->Projectile[0];
 	}
 
 	Attack(Projectile + 3);

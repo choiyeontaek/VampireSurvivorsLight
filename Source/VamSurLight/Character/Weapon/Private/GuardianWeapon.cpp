@@ -50,9 +50,9 @@ void AGuardianWeapon::BeginPlay()
 	Super::BeginPlay();
 	// initialize with data asset
 	if (WeaponData) {
-		GuardianDamage = WeaponData->GuardianDamage;
-		GuardianSpeed = WeaponData->GuardianSpeed;
-		GuardianRange = WeaponData->GuardianRange;
+		GuardianDamage = WeaponData->GuardianDamage[0];
+		GuardianSpeed = WeaponData->GuardianSpeed[0];
+		GuardianRange = WeaponData->GuardianRange[0];
 	}
 
 }

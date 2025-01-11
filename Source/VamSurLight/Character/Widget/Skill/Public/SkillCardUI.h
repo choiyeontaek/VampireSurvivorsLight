@@ -13,6 +13,8 @@ class VAMSURLIGHT_API USkillCardUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	USkillCardUI(const FObjectInitializer& ObjectInitializer);
+
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
@@ -29,6 +31,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCardClicked OnCardClicked;
+
+	// asset data
+	UPROPERTY(EditDefaultsOnly, Category = "Card Data")
+	class UCardDataAsset* CardData;
 
 private:
 	UFUNCTION()

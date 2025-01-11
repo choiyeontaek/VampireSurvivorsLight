@@ -14,26 +14,48 @@ class VAMSURLIGHT_API UCardDataAsset : public UDataAsset {
 	GENERATED_BODY()
 
 public:
+	// weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* AutoAttackImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* GuardianImage;
+	UTexture2D* BoomerangImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* TrainImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* ForceFieldImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* BoomerangImage;
+	UTexture2D* GuardianImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText AutoAttackText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText GuardianText;
+	FText BoomerangText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText TrainText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText ForceFieldText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText BoomerangText;
+	FText GuardianText;
 
-	// status 이미지, 텍스트 추가 예정
+	// status
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CoolTimeUpdateImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* MovementSpeedUpdateImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* DamageUpdateImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* MaxHealthUpdateImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* HealthRegenerationUpdateImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText CoolTimeUpdateText;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText MovementSpeedUpdateText;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText DamageUpdateText;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText MaxHealthUpdateText;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText HealthRegenerationUpdateText;
+	
 };

@@ -29,6 +29,9 @@ public:
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
+
+	UPROPERTY(EditDefaultsOnly)
+	class ULevelUpManager* LevelUpManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* BulletCollision;
@@ -42,4 +45,6 @@ public:
 	float BulletRange;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FVector BulletLocation;
+
+	int32 Level;
 };

@@ -118,7 +118,8 @@ void AMyCharacter::BeginPlay()
 		Health = CharacterData->CharacterHealth;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
-		HealthRegeneration = CharacterData->CharacterHealthRegeneration;
+		
+		HealthRegeneration = StatusData->HealthRegeneration;
 	}
 
 	// add viewport widget
@@ -241,10 +242,10 @@ void AMyCharacter::UpdateExpUI()
 
 void AMyCharacter::RegenerateHealth()
 {
-	LogUtils::Log("Character::RegenerateHealth");
+	LogUtils::Log("Character::RegenerateHealth", HealthRegeneration[Level - 1]);
 
 	if (Health < MaxHealth) {
-		Health += HealthRegeneration;
+		Health += HealthRegeneration[Level - 1];
 		Health = FMath::Min(Health, MaxHealth);
 
 		UpdateHealthUI();

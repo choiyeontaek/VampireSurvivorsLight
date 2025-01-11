@@ -17,17 +17,17 @@ class VAMSURLIGHT_API UWeaponDataAsset : public UDataAsset
 public:
 	// Auto Attack
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackDamage;
+	TArray<float> BaseAttackDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackSpeed;
+	TArray<float> BaseAttackSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackRange;
+	TArray<float> BaseAttackRange;
 
 	// guardian
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
+	TArray<float> GuardianDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
+	TArray<float> GuardianSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianRange;
+	TArray<float> GuardianRange;
 };

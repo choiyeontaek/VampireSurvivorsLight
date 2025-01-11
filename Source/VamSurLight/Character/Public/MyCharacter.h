@@ -102,5 +102,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Exp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	float HealthRegeneration;
+	TArray<float> HealthRegeneration;
+
+	int32 Level{1};
 };

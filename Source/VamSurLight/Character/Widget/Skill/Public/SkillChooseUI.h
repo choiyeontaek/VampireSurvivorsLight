@@ -18,7 +18,7 @@ struct FCardOption
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsWeapon;
-
+	
 	FCardOption() : WeaponType(EWeaponType::None), StatusType(EStatusType::None), bIsWeapon(true)
 	{
 	}
