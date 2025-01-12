@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GuardianWeapon.generated.h"
+#include "ForceFieldWeapon.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API AGuardianWeapon : public AActor {
+class VAMSURLIGHT_API AForceFieldWeapon : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AGuardianWeapon();
+	AForceFieldWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,6 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
@@ -31,21 +32,17 @@ public:
 	class UWeaponDataAsset* WeaponData;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* GuardianCollision;
+	class USphereComponent* ForceFieldCollision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* GuardianMesh;
+	UStaticMeshComponent* ForceFieldMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
+	float ForceFieldDamage;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianRange;
-
-	FVector InitialLocation;
-	float CurrentAngle;
+	float ForceFieldRange;
 
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 
+	void FollowPlayer();
 	void DestroyActor();
 };

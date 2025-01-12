@@ -39,8 +39,9 @@ public:
 	void AddHealth(float AddHP);
 	void AddExperience(float ExpAmount);
 	void LevelUp();
-	void AutoAttack();
 	void StartAttack(EWeaponType WeaponType);
+	void AutoAttack();
+	void GuardianAttack();
 	
 	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
@@ -76,10 +77,17 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillGuardian> SkillGuardianAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillForceField> SkillForceFieldAttack;
+	
 	
 	// timer	
 	UPROPERTY()
-	FTimerHandle ActionTimerHandle;
+	FTimerHandle AutoAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle GuardianAttackTimerHandle;
 	UPROPERTY()
 	FTimerHandle HealthRegenerateHandle;
 	

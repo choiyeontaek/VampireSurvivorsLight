@@ -18,6 +18,8 @@
 #include "CharacterExpUI.h" /*expUI*/
 #include "LevelUpManager.h"	/*handleLevelUp*/
 #include "SkillAutoAttack.h"	/**/
+#include "SkillForceField.h"
+#include "SkillGuardian.h"
 #include "SynergyManager.h"	/*check synergy*/
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
@@ -103,12 +105,18 @@ AMyCharacter::AMyCharacter()
 
 	// set class
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
+	SkillGuardianAttack = ASkillGuardian::StaticClass();
+	SkillForceFieldAttack = ASkillForceField::StaticClass();
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// initialize synergyManager
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
+	SynergyManager = Cast<ASynergyManager>(FoundActor);
 
 	bIsDead = false;
 
@@ -118,7 +126,7 @@ void AMyCharacter::BeginPlay()
 		Health = CharacterData->CharacterHealth;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
-		
+
 		HealthRegeneration = StatusData->HealthRegeneration;
 	}
 
@@ -142,15 +150,11 @@ void AMyCharacter::BeginPlay()
 
 	// start auto attack
 	StartAttack(EWeaponType::AutoAttack);
+	StartAttack(EWeaponType::Guardian);
+	StartAttack(EWeaponType::ForceField);
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
-
-	// initialize synergyManager
-	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
-	SynergyManager = Cast<ASynergyManager>(FoundActor);
-	// acquire autoAttackWeapon
-	SynergyManager->AcquireWeapon(EWeaponType::AutoAttack);
 }
 
 // Called every frame
@@ -279,10 +283,35 @@ void AMyCharacter::LevelUp()
 	if (!LevelUpManager) {
 		LevelUpManager = NewObject<ULevelUpManager>(this);
 	}
-	
+
 	LevelUpManager->HandleLevelUp(this);
 
 	//LogUtils::Log("AMyCharacter::LevelUp", MaxExp);
+}
+
+void AMyCharacter::StartAttack(EWeaponType WeaponType)
+{
+	// start auto attack
+	switch (WeaponType) {
+	case EWeaponType::AutoAttack:
+		SynergyManager->AcquireWeapon(EWeaponType::AutoAttack);
+		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
+		break;
+	case EWeaponType::Guardian:
+		SynergyManager->AcquireWeapon(EWeaponType::Guardian);
+		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack, 6.5f, true);
+		break;
+	case EWeaponType::ForceField:
+		SynergyManager->AcquireWeapon(EWeaponType::ForceField);
+		if (SkillForceFieldAttack) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			GetWorld()->SpawnActor<ASkillForceField>(SkillForceFieldAttack, GetActorLocation(), GetActorRotation(), SpawnParams);
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void AMyCharacter::AutoAttack() // character auto attack
@@ -301,15 +330,16 @@ void AMyCharacter::AutoAttack() // character auto attack
 	}
 }
 
-void AMyCharacter::StartAttack(EWeaponType WeaponType)
+void AMyCharacter::GuardianAttack()
 {
-	// start auto attack
-	switch (WeaponType) {
-	case EWeaponType::AutoAttack:
-		GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
-		break;
+	if (SkillGuardianAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
 
-	default:
-		break;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillGuardian* SkillActor = GetWorld()->SpawnActor<ASkillGuardian>(
+			SkillGuardianAttack, SpawnLocation, SpawnRotation, SpawnParams);
 	}
 }

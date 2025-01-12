@@ -6,7 +6,9 @@
 #include "LogUtils.h"	/*log*/
 #include "StatusDataAsset.h" /*status data*/
 #include "SynergyManager.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h" /*get actor*/
+#include "Kismet/KismetMathLibrary.h"	/*findLookAtLocation*/
 
 
 // Sets default values
@@ -62,6 +64,23 @@ void ASkillGuardian::Attack(int32 Count)
 		}
 		else {
 			LogUtils::Log("No Synergy");
+		}
+	}
+
+	if (GuardianWeapon && GetWorld()) {
+		for (int32 i{}; i < Count; i++) {
+			float Angle = (360.0f / Count) * i;
+			FVector SpawnLocation = OwningCharacter->GetActorLocation() + 
+				FVector(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle)), 0.0f) * 200.f;
+			FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, OwningCharacter->GetActorLocation());
+
+			//LogUtils::Log("location", SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			AGuardianWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AGuardianWeapon>(GuardianWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+			if (SpawnedWeapon) {
+				SpawnedWeapon->SetOwner(OwningCharacter);
+			}
 		}
 	}
 }

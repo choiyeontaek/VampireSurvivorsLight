@@ -42,4 +42,7 @@ public:
 	// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
+
+	// timer handle
+	FTimerHandle DestroyTimerHandle;
 };

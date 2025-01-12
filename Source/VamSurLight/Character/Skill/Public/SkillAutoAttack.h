@@ -48,5 +48,6 @@ public:
 
 	// timer handle
 	FTimerHandle DestroyTimerHandle;
+	
 	bool bRotateToMouse;
 };
