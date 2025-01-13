@@ -27,7 +27,7 @@ ASkillGuardian::ASkillGuardian()
 		StatusData = StatusDataAsset.Object;
 	}
 
-	// set auto attack weapon class
+	// set weapon class
 	GuardianWeapon = AGuardianWeapon::StaticClass();
 }
 

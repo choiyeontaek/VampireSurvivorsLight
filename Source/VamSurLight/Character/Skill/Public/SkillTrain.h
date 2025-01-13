@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SkillForceField.generated.h"
+#include "SkillTrain.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API ASkillForceField : public AActor {
+class VAMSURLIGHT_API ASkillTrain : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ASkillForceField();
+	ASkillTrain();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,21 +21,23 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
+	void DestroyActor();
+	
+	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* CollisionSphere;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UStaticMeshComponent* FieldMesh;
+	class UStaticMeshComponent* TrainMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;
-	
 	UPROPERTY()
 	class ACharacter* OwningCharacter;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<class AForceFieldWeapon> ForceFieldWeapon;
+	TSubclassOf<class ATrainWeapon> TrainWeapon;
 
 	// timer handle
 	FTimerHandle DestroyTimerHandle;

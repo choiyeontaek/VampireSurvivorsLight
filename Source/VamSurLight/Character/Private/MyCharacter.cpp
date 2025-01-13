@@ -17,9 +17,11 @@
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
 #include "LevelUpManager.h"	/*handleLevelUp*/
-#include "SkillAutoAttack.h"	/**/
+#include "SkillAutoAttack.h"
+#include "SkillBoomerang.h"
 #include "SkillForceField.h"
 #include "SkillGuardian.h"
+#include "SkillTrain.h"
 #include "SynergyManager.h"	/*check synergy*/
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
@@ -107,6 +109,8 @@ AMyCharacter::AMyCharacter()
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
 	SkillGuardianAttack = ASkillGuardian::StaticClass();
 	SkillForceFieldAttack = ASkillForceField::StaticClass();
+	SkillTrainAttack = ASkillTrain::StaticClass();
+	SkillBoomerangAttack = ASkillBoomerang::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -152,6 +156,8 @@ void AMyCharacter::BeginPlay()
 	StartAttack(EWeaponType::AutoAttack);
 	StartAttack(EWeaponType::Guardian);
 	StartAttack(EWeaponType::ForceField);
+	StartAttack(EWeaponType::Train);
+	StartAttack(EWeaponType::Boomerang);
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
@@ -309,6 +315,14 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 			GetWorld()->SpawnActor<ASkillForceField>(SkillForceFieldAttack, GetActorLocation(), GetActorRotation(), SpawnParams);
 		}
 		break;
+	case EWeaponType::Train:
+		SynergyManager->AcquireWeapon(EWeaponType::Train);
+		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack, 2.8f, true);
+		break;
+	case EWeaponType::Boomerang:
+		SynergyManager->AcquireWeapon(EWeaponType::Boomerang);
+		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack, 3.f, true);
+		break;
 	default:
 		break;
 	}
@@ -317,7 +331,6 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 void AMyCharacter::AutoAttack() // character auto attack
 {
 	//LogUtils::Log("AMyCharacter::AutoAttack");
-
 	if (SkillAutoAttack && GetWorld()) {
 		FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 100.f)};
 		FRotator SpawnRotation{GetActorRotation()};
@@ -341,5 +354,33 @@ void AMyCharacter::GuardianAttack()
 
 		ASkillGuardian* SkillActor = GetWorld()->SpawnActor<ASkillGuardian>(
 			SkillGuardianAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::TrainAttack()
+{
+	if (SkillTrainAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillTrain* SkillActor = GetWorld()->SpawnActor<ASkillTrain>(
+			SkillTrainAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::BoomerangAttack()
+{
+	if (SkillBoomerangAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillBoomerang* SkillActor = GetWorld()->SpawnActor<ASkillBoomerang>(
+			SkillBoomerangAttack, SpawnLocation, SpawnRotation, SpawnParams);
 	}
 }

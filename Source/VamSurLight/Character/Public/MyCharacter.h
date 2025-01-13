@@ -42,6 +42,8 @@ public:
 	void StartAttack(EWeaponType WeaponType);
 	void AutoAttack();
 	void GuardianAttack();
+	void TrainAttack();
+	void BoomerangAttack();
 	
 	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
@@ -81,13 +83,20 @@ public:
 	TSubclassOf<class ASkillGuardian> SkillGuardianAttack;
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillForceField> SkillForceFieldAttack;
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillTrain> SkillTrainAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillBoomerang> SkillBoomerangAttack;
 	
 	// timer	
 	UPROPERTY()
 	FTimerHandle AutoAttackTimerHandle;
 	UPROPERTY()
 	FTimerHandle GuardianAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle TrainAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle BoomerangAttackTimerHandle;
 	UPROPERTY()
 	FTimerHandle HealthRegenerateHandle;
 	

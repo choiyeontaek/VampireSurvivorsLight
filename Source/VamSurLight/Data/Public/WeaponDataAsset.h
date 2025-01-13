@@ -30,4 +30,14 @@ public:
 	TArray<float> GuardianSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> GuardianRange;
+
+	// train
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainStartDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainMovingLength;
 };
