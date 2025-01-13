@@ -31,7 +31,7 @@ public:
 	void DestroyActor();
 
 	UPROPERTY()
-	ACharacter* OwningCharacter;
+	class ACharacter* OwningCharacter;
 	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;

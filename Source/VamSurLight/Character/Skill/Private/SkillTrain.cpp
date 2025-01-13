@@ -2,7 +2,8 @@
 
 
 #include "SkillTrain.h"
-
+#include "StatusDataAsset.h"
+#include "LogUtils.h"
 #include "TrainWeapon.h"
 #include "GameFramework/Character.h"
 
@@ -32,7 +33,7 @@ void ASkillTrain::BeginPlay()
 	Super::BeginPlay();
 
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
-
+	//AActor* OwningActor = GetOwner();
 	FVector SpawnLocation = OwningCharacter->GetActorLocation();
 	FRotator SpawnRotation = OwningCharacter->GetActorRotation();
 

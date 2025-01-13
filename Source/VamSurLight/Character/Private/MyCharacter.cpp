@@ -252,7 +252,7 @@ void AMyCharacter::UpdateExpUI()
 
 void AMyCharacter::RegenerateHealth()
 {
-	LogUtils::Log("Character::RegenerateHealth", HealthRegeneration[Level - 1]);
+	//LogUtils::Log("Character::RegenerateHealth", HealthRegeneration[Level - 1]);
 
 	if (Health < MaxHealth) {
 		Health += HealthRegeneration[Level - 1];
@@ -368,6 +368,9 @@ void AMyCharacter::TrainAttack()
 
 		ASkillTrain* SkillActor = GetWorld()->SpawnActor<ASkillTrain>(
 			SkillTrainAttack, SpawnLocation, SpawnRotation, SpawnParams);
+		if (SkillActor) {
+			SkillActor->SetOwner(this);
+		}
 	}
 }
 
