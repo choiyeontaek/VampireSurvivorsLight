@@ -40,4 +40,14 @@ public:
 	TArray<float> TrainStartDistance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> TrainMovingLength;
+
+	// boomerang
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangMovingLength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangRange;
 };

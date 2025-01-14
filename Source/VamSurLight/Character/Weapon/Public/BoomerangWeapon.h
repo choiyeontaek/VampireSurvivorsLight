@@ -21,4 +21,48 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+		
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void SetTargetLocation();
+	void MoveToTarget(float DeltaTime);
+	void ReturnWeapon(float DeltaTime);
+	
+	
+	// weapon data asset
+	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
+	class UWeaponDataAsset* WeaponData;
+	
+	UPROPERTY(EditDefaultsOnly)
+	class ULevelUpManager* LevelUpManager;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* BoomerangCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* BoomerangMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangMovingLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangRange;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FVector InitialLocation;
+	UPROPERTY()
+	class ACharacter* OwningCharacter;
+
+	FVector TargetLocation;
+	FVector MovingDirection;
+	
+	int32 Level;
+	bool bIsReachTarget{false};
+	
+	UPROPERTY()
+	FTimerHandle DestroyTimerHandle;
+
+	void DestroyActor();
 };

@@ -75,10 +75,9 @@ void ATrainWeapon::Tick(float DeltaTime)
 	SetActorLocation(GetActorLocation() + MovingDirection * TrainSpeed * DeltaTime);
 
 	float Distance = FVector::Dist(RandomPosition, GetActorLocation());
-
-	// if (Distance > TrainMovingLength) {
-	// 	DestroyActor();
-	// }
+	if (Distance > TrainMovingLength) {
+		DestroyActor();
+	}
 }
 
 void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -96,12 +95,9 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 void ATrainWeapon::StartTrain()
 {
-	LogUtils::Log("00000000000000000000000");
-	AActor* OwningActor = GetOwner();
+	//AActor* OwningActor = GetOwner();
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
 	if (OwningCharacter) {
-		LogUtils::Log("11111111111111111111111111");
-
 		//TrainStartDistance = 800.f;
 		// make random angle 0 ~ 360
 		float RandomAngle{2 * PI * FMath::RandRange(0.f, 1.f)};
@@ -116,6 +112,8 @@ void ATrainWeapon::StartTrain()
 
 		MovingDirection = OwningCharacter->GetActorLocation() - RandomPosition;
 		MovingDirection.Normalize();
+
+		SetActorLocation(RandomPosition);
 	}
 }
 
