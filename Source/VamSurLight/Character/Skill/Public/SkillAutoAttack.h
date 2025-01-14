@@ -50,4 +50,7 @@ public:
 	FTimerHandle DestroyTimerHandle;
 	
 	bool bRotateToMouse;
+	
+	void LevelUp();
+	int32 Level;
 };

@@ -2,7 +2,7 @@
 
 
 #include "SkillForceField.h"
-
+#include "StatusDataAsset.h"
 #include "ForceFieldWeapon.h"
 #include "GameFramework/Character.h"
 
@@ -48,4 +48,9 @@ void ASkillForceField::BeginPlay()
 void ASkillForceField::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ASkillForceField::LevelUp()
+{
+	
 }

@@ -41,4 +41,7 @@ public:
 
 	// timer handle
 	FTimerHandle DestroyTimerHandle;
+
+	void LevelUp();
+	int32 Level;
 };

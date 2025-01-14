@@ -39,6 +39,7 @@ AForceFieldWeapon::AForceFieldWeapon()
 
 	// bind overlap event
 	ForceFieldCollision->OnComponentBeginOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapBegin);
+	
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +58,14 @@ void AForceFieldWeapon::Tick(float DeltaTime)
 
 void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{}
+
+void AForceFieldWeapon::LevelUp()
+{
+	
+}
+
+void AForceFieldWeapon::DamageLevelUp()
 {}
 
 void AForceFieldWeapon::FollowPlayer()

@@ -43,6 +43,7 @@ AGuardianWeapon::AGuardianWeapon()
 
 	// bind overlap event
 	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
+	
 }
 
 // Called when the game starts or when spawned
@@ -96,6 +97,14 @@ void AGuardianWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 		                              USkillGuardianDamageType::StaticClass());
 	}
 }
+
+void AGuardianWeapon::LevelUp()
+{
+	
+}
+
+void AGuardianWeapon::DamageLevelUp()
+{}
 
 void AGuardianWeapon::DestroyActor()
 {

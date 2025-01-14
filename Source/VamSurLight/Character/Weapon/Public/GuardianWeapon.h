@@ -25,7 +25,10 @@ public:
 	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+
+	void LevelUp();
+	void DamageLevelUp();
+
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;

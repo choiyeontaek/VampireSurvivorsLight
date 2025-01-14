@@ -72,7 +72,7 @@ void ASkillAutoAttack::Attack(int32 Count)
 			//LogUtils::Log("No Synergy");
 		}
 	}
-
+	
 	if (AutoAttackWeapon && GetWorld()) {
 		// rotate character
 		bRotateToMouse = true;
@@ -100,6 +100,11 @@ void ASkillAutoAttack::Attack(int32 Count)
 void ASkillAutoAttack::DestroyActor()
 {
 	Destroy();
+}
+
+void ASkillAutoAttack::LevelUp()
+{
+	
 }
 
 void ASkillAutoAttack::RotateToMouse()

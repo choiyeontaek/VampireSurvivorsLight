@@ -50,4 +50,10 @@ public:
 	TArray<float> BoomerangMovingLength;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> BoomerangRange;
+
+	// force field
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> ForceFieldDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> ForceFieldRange;
 };

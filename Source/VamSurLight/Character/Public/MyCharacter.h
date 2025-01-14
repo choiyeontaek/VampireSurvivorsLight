@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+enum class EStatusType : uint8;
 enum class EWeaponType : uint8;
 
 UCLASS()
@@ -44,6 +45,11 @@ public:
 	void GuardianAttack();
 	void TrainAttack();
 	void BoomerangAttack();
+	void StatusLevelUp(EStatusType Status);
+
+public:
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetMyLevel(){return MyLevel;}
 	
 	// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
@@ -74,8 +80,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 
-	UPROPERTY()
-	class ULevelUpManager* LevelUpManager;
+	UPROPERTY(BlueprintReadOnly)
+	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
@@ -113,13 +119,27 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	float BaseAttackDamage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float MaxExp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Exp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	TArray<float> HealthRegeneration;
+	float CoolTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float HealthRegeneration;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float AddSpeed;
+	
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MyLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 HealthRegenerationLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 CoolTimeLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MovementSpeedLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MaxHealthLevel{0};
 
-	int32 Level{1};
+	
 };

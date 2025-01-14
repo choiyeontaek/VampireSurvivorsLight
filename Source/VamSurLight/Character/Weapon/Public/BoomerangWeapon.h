@@ -29,14 +29,16 @@ public:
 	void SetTargetLocation();
 	void MoveToTarget(float DeltaTime);
 	void ReturnWeapon(float DeltaTime);
-	
+	void LevelUp();
+	void DamageLevelUp();
+
 	
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
 	
 	UPROPERTY(EditDefaultsOnly)
-	class ULevelUpManager* LevelUpManager;
+	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* BoomerangCollision;

@@ -83,3 +83,6 @@ void ASkillBoomerang::DestroyActor()
 {
 	Destroy();
 }
+
+void ASkillBoomerang::LevelUp()
+{}

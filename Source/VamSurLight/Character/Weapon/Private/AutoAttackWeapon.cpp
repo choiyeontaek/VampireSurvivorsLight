@@ -44,7 +44,8 @@ AAutoAttackWeapon::AAutoAttackWeapon()
 	// bind overlap event
 	BulletCollision->OnComponentBeginOverlap.AddDynamic(this, &AAutoAttackWeapon::OnOverlapBegin);
 
-	LevelUpManager = CreateDefaultSubobject<ULevelUpManager>(TEXT("LevelUpManager"));
+
+	//LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +53,8 @@ void AAutoAttackWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
+	
 	Level = LevelUpManager->AutoAttackLevel;
 
 	// initialize with data asset
@@ -91,4 +94,20 @@ void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 		Destroy();
 	}
+}
+
+void AAutoAttackWeapon::LevelUp()
+{
+	++Level;
+	if (WeaponData) {
+		BulletDamage = WeaponData->BaseAttackDamage[Level - 1];
+		BulletSpeed = WeaponData->BaseAttackSpeed[Level - 1];
+		BulletRange = WeaponData->BaseAttackRange[Level - 1];
+	}
+	//LogUtils::Log("LevelUp");
+}
+
+void AAutoAttackWeapon::DamageLevelUp()
+{
+	
 }

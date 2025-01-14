@@ -42,7 +42,7 @@ ATrainWeapon::ATrainWeapon()
 		WeaponData = WeaponDataAsset.Object;
 	}
 
-	LevelUpManager = CreateDefaultSubobject<ULevelUpManager>(TEXT("LevelUpManager"));
+	LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 
 	// bind overlap event
 	TrainCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrainWeapon::OnOverlapBegin);
@@ -91,6 +91,16 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 		//Destroy();
 	}
+}
+
+void ATrainWeapon::LevelUp()
+{
+	
+}
+
+void ATrainWeapon::DamageLevelUp()
+{
+	
 }
 
 void ATrainWeapon::StartTrain()

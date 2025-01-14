@@ -130,8 +130,6 @@ void AMyCharacter::BeginPlay()
 		Health = CharacterData->CharacterHealth;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
-
-		HealthRegeneration = StatusData->HealthRegeneration;
 	}
 
 	// add viewport widget
@@ -161,6 +159,8 @@ void AMyCharacter::BeginPlay()
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
+
+	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
 }
 
 // Called every frame
@@ -169,7 +169,12 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector Velocity{GetVelocity()};
-	Speed = Velocity.Size();
+	Speed = Velocity.Size() * AddSpeed;
+
+	FString str = FString::Printf(
+		TEXT("BoomerangLevel : %d, AutoAttackLevel : %d"), LevelUpManager->BoomerangLevel,
+		LevelUpManager->AutoAttackLevel);
+	DrawDebugString(GetWorld(), GetActorLocation(), str, nullptr, FColor::Red, 0);
 }
 
 // Called to bind functionality to input
@@ -255,7 +260,7 @@ void AMyCharacter::RegenerateHealth()
 	//LogUtils::Log("Character::RegenerateHealth", HealthRegeneration[Level - 1]);
 
 	if (Health < MaxHealth) {
-		Health += HealthRegeneration[Level - 1];
+		Health += HealthRegeneration;
 		Health = FMath::Min(Health, MaxHealth);
 
 		UpdateHealthUI();
@@ -285,14 +290,11 @@ void AMyCharacter::LevelUp()
 {
 	MaxExp *= CharacterData->CharacterExpMul;
 	ExpUI->UpdateLevelText();
-
-	if (!LevelUpManager) {
-		LevelUpManager = NewObject<ULevelUpManager>(this);
-	}
+	++MyLevel;
 
 	LevelUpManager->HandleLevelUp(this);
 
-	//LogUtils::Log("AMyCharacter::LevelUp", MaxExp);
+	LogUtils::Log("AMyCharacter::LevelUp", MyLevel);
 }
 
 void AMyCharacter::StartAttack(EWeaponType WeaponType)
@@ -312,7 +314,8 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 		if (SkillForceFieldAttack) {
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			GetWorld()->SpawnActor<ASkillForceField>(SkillForceFieldAttack, GetActorLocation(), GetActorRotation(), SpawnParams);
+			GetWorld()->SpawnActor<ASkillForceField>(SkillForceFieldAttack, GetActorLocation(), GetActorRotation(),
+			                                         SpawnParams);
 		}
 		break;
 	case EWeaponType::Train:
@@ -385,5 +388,29 @@ void AMyCharacter::BoomerangAttack()
 
 		ASkillBoomerang* SkillActor = GetWorld()->SpawnActor<ASkillBoomerang>(
 			SkillBoomerangAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::StatusLevelUp(EStatusType Status)
+{
+	switch (Status) {
+	case EStatusType::CoolTimeUpdate:
+		++CoolTimeLevel;
+		CoolTime = StatusData->CoolTime[CoolTimeLevel];
+		break;
+	case EStatusType::HealthRegenerationUpdate:
+		++HealthRegenerationLevel;
+		HealthRegeneration = StatusData->HealthRegeneration[HealthRegenerationLevel];
+		break;
+	case EStatusType::MaxHealthUpdate:
+		++MaxHealthLevel;
+		MaxHealth = StatusData->MaxHealth[MaxHealthLevel];
+		break;
+	case EStatusType::MovementSpeedUpdate:
+		++MovementSpeedLevel;
+		AddSpeed = StatusData->CoolTime[MovementSpeedLevel];
+		break;
+	default:
+		break;
 	}
 }

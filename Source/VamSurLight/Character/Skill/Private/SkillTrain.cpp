@@ -55,3 +55,6 @@ void ASkillTrain::DestroyActor()
 {
 	Destroy();
 }
+
+void ASkillTrain::LevelUp()
+{}

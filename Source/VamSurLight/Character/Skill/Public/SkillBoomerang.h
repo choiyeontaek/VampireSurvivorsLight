@@ -51,4 +51,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float Projectile;
+
+	void LevelUp();
+	int32 Level;
 };

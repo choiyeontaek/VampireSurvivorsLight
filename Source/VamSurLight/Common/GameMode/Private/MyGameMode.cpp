@@ -10,7 +10,6 @@ AMyGameMode::AMyGameMode()
 {
 	PlayerControllerClass = AMyCharacterPlayerController::StaticClass();
 	DefaultPawnClass = AMyCharacter::StaticClass();
-	
 }
 
 void AMyGameMode::BeginPlay()
@@ -22,12 +21,11 @@ void AMyGameMode::BeginPlay()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	SynergyManager = GetWorld()->SpawnActor<ASynergyManager>(ASynergyManager::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-
+	SynergyManager = GetWorld()->SpawnActor<ASynergyManager>(ASynergyManager::StaticClass(), SpawnLocation,
+	                                                         SpawnRotation, SpawnParams);
 	// show mouse cursor
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	if (PlayerController)
-	{
+	if (PlayerController) {
 		PlayerController->bShowMouseCursor = true;
 		PlayerController->bEnableClickEvents = true;
 		PlayerController->bEnableMouseOverEvents = true;

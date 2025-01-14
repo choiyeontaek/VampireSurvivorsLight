@@ -44,13 +44,15 @@ ABoomerangWeapon::ABoomerangWeapon()
 	// bind overlap event
 	BoomerangCollision->OnComponentBeginOverlap.AddDynamic(this, &ABoomerangWeapon::OnOverlapBegin);
 
-	LevelUpManager = CreateDefaultSubobject<ULevelUpManager>(TEXT("LevelUpManager"));
+	//LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 }
 
 // Called when the game starts or when spawned
 void ABoomerangWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
 
 	Level = LevelUpManager->AutoAttackLevel;
 
@@ -102,6 +104,10 @@ void ABoomerangWeapon::SetTargetLocation()
 
 	FVector Start{GetActorLocation()};
 
+	// TArray<FHitResult> Hits;
+	// GetWorld()->OverlapMultiByChannel(Hits, GetActorLocation(), FQuat::Identity, ECC_Visibility, );
+	// Hits.Sort()
+	
 	// line trace
 	for (int32 i{}; i < NumRays; ++i) {
 		float Angle{i * (360.f / NumRays)};
@@ -119,8 +125,11 @@ void ABoomerangWeapon::SetTargetLocation()
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
 		QueryParams.AddIgnoredActor(OwningCharacter);
-
+	
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams)) {
+			if (HitResult.GetActor()->ActorHasTag(TEXT(""))) {
+				
+			}
 			if (ACharacter* Monster{Cast<ACharacter>(HitResult.GetActor())}) {
 				// hit line - green
 				DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Green, false, 3.0f, 0, 1.0f);
@@ -172,3 +181,11 @@ void ABoomerangWeapon::DestroyActor()
 {
 	Destroy();
 }
+
+void ABoomerangWeapon::LevelUp()
+{
+	
+}
+
+void ABoomerangWeapon::DamageLevelUp()
+{}

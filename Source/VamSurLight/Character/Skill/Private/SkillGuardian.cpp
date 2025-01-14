@@ -90,3 +90,6 @@ void ASkillGuardian::DestroyActor()
 	Destroy();
 }
 
+void ASkillGuardian::LevelUp()
+{}
+
