@@ -22,6 +22,8 @@ public:
 	TArray<float> BaseAttackSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> BaseAttackRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> BaseAttackProjectile;
 
 	// guardian
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -30,6 +32,8 @@ public:
 	TArray<float> GuardianSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> GuardianRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> GuardianProjectile;
 
 	// train
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -50,6 +54,8 @@ public:
 	TArray<float> BoomerangMovingLength;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> BoomerangRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> BoomerangProjectile;
 
 	// force field
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

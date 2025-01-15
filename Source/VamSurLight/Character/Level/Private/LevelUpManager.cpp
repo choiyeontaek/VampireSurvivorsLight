@@ -1,18 +1,8 @@
 ﻿#include "LevelUpManager.h"
 
-#include "AutoAttackWeapon.h"
-#include "BoomerangWeapon.h"
-#include "ForceFieldWeapon.h"
-#include "GuardianWeapon.h"
 #include "SkillChooseUI.h"
 #include "MyCharacter.h"
 #include "LogUtils.h"
-#include "SkillAutoAttack.h"
-#include "SkillBoomerang.h"
-#include "SkillForceField.h"
-#include "SkillGuardian.h"
-#include "SkillTrain.h"
-#include "TrainWeapon.h"
 #include "Kismet/GameplayStatics.h"
 
 ALevelUpManager::ALevelUpManager(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -27,26 +17,7 @@ ALevelUpManager::ALevelUpManager(const FObjectInitializer& ObjectInitializer) : 
 void ALevelUpManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// get weapons
-	AutoAttackWeapon = Cast<AAutoAttackWeapon>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), AAutoAttackWeapon::StaticClass()));
-	BoomerangWeapon = Cast<ABoomerangWeapon>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ABoomerangWeapon::StaticClass()));
-	TrainWeapon = Cast<ATrainWeapon>(UGameplayStatics::GetActorOfClass(GetWorld(), ATrainWeapon::StaticClass()));
-	ForceFieldWeapon = Cast<AForceFieldWeapon>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), AForceFieldWeapon::StaticClass()));
-	GuardianWeapon = Cast<AGuardianWeapon>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), AGuardianWeapon::StaticClass()));
-
-	SkillAutoAttack = Cast<ASkillAutoAttack>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ASkillAutoAttack::StaticClass()));
-	SkillBoomerang = Cast<ASkillBoomerang>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ASkillBoomerang::StaticClass()));
-	SkillTrain = Cast<ASkillTrain>(UGameplayStatics::GetActorOfClass(GetWorld(), ASkillTrain::StaticClass()));
-	SkillForceField = Cast<ASkillForceField>(
-		UGameplayStatics::GetActorOfClass(GetWorld(), ASkillForceField::StaticClass()));
-	SkillGuardian = Cast<ASkillGuardian>(UGameplayStatics::GetActorOfClass(GetWorld(), ASkillGuardian::StaticClass()));
+	
 }
 
 void ALevelUpManager::HandleLevelUp(AMyCharacter* Character)
@@ -82,28 +53,18 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 			break;
 		case EWeaponType::AutoAttack:
 			++AutoAttackLevel;
-			AutoAttackWeapon->LevelUp();
-			SkillAutoAttack->LevelUp();
 			break;
 		case EWeaponType::Boomerang:
 			++BoomerangLevel;
-			BoomerangWeapon->LevelUp();
-			SkillBoomerang->LevelUp();
 			break;
 		case EWeaponType::Train:
 			++TrainLevel;
-			TrainWeapon->LevelUp();
-			SkillTrain->LevelUp();
 			break;
 		case EWeaponType::ForceField:
 			++ForceFieldLevel;
-			ForceFieldWeapon->LevelUp();
-			SkillForceField->LevelUp();
 			break;
 		case EWeaponType::Guardian:
 			++GuardianLevel;
-			GuardianWeapon->LevelUp();
-			SkillGuardian->LevelUp();
 			break;
 		case EWeaponType::MAX:
 			break;
@@ -124,11 +85,6 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 			break;
 		case EStatusType::DamageUpdate:
 			++DamageLevel;
-			AutoAttackWeapon->DamageLevelUp();
-			BoomerangWeapon->DamageLevelUp();
-			TrainWeapon->DamageLevelUp();
-			ForceFieldWeapon->DamageLevelUp();
-			GuardianWeapon->DamageLevelUp();
 			break;
 		case EStatusType::MaxHealthUpdate:
 			++MaxHealthLevel;

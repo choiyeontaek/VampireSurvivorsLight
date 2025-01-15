@@ -3,8 +3,10 @@
 
 #include "SkillAutoAttack.h"
 #include "AutoAttackWeapon.h"
+#include "LevelUpManager.h"
 #include "LogUtils.h"	/*log*/
 #include "StatusDataAsset.h"
+#include "WeaponDataAsset.h"
 #include "SynergyManager.h"	/*synergyCheck*/
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -26,7 +28,12 @@ ASkillAutoAttack::ASkillAutoAttack()
 	if (StatusDataAsset.Succeeded()) {
 		StatusData = StatusDataAsset.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
+		(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
+	if (WeaponDataAsset.Succeeded()) {
+		WeaponData = WeaponDataAsset.Object;
+	}
+	
 	// set auto attack weapon class
 	AutoAttackWeapon = AAutoAttackWeapon::StaticClass();
 }
@@ -42,12 +49,18 @@ void ASkillAutoAttack::BeginPlay()
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
 	SynergyManager = Cast<ASynergyManager>(FoundActor);
 
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+
+	WeaponLevel = LevelUpManager->AutoAttackLevel;
+	ProjectileLevel = 0;
 	// initialize data
 	if (StatusData) {
-		Projectile = StatusData->Projectile[0];
+		StatusProjectile = StatusData->Projectile[ProjectileLevel];
+		WeaponProjectile = WeaponData->BaseAttackProjectile[WeaponLevel];
 	}
 
-	Attack(Projectile + 3);
+	Attack(StatusProjectile + WeaponProjectile);
 }
 
 // Called every frame

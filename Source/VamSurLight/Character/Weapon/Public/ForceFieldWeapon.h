@@ -33,6 +33,11 @@ public:
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
+	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
+	class UStatusDataAsset* StatusData;
+	
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ForceFieldCollision;
@@ -43,6 +48,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float ForceFieldRange;
 
+	int32 Level;
+	int32 DamageLevel;
+	
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 

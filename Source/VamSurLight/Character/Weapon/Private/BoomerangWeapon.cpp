@@ -4,10 +4,12 @@
 #include "BoomerangWeapon.h"
 #include "WeaponDataAsset.h"
 #include "LevelUpManager.h"
+#include "StatusDataAsset.h"
 #include "LogUtils.h"
 #include "Utils.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -40,7 +42,11 @@ ABoomerangWeapon::ABoomerangWeapon()
 	if (StaticMeshAsset.Succeeded()) {
 		BoomerangMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
-
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
 	// bind overlap event
 	BoomerangCollision->OnComponentBeginOverlap.AddDynamic(this, &ABoomerangWeapon::OnOverlapBegin);
 
@@ -52,15 +58,16 @@ void ABoomerangWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
-
-	Level = LevelUpManager->AutoAttackLevel;
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	Level = LevelUpManager->BoomerangLevel;
 
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
 
 	// initialize with data asset
 	if (WeaponData) {
-		BoomerangDamage = WeaponData->BoomerangDamage[Level - 1];
+		BoomerangDamage = WeaponData->BoomerangDamage[Level - 1] * StatusData->Damage[DamageLevel];
 		BoomerangSpeed = WeaponData->BoomerangSpeed[Level - 1];
 		BoomerangMovingLength = WeaponData->BoomerangMovingLength[Level - 1];
 		BoomerangRange = WeaponData->BoomerangRange[Level - 1];

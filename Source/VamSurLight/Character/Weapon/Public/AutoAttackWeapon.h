@@ -32,7 +32,9 @@ public:
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
-
+	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
+	class UStatusDataAsset* StatusData;
+	
 	UPROPERTY(EditDefaultsOnly)
 	class ALevelUpManager* LevelUpManager;
 	
@@ -50,4 +52,6 @@ public:
 	FVector BulletLocation;
 
 	int32 Level;
+	int32 DamageLevel;
+
 };

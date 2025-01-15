@@ -13,7 +13,7 @@ class VAMSURLIGHT_API ALevelUpManager : public AActor
 
 public:
 	ALevelUpManager(const FObjectInitializer& ObjectInitializer);;
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 	void HandleLevelUp(class AMyCharacter* Character);
 
 private:
@@ -31,28 +31,6 @@ private:
 
 	void ShowSkillChooseUI();
 
-	UPROPERTY()
-	class AAutoAttackWeapon* AutoAttackWeapon;
-	UPROPERTY()
-	class ABoomerangWeapon* BoomerangWeapon;
-	UPROPERTY()
-	class ATrainWeapon* TrainWeapon;
-	UPROPERTY()
-	class AForceFieldWeapon* ForceFieldWeapon;
-	UPROPERTY()
-	class AGuardianWeapon* GuardianWeapon;
-
-	UPROPERTY()
-	class ASkillAutoAttack* SkillAutoAttack;
-	UPROPERTY()
-	class ASkillBoomerang* SkillBoomerang;
-	UPROPERTY()
-	class ASkillForceField* SkillForceField;
-	UPROPERTY()
-	class ASkillGuardian* SkillGuardian;
-	UPROPERTY()
-	class ASkillTrain* SkillTrain;
-	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 AutoAttackLevel{1};
@@ -70,7 +48,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 MovementSpeedLevel{1};
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int32 DamageLevel{1};
+	int32 DamageLevel{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 MaxHealthLevel{1};
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

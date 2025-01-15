@@ -25,20 +25,25 @@ public:
 	UFUNCTION()
 	void Attack(int32 Count);
 
-	// rotating character
+	/// rotating character
 	void RotateToMouse();
 	void StopRotateToMouse();
 	void DestroyActor();
 
 	UPROPERTY()
 	class ACharacter* OwningCharacter;
-	// status data asset
+	/// data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
+	class UWeaponDataAsset* WeaponData;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<class AAutoAttackWeapon> AutoAttackWeapon;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float Projectile;
+	float StatusProjectile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float WeaponProjectile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;
 
@@ -52,5 +57,9 @@ public:
 	bool bRotateToMouse;
 	
 	void LevelUp();
-	int32 Level;
+	int32 ProjectileLevel;
+	int32 WeaponLevel;
+
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
 };

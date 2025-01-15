@@ -2,9 +2,12 @@
 
 
 #include "GuardianWeapon.h"
+
+#include "LevelUpManager.h"
 #include "LogUtils.h" /*log*/
 #include "SkillGuardianDamageType.h"
 #include "WeaponDataAsset.h" /*weapon data*/
+#include "StatusDataAsset.h"
 #include "Components/SphereComponent.h" /*sphere collision*/
 #include "Kismet/GameplayStatics.h"	/*apply damage*/
 #include "Kismet/KismetMathLibrary.h" /*FindLookAtRotation*/
@@ -22,7 +25,11 @@ AGuardianWeapon::AGuardianWeapon()
 	if (WeaponDataAsset.Succeeded()) {
 		WeaponData = WeaponDataAsset.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
 	// collision
 	GuardianCollision = CreateDefaultSubobject<USphereComponent>(TEXT("GuardianCollision"));
 	RootComponent = GuardianCollision;
@@ -50,12 +57,18 @@ AGuardianWeapon::AGuardianWeapon()
 void AGuardianWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	Level = LevelUpManager->GuardianLevel;
+	DamageLevel = LevelUpManager->DamageLevel;
+	
 	// initialize with data asset
 	if (WeaponData) {
-		GuardianDamage = WeaponData->GuardianDamage[0];
-		GuardianSpeed = WeaponData->GuardianSpeed[0];
-		GuardianRange = WeaponData->GuardianRange[0];
+		GuardianDamage = WeaponData->GuardianDamage[Level - 1] * StatusData->Damage[DamageLevel];
+		GuardianSpeed = WeaponData->GuardianSpeed[Level - 1];
+		GuardianRange = WeaponData->GuardianRange[Level - 1];
 	}
 
 	InitialLocation = GetActorLocation();

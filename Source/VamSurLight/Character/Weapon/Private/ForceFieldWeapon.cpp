@@ -2,8 +2,14 @@
 
 
 #include "ForceFieldWeapon.h"
+
+#include "LevelUpManager.h"
+#include "LogUtils.h"
 #include "WeaponDataAsset.h"
+#include "StatusDataAsset.h"
+#include "Utils.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -18,7 +24,11 @@ AForceFieldWeapon::AForceFieldWeapon()
 	if (WeaponDataAsset.Succeeded()) {
 		WeaponData = WeaponDataAsset.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
 	// collision
 	ForceFieldCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ForceFieldCollision"));
 	RootComponent = ForceFieldCollision;
@@ -47,6 +57,20 @@ void AForceFieldWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	Level = LevelUpManager->ForceFieldLevel;
+	DamageLevel = LevelUpManager->DamageLevel;
+	
+	// initialize with data asset
+	if (WeaponData) {
+		ForceFieldDamage = WeaponData->ForceFieldDamage[Level - 1] * StatusData->Damage[DamageLevel];
+		ForceFieldRange = WeaponData->ForceFieldRange[Level - 1];
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AForceFieldWeapon::DestroyActor,
+									   1.f, false);
 }
 
 // Called every frame
@@ -62,11 +86,15 @@ void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 void AForceFieldWeapon::LevelUp()
 {
-	
+	Level = LevelUpManager->ForceFieldLevel;
+	ForceFieldDamage = WeaponData->ForceFieldDamage[Level - 1] * StatusData->Damage[DamageLevel];
 }
 
 void AForceFieldWeapon::DamageLevelUp()
-{}
+{
+	DamageLevel = LevelUpManager->DamageLevel;
+	ForceFieldDamage = WeaponData->ForceFieldDamage[Level - 1] * StatusData->Damage[DamageLevel];
+}
 
 void AForceFieldWeapon::FollowPlayer()
 {

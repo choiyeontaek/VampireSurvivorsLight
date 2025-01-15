@@ -3,9 +3,11 @@
 
 #include "SkillGuardian.h"
 #include "GuardianWeapon.h"
+#include "LevelUpManager.h"
 #include "LogUtils.h"	/*log*/
 #include "StatusDataAsset.h" /*status data*/
 #include "SynergyManager.h"
+#include "WeaponDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h" /*get actor*/
 #include "Kismet/KismetMathLibrary.h"	/*findLookAtLocation*/
@@ -26,7 +28,12 @@ ASkillGuardian::ASkillGuardian()
 	if (StatusDataAsset.Succeeded()) {
 		StatusData = StatusDataAsset.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
+		(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
+	if (WeaponDataAsset.Succeeded()) {
+		WeaponData = WeaponDataAsset.Object;
+	}
+	
 	// set weapon class
 	GuardianWeapon = AGuardianWeapon::StaticClass();
 }
@@ -42,12 +49,18 @@ void ASkillGuardian::BeginPlay()
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
 	SynergyManager = Cast<ASynergyManager>(FoundActor);
 
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	WeaponLevel = LevelUpManager->GuardianLevel;
+	ProjectileLevel = 0;
 	// initialize data
 	if (StatusData) {
-		Projectile = StatusData->Projectile[0];
+		StatusProjectile = StatusData->Projectile[ProjectileLevel];
+		WeaponProjectile = WeaponData->BaseAttackProjectile[WeaponLevel];
 	}
 
-	Attack(Projectile + 3);
+	Attack(StatusProjectile + WeaponProjectile);
 }
 
 // Called every frame

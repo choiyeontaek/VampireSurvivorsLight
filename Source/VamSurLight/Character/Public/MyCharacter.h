@@ -32,8 +32,9 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	void UpdateHealthUI();
 	void UpdateExpUI();
 	void RegenerateHealth();
@@ -45,13 +46,14 @@ public:
 	void GuardianAttack();
 	void TrainAttack();
 	void BoomerangAttack();
+	void ForceFieldAttack();
 	void StatusLevelUp(EStatusType Status);
 
 public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetMyLevel(){return MyLevel;}
 	
-	// widget
+	/// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
 	UPROPERTY()
@@ -67,16 +69,12 @@ public:
 	class UCameraComponent *FollowCamera;	// camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	USkeletalMeshComponent *PlayerSkeletalMesh;	// skeletal mesh
-
-	// character data asset
+	
+	/// data assets
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UCharacterDataAsset* CharacterData;
-
-	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
 	class UWeaponDataAsset* WeaponData;
-
-	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 
@@ -94,7 +92,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillBoomerang> SkillBoomerangAttack;
 	
-	// timer	
+	/// timer	
 	UPROPERTY()
 	FTimerHandle AutoAttackTimerHandle;
 	UPROPERTY()
@@ -104,9 +102,11 @@ public:
 	UPROPERTY()
 	FTimerHandle BoomerangAttackTimerHandle;
 	UPROPERTY()
+	FTimerHandle ForceFieldAttackTimerHandle;
+	UPROPERTY()
 	FTimerHandle HealthRegenerateHandle;
 	
-	// synergy check
+	/// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
 	
@@ -129,7 +129,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float AddSpeed;
 	
-	
+	/// status level
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MyLevel{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -140,6 +140,4 @@ public:
 	int32 MovementSpeedLevel{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MaxHealthLevel{0};
-
-	
 };

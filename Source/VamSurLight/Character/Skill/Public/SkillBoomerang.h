@@ -30,6 +30,9 @@ public:
 	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
+	class UWeaponDataAsset* WeaponData;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* CollisionSphere;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -50,8 +53,14 @@ public:
 	FTimerHandle DestroyTimerHandle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float Projectile;
-
+	float StatusProjectile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float WeaponProjectile;
+	
 	void LevelUp();
-	int32 Level;
+	int32 ProjectileLevel;
+	int32 WeaponLevel;
+
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
 };

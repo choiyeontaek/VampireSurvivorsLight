@@ -4,6 +4,7 @@
 #include "AutoAttackWeapon.h"
 #include "AutoAttackDamageType.h" /*autoAttackDamageType*/
 #include "WeaponDataAsset.h" /*weapon data asset*/
+#include "StatusDataAsset.h"
 #include "LogUtils.h" /*log*/
 #include "Components/SphereComponent.h" /*sphere collision*/
 #include "Components/StaticMeshComponent.h" /*static mesh*/
@@ -40,7 +41,11 @@ AAutoAttackWeapon::AAutoAttackWeapon()
 	if (StaticMeshAsset.Succeeded()) {
 		BulletMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
-
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
 	// bind overlap event
 	BulletCollision->OnComponentBeginOverlap.AddDynamic(this, &AAutoAttackWeapon::OnOverlapBegin);
 
@@ -53,13 +58,15 @@ void AAutoAttackWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 	
 	Level = LevelUpManager->AutoAttackLevel;
-
+	DamageLevel = LevelUpManager->DamageLevel;
+	LogUtils::Log("aaaa", Level, DamageLevel);
 	// initialize with data asset
 	if (WeaponData) {
-		BulletDamage = WeaponData->BaseAttackDamage[Level - 1];
+		BulletDamage = WeaponData->BaseAttackDamage[Level - 1] * StatusData->Damage[DamageLevel];
 		BulletSpeed = WeaponData->BaseAttackSpeed[Level - 1];
 		BulletRange = WeaponData->BaseAttackRange[Level - 1];
 	}

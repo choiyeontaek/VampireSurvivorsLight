@@ -5,6 +5,7 @@
 
 #include "LevelUpManager.h"
 #include "LogUtils.h"
+#include "StatusDataAsset.h"
 #include "WeaponDataAsset.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
@@ -41,8 +42,12 @@ ATrainWeapon::ATrainWeapon()
 	if (WeaponDataAsset.Succeeded()) {
 		WeaponData = WeaponDataAsset.Object;
 	}
-
-	LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
+	static ConstructorHelpers::FObjectFinder<UStatusDataAsset> StatusDataAsset
+		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
+	if (StatusDataAsset.Succeeded()) {
+		StatusData = StatusDataAsset.Object;
+	}
+	//LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 
 	// bind overlap event
 	TrainCollision->OnComponentBeginOverlap.AddDynamic(this, &ATrainWeapon::OnOverlapBegin);
@@ -52,13 +57,15 @@ ATrainWeapon::ATrainWeapon()
 void ATrainWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	Level = LevelUpManager->AutoAttackLevel;
-
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	Level = LevelUpManager->TrainLevel;
+	DamageLevel = LevelUpManager->DamageLevel;
+	
 	// initialize with data asset
 	if (WeaponData) {
-		TrainDamage = WeaponData->TrainDamage[Level - 1];
+		TrainDamage = WeaponData->TrainDamage[Level - 1] * StatusData->Damage[DamageLevel];
 		TrainSpeed = WeaponData->TrainSpeed[Level - 1];
 		TrainMovingLength = WeaponData->TrainMovingLength[Level - 1];
 		TrainStartDistance = WeaponData->TrainStartDistance[Level - 1];

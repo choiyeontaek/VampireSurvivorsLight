@@ -32,6 +32,8 @@ public:
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
+	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
+	class UStatusDataAsset* StatusData;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* GuardianCollision;
@@ -46,9 +48,16 @@ public:
 
 	FVector InitialLocation;
 	float CurrentAngle;
+	
+	int32 Level;
+	int32 DamageLevel;
 
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 
 	void DestroyActor();
+
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
+	
 };

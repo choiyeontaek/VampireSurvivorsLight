@@ -2,8 +2,9 @@
 
 
 #include "SkillBoomerang.h"
-
+#include "WeaponDataAsset.h"
 #include "BoomerangWeapon.h"
+#include "LevelUpManager.h"
 #include "StatusDataAsset.h"
 #include "SynergyManager.h"
 #include "GameFramework/Character.h"
@@ -27,7 +28,11 @@ ASkillBoomerang::ASkillBoomerang()
 	if (StatusDataAsset.Succeeded()) {
 		StatusData = StatusDataAsset.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UWeaponDataAsset> WeaponDataAsset
+		(TEXT("/Game/Data/dataAsset_weapon.dataAsset_weapon"));
+	if (WeaponDataAsset.Succeeded()) {
+		WeaponData = WeaponDataAsset.Object;
+	}
 	// set weapon class
 	BoomerangWeapon = ABoomerangWeapon::StaticClass();
 }
@@ -43,12 +48,18 @@ void ASkillBoomerang::BeginPlay()
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
 	SynergyManager = Cast<ASynergyManager>(FoundActor);
 
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+	
+	WeaponLevel = LevelUpManager->BoomerangLevel;
+	ProjectileLevel = 0;
 	// initialize data
 	if (StatusData) {
-		Projectile = StatusData->Projectile[0];
+		StatusProjectile = StatusData->Projectile[ProjectileLevel];
+		WeaponProjectile = WeaponData->BaseAttackProjectile[WeaponLevel];
 	}
 
-	Attack(Projectile + 2);
+	Attack(StatusProjectile + WeaponProjectile);
 }
 
 // Called every frame
