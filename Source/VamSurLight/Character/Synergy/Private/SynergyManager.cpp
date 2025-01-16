@@ -50,10 +50,10 @@ void ASynergyManager::AcquireStatus(EStatusType StatusType)
 	StatusBitmask |= (1 << static_cast<uint32>(StatusType));
 }
 
-bool ASynergyManager::CheckSynergy(EWeaponType WeaponType, EStatusType StatusType)
+bool ASynergyManager::CheckSynergy(EWeaponType WeaponType)
 {
 	// after &, all 0 = false, any 1 = true 
 	bool bHasWeapon = WeaponBitmask & (1 << static_cast<uint32>(WeaponType));
-	bool bHasStatus = StatusBitmask & (1 << static_cast<uint32>(StatusType));
+	bool bHasStatus = StatusBitmask & (1 << static_cast<uint32>(WeaponType));
 	return bHasWeapon && bHasStatus;
 }

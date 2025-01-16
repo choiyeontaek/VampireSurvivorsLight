@@ -14,8 +14,6 @@ public class VamSurLight : ModuleRules
 			"UMG" /*widget*/
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
-
         PublicIncludePaths.AddRange(new string[] {
             "VamSurLight/Common/Default/Public",
             "VamSurLight/Common/GameMode/Public",
@@ -25,6 +23,7 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Character/Controller/Public",
             "VamSurLight/Character/Weapon/Public",
             "VamSurLight/Character/Synergy/Public",
+            "VamSurLight/Character/Level/Public",
             "VamSurLight/Character/Skill/Public",
             "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Character/Widget/Public",

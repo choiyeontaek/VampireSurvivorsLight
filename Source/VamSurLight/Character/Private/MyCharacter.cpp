@@ -16,7 +16,12 @@
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
-#include "SkillAutoAttack.h"	/**/
+#include "LevelUpManager.h"	/*handleLevelUp*/
+#include "SkillAutoAttack.h"
+#include "SkillBoomerang.h"
+#include "SkillForceField.h"
+#include "SkillGuardian.h"
+#include "SkillTrain.h"
 #include "SynergyManager.h"	/*check synergy*/
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
@@ -102,12 +107,22 @@ AMyCharacter::AMyCharacter()
 
 	// set class
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
+	SkillGuardianAttack = ASkillGuardian::StaticClass();
+	SkillForceFieldAttack = ASkillForceField::StaticClass();
+	SkillTrainAttack = ASkillTrain::StaticClass();
+	SkillBoomerangAttack = ASkillBoomerang::StaticClass();
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// initialize synergyManager
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
+	SynergyManager = Cast<ASynergyManager>(FoundActor);
+
+	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
 
 	bIsDead = false;
 
@@ -117,7 +132,8 @@ void AMyCharacter::BeginPlay()
 		Health = CharacterData->CharacterHealth;
 		MaxExp = CharacterData->CharacterMaxExp;
 		Exp = CharacterData->CharacterExp;
-		HealthRegeneration = CharacterData->CharacterHealthRegeneration;
+		CoolTime = StatusData->CoolTime[CoolTimeLevel];
+		AddSpeed = StatusData->MovementSpeed[MovementSpeedLevel];
 	}
 
 	// add viewport widget
@@ -143,12 +159,6 @@ void AMyCharacter::BeginPlay()
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
-
-	// initialize synergyManager
-	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
-	SynergyManager = Cast<ASynergyManager>(FoundActor);
-	// acquire autoAttackWeapon
-	SynergyManager->AcquireWeapon(EWeaponType::AutoAttack);
 }
 
 // Called every frame
@@ -157,7 +167,7 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector Velocity{GetVelocity()};
-	Speed = Velocity.Size();
+	Speed = Velocity.Size() * AddSpeed;
 }
 
 // Called to bind functionality to input
@@ -190,7 +200,6 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			: GetDefault<UDamageType>()
 	};
 	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
-
 	if (!bIsDead && DamageType) {
 		if (DamageType->IsA(UAutoAttackDamageType::StaticClass())) {
 			LogUtils::Log("Character::TakeDamage - AutoAttackDamageType");
@@ -240,8 +249,8 @@ void AMyCharacter::UpdateExpUI()
 
 void AMyCharacter::RegenerateHealth()
 {
-	LogUtils::Log("Character::RegenerateHealth");
-	
+	//LogUtils::Log("Character::RegenerateHealth", HealthRegeneration[Level - 1]);
+
 	if (Health < MaxHealth) {
 		Health += HealthRegeneration;
 		Health = FMath::Min(Health, MaxHealth);
@@ -259,7 +268,7 @@ void AMyCharacter::AddExperience(float ExpAmount)
 {
 	Exp += ExpAmount;
 	//LogUtils::Log("AMyCharacter::AddExperience", Exp);
-	// level up
+
 	if (Exp > MaxExp) {
 		Exp = Exp - MaxExp;
 		LevelUp();
@@ -273,14 +282,49 @@ void AMyCharacter::LevelUp()
 {
 	MaxExp *= CharacterData->CharacterExpMul;
 	ExpUI->UpdateLevelText();
+	++MyLevel;
 
-	//LogUtils::Log("AMyCharacter::LevelUp", MaxExp);
+	LevelUpManager->HandleLevelUp(this);
+
+	LogUtils::Log("AMyCharacter::LevelUp", MyLevel);
+}
+
+void AMyCharacter::StartAttack(EWeaponType WeaponType)
+{
+	// start auto attack
+	switch (WeaponType) {
+	case EWeaponType::AutoAttack:
+		SynergyManager->AcquireWeapon(EWeaponType::AutoAttack);
+		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack,
+		                                2.5f * ((100 - CoolTime) / 100), true);
+		break;
+	case EWeaponType::Guardian:
+		SynergyManager->AcquireWeapon(EWeaponType::Guardian);
+		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
+		                                6.5f * ((100 - CoolTime) / 100), true);
+		break;
+	case EWeaponType::ForceField:
+		SynergyManager->AcquireWeapon(EWeaponType::ForceField);
+		GetWorldTimerManager().SetTimer(ForceFieldAttackTimerHandle, this, &AMyCharacter::ForceFieldAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
+		break;
+	case EWeaponType::Train:
+		SynergyManager->AcquireWeapon(EWeaponType::Train);
+		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack,
+		                                2.8f * ((100 - CoolTime) / 100), true);
+		break;
+	case EWeaponType::Boomerang:
+		SynergyManager->AcquireWeapon(EWeaponType::Boomerang);
+		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
+		break;
+	default:
+		break;
+	}
 }
 
 void AMyCharacter::AutoAttack() // character auto attack
 {
-	//LogUtils::Log("AMyCharacter::AutoAttack");
-
 	if (SkillAutoAttack && GetWorld()) {
 		FVector SpawnLocation{GetActorLocation() + (GetActorForwardVector() * 100.f)};
 		FRotator SpawnRotation{GetActorRotation()};
@@ -293,14 +337,110 @@ void AMyCharacter::AutoAttack() // character auto attack
 	}
 }
 
-void AMyCharacter::StartAttack(EWeaponType WeaponType)
+void AMyCharacter::GuardianAttack()
 {
-	// start auto attack
-	switch (WeaponType) {
-	case EWeaponType::AutoAttack:
-		GetWorldTimerManager().SetTimer(ActionTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f, true);
-		break;
+	if (SkillGuardianAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
 
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillGuardian* SkillActor = GetWorld()->SpawnActor<ASkillGuardian>(
+			SkillGuardianAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::TrainAttack()
+{
+	if (SkillTrainAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillTrain* SkillActor = GetWorld()->SpawnActor<ASkillTrain>(
+			SkillTrainAttack, SpawnLocation, SpawnRotation, SpawnParams);
+		if (SkillActor) {
+			SkillActor->SetOwner(this);
+		}
+	}
+}
+
+void AMyCharacter::BoomerangAttack()
+{
+	if (SkillBoomerangAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillBoomerang* SkillActor = GetWorld()->SpawnActor<ASkillBoomerang>(
+			SkillBoomerangAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::ForceFieldAttack()
+{
+	if (SkillForceFieldAttack && GetWorld()) {
+		FVector SpawnLocation{GetActorLocation()};
+		FRotator SpawnRotation{GetActorRotation()};
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ASkillForceField* SkillActor = GetWorld()->SpawnActor<ASkillForceField>(
+			SkillForceFieldAttack, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+}
+
+void AMyCharacter::StatusLevelUp(EStatusType Status)
+{
+	switch (Status) {
+	case EStatusType::CoolTimeUpdate:
+		++CoolTimeLevel;
+		if (1 == CoolTimeLevel) {
+			SynergyManager->AcquireStatus(EStatusType::CoolTimeUpdate);
+		}
+		CoolTime = StatusData->CoolTime[CoolTimeLevel];
+		GetWorld()->GetTimerManager().ClearTimer(AutoAttackTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(BoomerangAttackTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(GuardianAttackTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(TrainAttackTimerHandle);
+		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack,
+		                                2.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
+		                                6.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack,
+		                                2.8f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
+		break;
+	case EStatusType::HealthRegenerationUpdate:
+		++HealthRegenerationLevel;
+		if (1 == HealthRegenerationLevel) {
+			SynergyManager->AcquireStatus(EStatusType::HealthRegenerationUpdate);
+		}
+		HealthRegeneration = StatusData->HealthRegeneration[HealthRegenerationLevel];
+		break;
+	case EStatusType::MaxHealthUpdate:
+		++MaxHealthLevel;
+		if (1 == MaxHealthLevel) {
+			SynergyManager->AcquireStatus(EStatusType::MaxHealthUpdate);
+		}
+		MaxHealth += StatusData->MaxHealth[MaxHealthLevel];
+		Health += StatusData->MaxHealth[MaxHealthLevel];
+		UpdateHealthUI();
+		break;
+	case EStatusType::MovementSpeedUpdate:
+		++MovementSpeedLevel;
+		if (1 == MovementSpeedLevel) {
+			SynergyManager->AcquireStatus(EStatusType::MovementSpeedUpdate);
+		}
+		AddSpeed = StatusData->CoolTime[MovementSpeedLevel];
+		break;
 	default:
 		break;
 	}

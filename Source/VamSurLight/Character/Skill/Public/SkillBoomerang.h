@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SkillAutoAttack.generated.h"
+#include "SkillBoomerang.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API ASkillAutoAttack : public AActor {
+class VAMSURLIGHT_API ASkillBoomerang : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ASkillAutoAttack();
+	ASkillBoomerang();
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,37 +24,38 @@ public:
 	
 	UFUNCTION()
 	void Attack(int32 Count);
-
-	/// rotating character
-	void RotateToMouse();
-	void StopRotateToMouse();
+	
 	void DestroyActor();
-
-	UPROPERTY()
-	class ACharacter* OwningCharacter;
-	/// data asset
+	
+	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
 	class UWeaponDataAsset* WeaponData;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<class AAutoAttackWeapon> AutoAttackWeapon;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float StatusProjectile;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float WeaponProjectile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* CollisionSphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UStaticMeshComponent* BoomerangMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;
+	UPROPERTY()
+	class ACharacter* OwningCharacter;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<class ABoomerangWeapon> BoomerangWeapon;
 
 	// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
-
+	
 	// timer handle
 	FTimerHandle DestroyTimerHandle;
-	
-	bool bRotateToMouse;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float StatusProjectile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float WeaponProjectile;
 	
 	void LevelUp();
 	int32 ProjectileLevel;

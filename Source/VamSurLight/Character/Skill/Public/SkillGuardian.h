@@ -29,17 +29,35 @@ public:
 
 	UPROPERTY()
 	ACharacter* OwningCharacter;
-	// status data asset
+
+	/// data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
+	class UWeaponDataAsset* WeaponData;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<class AGuardianWeapon> GuardianWeapon;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float Projectile;
+	float StatusProjectile;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float WeaponProjectile;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class USceneComponent* Root;
 
 	// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
+
+	// timer handle
+	FTimerHandle DestroyTimerHandle;
+
+	void LevelUp();
+	int32 ProjectileLevel;
+	int32 WeaponLevel;
+
+	float Range;
+	
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
 };

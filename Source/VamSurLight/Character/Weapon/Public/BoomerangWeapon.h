@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GuardianWeapon.generated.h"
+#include "BoomerangWeapon.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API AGuardianWeapon : public AActor {
+class VAMSURLIGHT_API ABoomerangWeapon : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AGuardianWeapon();
+	ABoomerangWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,47 +22,53 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+		
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void SetTargetLocation();
+	void MoveToTarget(float DeltaTime);
+	void ReturnWeapon(float DeltaTime);
 	void LevelUp();
 	void DamageLevelUp();
 
+	
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* GuardianCollision;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* GuardianMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianRange;
 	
-	float CurrentAngle{0.f};
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* BoomerangCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* BoomerangMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangMovingLength;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangRange;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FVector InitialLocation;
+	UPROPERTY()
+	class ACharacter* OwningCharacter;
 
+	FVector TargetLocation;
+	FVector MovingDirection;
+	
 	int32 Level;
 	int32 DamageLevel;
 
+	bool bIsReachTarget{false};
+	
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 
 	void DestroyActor();
-
-	UPROPERTY(EditDefaultsOnly)
-	class ALevelUpManager* LevelUpManager;
-
-	UPROPERTY()
-	class ACharacter* OwningCharacter;
-
-	FVector InitialOffset;
-	float InitialAngle;
 };

@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GuardianWeapon.generated.h"
+#include "TrainWeapon.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API AGuardianWeapon : public AActor {
+class VAMSURLIGHT_API ATrainWeapon : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AGuardianWeapon();
+	ATrainWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,34 +21,45 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
+	
+	
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void LevelUp();
 	void DamageLevelUp();
 
+	void StartTrain();
+	
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* GuardianCollision;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* GuardianMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianRange;
 	
-	float CurrentAngle{0.f};
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* TrainCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* TrainMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TrainDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TrainSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TrainStartDistance;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TrainMovingLength;
+	
+	UPROPERTY()
+	class ACharacter* OwningCharacter;
 
+	FVector InitialLocation;
+	FVector MovingDirection;
+	FVector RandomPosition;
+	
 	int32 Level;
 	int32 DamageLevel;
 
@@ -56,13 +67,4 @@ public:
 	FTimerHandle DestroyTimerHandle;
 
 	void DestroyActor();
-
-	UPROPERTY(EditDefaultsOnly)
-	class ALevelUpManager* LevelUpManager;
-
-	UPROPERTY()
-	class ACharacter* OwningCharacter;
-
-	FVector InitialOffset;
-	float InitialAngle;
 };

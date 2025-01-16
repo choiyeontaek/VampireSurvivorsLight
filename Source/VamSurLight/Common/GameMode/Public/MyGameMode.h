@@ -20,4 +20,5 @@ public:
 
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
+	
 };

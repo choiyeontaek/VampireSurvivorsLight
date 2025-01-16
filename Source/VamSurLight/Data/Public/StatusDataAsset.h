@@ -15,27 +15,27 @@ class VAMSURLIGHT_API UStatusDataAsset : public UDataAsset {
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage;
+	TArray<float> Damage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Critical;
+	TArray<float> Critical;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CoolTime;
+	TArray<float> CoolTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Projectile;
+	TArray<int32> Projectile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MovementSpeed;
+	TArray<float> MovementSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
+	TArray<float> MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Defense;
+	TArray<float> Defense;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HealthRegeneration;
+	TArray<float> HealthRegeneration;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RangeSize;
+	TArray<float> RangeSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Time;
+	TArray<float> Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GainRange;
+	TArray<float> GainRange;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Experience;
+	TArray<float> Experience;
 };

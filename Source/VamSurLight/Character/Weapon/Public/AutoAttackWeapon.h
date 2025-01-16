@@ -26,9 +26,17 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
+	void LevelUp();
+	void DamageLevelUp();
+	
 	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UWeaponDataAsset* WeaponData;
+	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
+	class UStatusDataAsset* StatusData;
+	
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* BulletCollision;
@@ -42,4 +50,8 @@ public:
 	float BulletRange;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FVector BulletLocation;
+
+	int32 Level;
+	int32 DamageLevel;
+
 };

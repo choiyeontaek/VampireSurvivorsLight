@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GuardianWeapon.generated.h"
+#include "ForceFieldWeapon.generated.h"
 
 UCLASS()
-class VAMSURLIGHT_API AGuardianWeapon : public AActor {
+class VAMSURLIGHT_API AForceFieldWeapon : public AActor {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AGuardianWeapon();
+	AForceFieldWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,10 +22,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	
+	
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void LevelUp();
 	void DamageLevelUp();
@@ -35,34 +35,25 @@ public:
 	class UWeaponDataAsset* WeaponData;
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* GuardianCollision;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* GuardianMesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float GuardianRange;
 	
-	float CurrentAngle{0.f};
+	UPROPERTY(EditDefaultsOnly)
+	class ALevelUpManager* LevelUpManager;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* ForceFieldCollision;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	UStaticMeshComponent* ForceFieldMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float ForceFieldDamage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float ForceFieldRange;
 
 	int32 Level;
 	int32 DamageLevel;
-
+	
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 
+	void FollowPlayer();
 	void DestroyActor();
-
-	UPROPERTY(EditDefaultsOnly)
-	class ALevelUpManager* LevelUpManager;
-
-	UPROPERTY()
-	class ACharacter* OwningCharacter;
-
-	FVector InitialOffset;
-	float InitialAngle;
 };

@@ -13,7 +13,9 @@ enum class EWeaponType : uint8 {
 	Boomerang UMETA(DisplayName = "Boomerang"),
 	Train UMETA(DisplayName = "Train"),
 	ForceField UMETA(DisplayName = "ForceField"),
-	Guardian UMETA(DisplayName = "Guardian")
+	Guardian UMETA(DisplayName = "Guardian"),
+
+	MAX UMETA(DisplayName = "MAX")
 };
 
 UENUM(BlueprintType)
@@ -23,7 +25,9 @@ enum class EStatusType : uint8 {
 	MovementSpeedUpdate UMETA(DisplayName = "Movement Speed Update"),
 	DamageUpdate UMETA(DisplayName = "Damage Update"),
 	MaxHealthUpdate UMETA(DisplayName = "Max Health Update"),
-	HealthRegenerationUpdate UMETA(DisplayName = "Health Regeneration Update")
+	HealthRegenerationUpdate UMETA(DisplayName = "Health Regeneration Update"),
+
+	MAX UMETA(DisplayName = "MAX")
 };
 
 UCLASS()
@@ -47,7 +51,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Synergy")
 	void AcquireStatus(EStatusType StatusType);
 	UFUNCTION(BlueprintCallable, Category = "Synergy")
-	bool CheckSynergy(EWeaponType WeaponType, EStatusType StatusType);
+	bool CheckSynergy(EWeaponType WeaponType);
 	
 	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")

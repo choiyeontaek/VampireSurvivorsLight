@@ -1,20 +1,20 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SkillGuardian.h"
-#include "GuardianWeapon.h"
-#include "LevelUpManager.h"
-#include "LogUtils.h"	/*log*/
-#include "StatusDataAsset.h" /*status data*/
-#include "SynergyManager.h"
+#include "SkillBoomerang.h"
 #include "WeaponDataAsset.h"
+#include "BoomerangWeapon.h"
+#include "LevelUpManager.h"
+#include "StatusDataAsset.h"
+#include "SynergyManager.h"
 #include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h" /*get actor*/
-#include "Kismet/KismetMathLibrary.h"	/*findLookAtLocation*/
+#include "Kismet/GameplayStatics.h" /*GetActorOfClass*/
+#include "Kismet/KismetMathLibrary.h" /*FindLookAtRotation*/
 
 
+class UStatusDataAsset;
 // Sets default values
-ASkillGuardian::ASkillGuardian()
+ASkillBoomerang::ASkillBoomerang()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,13 +33,12 @@ ASkillGuardian::ASkillGuardian()
 	if (WeaponDataAsset.Succeeded()) {
 		WeaponData = WeaponDataAsset.Object;
 	}
-	
 	// set weapon class
-	GuardianWeapon = AGuardianWeapon::StaticClass();
+	BoomerangWeapon = ABoomerangWeapon::StaticClass();
 }
 
 // Called when the game starts or when spawned
-void ASkillGuardian::BeginPlay()
+void ASkillBoomerang::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -52,48 +51,49 @@ void ASkillGuardian::BeginPlay()
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 	
-	WeaponLevel = LevelUpManager->GuardianLevel;
+	WeaponLevel = LevelUpManager->BoomerangLevel;
 	ProjectileLevel = 0;
 	// initialize data
 	if (StatusData) {
 		StatusProjectile = StatusData->Projectile[ProjectileLevel];
-		WeaponProjectile = WeaponData->GuardianProjectile[WeaponLevel];
-		Range = WeaponData->GuardianRange[WeaponLevel];
+		WeaponProjectile = WeaponData->BoomerangProjectile[WeaponLevel];
 	}
 
 	Attack(StatusProjectile + WeaponProjectile);
 }
 
 // Called every frame
-void ASkillGuardian::Tick(float DeltaTime)
+void ASkillBoomerang::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ASkillGuardian::Attack(int32 Count)
+void ASkillBoomerang::Attack(int32 Count)
 {
-	if (GuardianWeapon && GetWorld()) {
+	if (BoomerangWeapon && GetWorld()) {
 		for (int32 i{}; i < Count; i++) {
-			float Angle = (360.0f / Count) * i;
-			// spawn around character
-			FVector SpawnLocation = OwningCharacter->GetActorLocation() + 
-				FVector(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle)), 0.0f) * Range;
-			// spawn looking character
-			FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, OwningCharacter->GetActorLocation());
+			FTimerHandle WaitHandle;
+			GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]() {
+				FVector SpawnLocation = OwningCharacter->GetActorLocation();
+				FRotator SpawnRotation = OwningCharacter->GetActorRotation();
 
-			//LogUtils::Log("location", SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			AGuardianWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AGuardianWeapon>(GuardianWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				ABoomerangWeapon* SpawnedWeapon = GetWorld()->SpawnActor<ABoomerangWeapon>(
+					BoomerangWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+				if (SpawnedWeapon) {
+					SpawnedWeapon->SetOwner(OwningCharacter);
+				}
+			}, 0.2f * (i + 1), false);
 		}
 	}
 }
 
-void ASkillGuardian::DestroyActor()
+void ASkillBoomerang::DestroyActor()
 {
 	Destroy();
 }
 
-void ASkillGuardian::LevelUp()
+void ASkillBoomerang::LevelUp()
 {}
-

@@ -67,7 +67,7 @@ void AExperience::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("AExperience::OnOverlapBegin");
+		//LogUtils::Log("AExperience::OnOverlapBegin");
 
 		if (Character) {
 			Character->AddExperience(ExpAmount);

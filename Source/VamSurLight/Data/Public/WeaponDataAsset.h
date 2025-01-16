@@ -17,17 +17,49 @@ class VAMSURLIGHT_API UWeaponDataAsset : public UDataAsset
 public:
 	// Auto Attack
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackDamage;
+	TArray<float> BaseAttackDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackSpeed;
+	TArray<float> BaseAttackSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BaseAttackRange;
+	TArray<float> BaseAttackRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> BaseAttackProjectile;
 
 	// guardian
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianDamage;
+	TArray<float> GuardianDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianSpeed;
+	TArray<float> GuardianSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GuardianRange;
+	TArray<float> GuardianRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> GuardianProjectile;
+
+	// train
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainStartDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> TrainMovingLength;
+
+	// boomerang
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangMovingLength;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> BoomerangRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<int32> BoomerangProjectile;
+
+	// force field
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> ForceFieldDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<float> ForceFieldRange;
 };

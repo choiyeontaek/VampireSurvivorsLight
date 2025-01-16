@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+enum class EStatusType : uint8;
 enum class EWeaponType : uint8;
 
 UCLASS()
@@ -31,18 +32,26 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	void UpdateHealthUI();
 	void UpdateExpUI();
 	void RegenerateHealth();
 	void AddHealth(float AddHP);
 	void AddExperience(float ExpAmount);
+	UFUNCTION(BlueprintCallable)
 	void LevelUp();
-	void AutoAttack();
 	void StartAttack(EWeaponType WeaponType);
-	
-	// widget
+	void AutoAttack();
+	void GuardianAttack();
+	void TrainAttack();
+	void BoomerangAttack();
+	void ForceFieldAttack();
+	void StatusLevelUp(EStatusType Status);
+
+public:
+	/// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
 	UPROPERTY()
@@ -58,30 +67,44 @@ public:
 	class UCameraComponent *FollowCamera;	// camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	USkeletalMeshComponent *PlayerSkeletalMesh;	// skeletal mesh
-
-	// character data asset
+	
+	/// data assets
 	UPROPERTY(EditDefaultsOnly, Category = "Character Data")
 	class UCharacterDataAsset* CharacterData;
-
-	// weapon data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Data")
 	class UWeaponDataAsset* WeaponData;
-
-	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
 
+	UPROPERTY(BlueprintReadOnly)
+	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSubclassOf<class ASkillAutoAttack> SkillAutoAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillGuardian> SkillGuardianAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillForceField> SkillForceFieldAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillTrain> SkillTrainAttack;
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TSubclassOf<class ASkillBoomerang> SkillBoomerangAttack;
 	
-	// timer	
+	/// timer	
 	UPROPERTY()
-	FTimerHandle ActionTimerHandle;
+	FTimerHandle AutoAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle GuardianAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle TrainAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle BoomerangAttackTimerHandle;
+	UPROPERTY()
+	FTimerHandle ForceFieldAttackTimerHandle;
 	UPROPERTY()
 	FTimerHandle HealthRegenerateHandle;
 	
-	// synergy check
+	/// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
 	
@@ -94,11 +117,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	float BaseAttackDamage;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float MaxExp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float Exp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float CoolTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float HealthRegeneration;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
+	float AddSpeed;
+	
+	/// status level
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MyLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 HealthRegenerationLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 CoolTimeLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MovementSpeedLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MaxHealthLevel{0};
 };
