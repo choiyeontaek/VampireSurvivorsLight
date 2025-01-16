@@ -64,13 +64,13 @@ void ABoomerangWeapon::BeginPlay()
 	Level = LevelUpManager->BoomerangLevel;
 
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
-
+	
 	// initialize with data asset
 	if (WeaponData) {
-		BoomerangDamage = WeaponData->BoomerangDamage[Level - 1] * StatusData->Damage[DamageLevel];
-		BoomerangSpeed = WeaponData->BoomerangSpeed[Level - 1];
-		BoomerangMovingLength = WeaponData->BoomerangMovingLength[Level - 1];
-		BoomerangRange = WeaponData->BoomerangRange[Level - 1];
+		BoomerangDamage = WeaponData->BoomerangDamage[Level] * StatusData->Damage[DamageLevel];
+		BoomerangSpeed = WeaponData->BoomerangSpeed[Level];
+		BoomerangMovingLength = WeaponData->BoomerangMovingLength[Level];
+		BoomerangRange = WeaponData->BoomerangRange[Level];
 	}
 
 	InitialLocation = GetActorLocation();

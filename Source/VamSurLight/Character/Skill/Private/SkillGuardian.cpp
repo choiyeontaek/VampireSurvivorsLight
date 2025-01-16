@@ -57,7 +57,8 @@ void ASkillGuardian::BeginPlay()
 	// initialize data
 	if (StatusData) {
 		StatusProjectile = StatusData->Projectile[ProjectileLevel];
-		WeaponProjectile = WeaponData->BaseAttackProjectile[WeaponLevel];
+		WeaponProjectile = WeaponData->GuardianProjectile[WeaponLevel];
+		Range = WeaponData->GuardianRange[WeaponLevel];
 	}
 
 	Attack(StatusProjectile + WeaponProjectile);
@@ -71,29 +72,19 @@ void ASkillGuardian::Tick(float DeltaTime)
 
 void ASkillGuardian::Attack(int32 Count)
 {
-	if (SynergyManager) {
-		if (SynergyManager->CheckSynergy(EWeaponType::AutoAttack, EStatusType::CoolTimeUpdate)) {
-			LogUtils::Log("Yes Synergy");
-		}
-		else {
-			LogUtils::Log("No Synergy");
-		}
-	}
-
 	if (GuardianWeapon && GetWorld()) {
 		for (int32 i{}; i < Count; i++) {
 			float Angle = (360.0f / Count) * i;
+			// spawn around character
 			FVector SpawnLocation = OwningCharacter->GetActorLocation() + 
-				FVector(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle)), 0.0f) * 200.f;
+				FVector(FMath::Cos(FMath::DegreesToRadians(Angle)), FMath::Sin(FMath::DegreesToRadians(Angle)), 0.0f) * Range;
+			// spawn looking character
 			FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, OwningCharacter->GetActorLocation());
 
 			//LogUtils::Log("location", SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			AGuardianWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AGuardianWeapon>(GuardianWeapon, SpawnLocation, SpawnRotation, SpawnParams);
-			if (SpawnedWeapon) {
-				SpawnedWeapon->SetOwner(OwningCharacter);
-			}
 		}
 	}
 }

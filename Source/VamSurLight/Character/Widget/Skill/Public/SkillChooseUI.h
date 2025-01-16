@@ -49,6 +49,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnOptionSelected OnOptionSelected;
 
+	UPROPERTY(BlueprintReadOnly)
+	class ALevelUpManager* LevelUpManager;
+
+	UPROPERTY()
+	class ASynergyManager* SynergyManager;
+
 private:
 	UFUNCTION()
 	void OnCardClicked(int32 CardIndex);

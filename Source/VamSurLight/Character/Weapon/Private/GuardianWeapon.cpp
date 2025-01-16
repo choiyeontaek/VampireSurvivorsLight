@@ -9,6 +9,7 @@
 #include "WeaponDataAsset.h" /*weapon data*/
 #include "StatusDataAsset.h"
 #include "Components/SphereComponent.h" /*sphere collision*/
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"	/*apply damage*/
 #include "Kismet/KismetMathLibrary.h" /*FindLookAtRotation*/
 
@@ -50,7 +51,6 @@ AGuardianWeapon::AGuardianWeapon()
 
 	// bind overlap event
 	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
-	
 }
 
 // Called when the game starts or when spawned
@@ -58,7 +58,9 @@ void AGuardianWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	
+	AActor* FoundActorLevelUpManager{UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass())};
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 	
 	Level = LevelUpManager->GuardianLevel;
@@ -66,36 +68,34 @@ void AGuardianWeapon::BeginPlay()
 	
 	// initialize with data asset
 	if (WeaponData) {
-		GuardianDamage = WeaponData->GuardianDamage[Level - 1] * StatusData->Damage[DamageLevel];
-		GuardianSpeed = WeaponData->GuardianSpeed[Level - 1];
-		GuardianRange = WeaponData->GuardianRange[Level - 1];
+		GuardianDamage = WeaponData->GuardianDamage[Level] * StatusData->Damage[DamageLevel];
+		GuardianSpeed = WeaponData->GuardianSpeed[Level];
+		GuardianRange = WeaponData->GuardianRange[Level];
 	}
-
-	InitialLocation = GetActorLocation();
-	CurrentAngle = 0.f;
+	
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AGuardianWeapon::DestroyActor, 3.0f, false);
+
+	// calculate weapon location based on character location
+	InitialOffset = (GetActorLocation() - OwningCharacter->GetActorLocation()).GetSafeNormal();
+	// calculate absolute angle
+	InitialAngle = FMath::Atan2(InitialOffset.Y, InitialOffset.X);
 }
 
 // Called every frame
 void AGuardianWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
-	AActor* OwningActor = GetOwner();
-	if (OwningActor) {
-		FVector InitialOffset = InitialLocation - OwningActor->GetActorLocation();
-		float InitialAngle = FMath::Atan2(InitialOffset.Y, InitialOffset.X);
-		
+	
+	if (OwningCharacter) {
 		CurrentAngle += GuardianSpeed * DeltaTime;
 		
-		float TotalAngle = InitialAngle + CurrentAngle;
-		FVector NewLocation = OwningActor->GetActorLocation() + FVector(FMath::Cos(TotalAngle), FMath::Sin(TotalAngle), InitialOffset.Z) * GuardianRange;
+		float TotalAngle{InitialAngle + CurrentAngle};
+		FVector NewLocation{OwningCharacter->GetActorLocation() + FVector(FMath::Cos(TotalAngle), FMath::Sin(TotalAngle), InitialOffset.Z) * GuardianRange};
 		SetActorLocation(NewLocation);
 
 		// rotate to player
-		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),OwningActor->GetActorLocation());
-		SetActorRotation(NewRotation);
+		//FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),OwningCharacter->GetActorLocation());
+		//SetActorRotation(NewRotation);
 	}
 }
 

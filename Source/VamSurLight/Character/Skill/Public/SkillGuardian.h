@@ -56,6 +56,8 @@ public:
 	int32 ProjectileLevel;
 	int32 WeaponLevel;
 
+	float Range;
+	
 	UPROPERTY(EditDefaultsOnly)
 	class ALevelUpManager* LevelUpManager;
 };

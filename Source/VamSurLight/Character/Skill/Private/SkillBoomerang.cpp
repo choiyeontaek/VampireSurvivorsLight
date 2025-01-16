@@ -56,7 +56,7 @@ void ASkillBoomerang::BeginPlay()
 	// initialize data
 	if (StatusData) {
 		StatusProjectile = StatusData->Projectile[ProjectileLevel];
-		WeaponProjectile = WeaponData->BaseAttackProjectile[WeaponLevel];
+		WeaponProjectile = WeaponData->BoomerangProjectile[WeaponLevel];
 	}
 
 	Attack(StatusProjectile + WeaponProjectile);

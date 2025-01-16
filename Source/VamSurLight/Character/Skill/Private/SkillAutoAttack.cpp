@@ -78,11 +78,11 @@ void ASkillAutoAttack::Attack(int32 Count)
 	LogUtils::Log("ASkillAutoAttack::AutoAttack");
 
 	if (SynergyManager) {
-		if (SynergyManager->CheckSynergy(EWeaponType::AutoAttack, EStatusType::CoolTimeUpdate)) {
-			//LogUtils::Log("Yes Synergy");
+		if (SynergyManager->CheckSynergy(EWeaponType::AutoAttack)) {
+			LogUtils::Log("Yes Synergy");
 		}
 		else {
-			//LogUtils::Log("No Synergy");
+			LogUtils::Log("No Synergy");
 		}
 	}
 	

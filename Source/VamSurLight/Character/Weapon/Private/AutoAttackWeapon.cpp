@@ -63,12 +63,12 @@ void AAutoAttackWeapon::BeginPlay()
 	
 	Level = LevelUpManager->AutoAttackLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
-	LogUtils::Log("aaaa", Level, DamageLevel);
+	
 	// initialize with data asset
 	if (WeaponData) {
-		BulletDamage = WeaponData->BaseAttackDamage[Level - 1] * StatusData->Damage[DamageLevel];
-		BulletSpeed = WeaponData->BaseAttackSpeed[Level - 1];
-		BulletRange = WeaponData->BaseAttackRange[Level - 1];
+		BulletDamage = WeaponData->BaseAttackDamage[Level] * StatusData->Damage[DamageLevel];
+		BulletSpeed = WeaponData->BaseAttackSpeed[Level];
+		BulletRange = WeaponData->BaseAttackRange[Level];
 	}
 
 	BulletLocation = GetActorLocation();
@@ -101,17 +101,6 @@ void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 		Destroy();
 	}
-}
-
-void AAutoAttackWeapon::LevelUp()
-{
-	++Level;
-	if (WeaponData) {
-		BulletDamage = WeaponData->BaseAttackDamage[Level - 1];
-		BulletSpeed = WeaponData->BaseAttackSpeed[Level - 1];
-		BulletRange = WeaponData->BaseAttackRange[Level - 1];
-	}
-	//LogUtils::Log("LevelUp");
 }
 
 void AAutoAttackWeapon::DamageLevelUp()

@@ -65,8 +65,8 @@ void AForceFieldWeapon::BeginPlay()
 	
 	// initialize with data asset
 	if (WeaponData) {
-		ForceFieldDamage = WeaponData->ForceFieldDamage[Level - 1] * StatusData->Damage[DamageLevel];
-		ForceFieldRange = WeaponData->ForceFieldRange[Level - 1];
+		ForceFieldDamage = WeaponData->ForceFieldDamage[Level] * StatusData->Damage[DamageLevel];
+		ForceFieldRange = WeaponData->ForceFieldRange[Level];
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AForceFieldWeapon::DestroyActor,

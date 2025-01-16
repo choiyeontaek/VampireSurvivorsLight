@@ -51,7 +51,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Synergy")
 	void AcquireStatus(EStatusType StatusType);
 	UFUNCTION(BlueprintCallable, Category = "Synergy")
-	bool CheckSynergy(EWeaponType WeaponType, EStatusType StatusType);
+	bool CheckSynergy(EWeaponType WeaponType);
 	
 	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")

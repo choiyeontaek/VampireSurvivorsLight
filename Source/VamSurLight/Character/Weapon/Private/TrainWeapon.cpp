@@ -65,10 +65,10 @@ void ATrainWeapon::BeginPlay()
 	
 	// initialize with data asset
 	if (WeaponData) {
-		TrainDamage = WeaponData->TrainDamage[Level - 1] * StatusData->Damage[DamageLevel];
-		TrainSpeed = WeaponData->TrainSpeed[Level - 1];
-		TrainMovingLength = WeaponData->TrainMovingLength[Level - 1];
-		TrainStartDistance = WeaponData->TrainStartDistance[Level - 1];
+		TrainDamage = WeaponData->TrainDamage[Level] * StatusData->Damage[DamageLevel];
+		TrainSpeed = WeaponData->TrainSpeed[Level];
+		TrainMovingLength = WeaponData->TrainMovingLength[Level];
+		TrainStartDistance = WeaponData->TrainStartDistance[Level];
 	}
 
 	StartTrain();

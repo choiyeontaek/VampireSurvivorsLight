@@ -40,6 +40,7 @@ public:
 	void RegenerateHealth();
 	void AddHealth(float AddHP);
 	void AddExperience(float ExpAmount);
+	UFUNCTION(BlueprintCallable)
 	void LevelUp();
 	void StartAttack(EWeaponType WeaponType);
 	void AutoAttack();
@@ -50,9 +51,6 @@ public:
 	void StatusLevelUp(EStatusType Status);
 
 public:
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE int32 GetMyLevel(){return MyLevel;}
-	
 	/// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;

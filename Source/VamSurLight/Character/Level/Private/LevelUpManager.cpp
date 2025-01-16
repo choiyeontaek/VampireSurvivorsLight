@@ -26,6 +26,42 @@ void ALevelUpManager::HandleLevelUp(AMyCharacter* Character)
 	ShowSkillChooseUI();
 }
 
+int32 ALevelUpManager::GetWeaponLevel(EWeaponType Weapon)
+{
+	switch (Weapon) {
+	case EWeaponType::AutoAttack:
+		return AutoAttackLevel;
+	case EWeaponType::Boomerang:
+		return BoomerangLevel;
+	case EWeaponType::Train:
+		return TrainLevel;
+	case EWeaponType::ForceField:
+		return ForceFieldLevel;
+	case EWeaponType::Guardian:
+		return GuardianLevel;
+	default:
+		return 0;
+	}
+}
+
+int32 ALevelUpManager::GetStatusLevel(EStatusType Status)
+{
+	switch (Status) {
+	case EStatusType::CoolTimeUpdate:
+		return CoolTimeLevel;
+	case EStatusType::MovementSpeedUpdate:
+		return MovementSpeedLevel;
+	case EStatusType::DamageUpdate:
+		return DamageLevel;
+	case EStatusType::MaxHealthUpdate:
+		return MaxHealthLevel;
+	case EStatusType::HealthRegenerationUpdate:
+		return HealthRegenerationLevel;
+	default:
+		return 0;
+	}
+}
+
 void ALevelUpManager::ShowSkillChooseUI()
 {
 	if (SkillChooseWidgetClass) {
@@ -56,15 +92,27 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 			break;
 		case EWeaponType::Boomerang:
 			++BoomerangLevel;
+			if (1 == BoomerangLevel) {
+				CurrentCharacter->StartAttack(EWeaponType::Boomerang);
+			}
 			break;
 		case EWeaponType::Train:
 			++TrainLevel;
+			if (1 == TrainLevel) {
+				CurrentCharacter->StartAttack(EWeaponType::Train);
+			}
 			break;
 		case EWeaponType::ForceField:
 			++ForceFieldLevel;
+			if (1 == ForceFieldLevel) {
+				CurrentCharacter->StartAttack(EWeaponType::ForceField);
+			}
 			break;
 		case EWeaponType::Guardian:
 			++GuardianLevel;
+			if (1 == GuardianLevel) {
+				CurrentCharacter->StartAttack(EWeaponType::Guardian);
+			}
 			break;
 		case EWeaponType::MAX:
 			break;

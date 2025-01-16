@@ -121,7 +121,7 @@ void AMyCharacter::BeginPlay()
 	// initialize synergyManager
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
 	SynergyManager = Cast<ASynergyManager>(FoundActor);
-	
+
 	LevelUpManager = GetWorld()->SpawnActor<ALevelUpManager>(ALevelUpManager::StaticClass());
 
 	bIsDead = false;
@@ -156,14 +156,9 @@ void AMyCharacter::BeginPlay()
 
 	// start auto attack
 	StartAttack(EWeaponType::AutoAttack);
-	StartAttack(EWeaponType::Guardian);
-	StartAttack(EWeaponType::ForceField);
-	StartAttack(EWeaponType::Train);
-	StartAttack(EWeaponType::Boomerang);
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
-
 }
 
 // Called every frame
@@ -207,7 +202,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
 	if (!bIsDead && DamageType) {
 		if (DamageType->IsA(UAutoAttackDamageType::StaticClass())) {
-			LogUtils::Log("Character::TakeDamage - AutoAttackDamageType");	
+			LogUtils::Log("Character::TakeDamage - AutoAttackDamageType");
 			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
 			Health -= Damage;
 		}
@@ -300,23 +295,28 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 	switch (WeaponType) {
 	case EWeaponType::AutoAttack:
 		SynergyManager->AcquireWeapon(EWeaponType::AutoAttack);
-		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack,
+		                                2.5f * ((100 - CoolTime) / 100), true);
 		break;
 	case EWeaponType::Guardian:
 		SynergyManager->AcquireWeapon(EWeaponType::Guardian);
-		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack, 6.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
+		                                6.5f * ((100 - CoolTime) / 100), true);
 		break;
 	case EWeaponType::ForceField:
 		SynergyManager->AcquireWeapon(EWeaponType::ForceField);
-		GetWorldTimerManager().SetTimer(ForceFieldAttackTimerHandle, this, &AMyCharacter::ForceFieldAttack, 3.f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(ForceFieldAttackTimerHandle, this, &AMyCharacter::ForceFieldAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
 		break;
 	case EWeaponType::Train:
 		SynergyManager->AcquireWeapon(EWeaponType::Train);
-		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack, 2.8f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack,
+		                                2.8f * ((100 - CoolTime) / 100), true);
 		break;
 	case EWeaponType::Boomerang:
 		SynergyManager->AcquireWeapon(EWeaponType::Boomerang);
-		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack, 3.f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
 		break;
 	default:
 		break;
@@ -401,28 +401,44 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 	switch (Status) {
 	case EStatusType::CoolTimeUpdate:
 		++CoolTimeLevel;
+		if (1 == CoolTimeLevel) {
+			SynergyManager->AcquireStatus(EStatusType::CoolTimeUpdate);
+		}
 		CoolTime = StatusData->CoolTime[CoolTimeLevel];
 		GetWorld()->GetTimerManager().ClearTimer(AutoAttackTimerHandle);
 		GetWorld()->GetTimerManager().ClearTimer(BoomerangAttackTimerHandle);
 		GetWorld()->GetTimerManager().ClearTimer(GuardianAttackTimerHandle);
 		GetWorld()->GetTimerManager().ClearTimer(TrainAttackTimerHandle);
-		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack, 2.5f * (100 - CoolTime / 100), true);
-		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack, 6.5f * (100 - CoolTime / 100), true);
-		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack, 2.8f * (100 - CoolTime / 100), true);
-		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack, 3.f * (100 - CoolTime / 100), true);
+		GetWorldTimerManager().SetTimer(AutoAttackTimerHandle, this, &AMyCharacter::AutoAttack,
+		                                2.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
+		                                6.5f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack,
+		                                2.8f * ((100 - CoolTime) / 100), true);
+		GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
+		                                3.f * ((100 - CoolTime) / 100), true);
 		break;
 	case EStatusType::HealthRegenerationUpdate:
 		++HealthRegenerationLevel;
+		if (1 == HealthRegenerationLevel) {
+			SynergyManager->AcquireStatus(EStatusType::HealthRegenerationUpdate);
+		}
 		HealthRegeneration = StatusData->HealthRegeneration[HealthRegenerationLevel];
 		break;
 	case EStatusType::MaxHealthUpdate:
 		++MaxHealthLevel;
+		if (1 == MaxHealthLevel) {
+			SynergyManager->AcquireStatus(EStatusType::MaxHealthUpdate);
+		}
 		MaxHealth += StatusData->MaxHealth[MaxHealthLevel];
 		Health += StatusData->MaxHealth[MaxHealthLevel];
 		UpdateHealthUI();
 		break;
 	case EStatusType::MovementSpeedUpdate:
 		++MovementSpeedLevel;
+		if (1 == MovementSpeedLevel) {
+			SynergyManager->AcquireStatus(EStatusType::MovementSpeedUpdate);
+		}
 		AddSpeed = StatusData->CoolTime[MovementSpeedLevel];
 		break;
 	default:
