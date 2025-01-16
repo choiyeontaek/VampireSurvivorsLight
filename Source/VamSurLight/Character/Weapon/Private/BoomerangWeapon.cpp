@@ -5,8 +5,6 @@
 #include "WeaponDataAsset.h"
 #include "LevelUpManager.h"
 #include "StatusDataAsset.h"
-#include "LogUtils.h"
-#include "Utils.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -132,7 +130,7 @@ void ABoomerangWeapon::SetTargetLocation()
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
 		QueryParams.AddIgnoredActor(OwningCharacter);
-	
+
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams)) {
 			if (HitResult.GetActor()->ActorHasTag(TEXT(""))) {
 				

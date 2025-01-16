@@ -123,7 +123,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float CoolTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
-	float HealthRegeneration;
+	float HealthRegeneration{0.f};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
 	float AddSpeed;
 	
