@@ -4,9 +4,8 @@
 #include "BoomerangWeapon.h"
 #include "WeaponDataAsset.h"
 #include "LevelUpManager.h"
-#include "StatusDataAsset.h"
 #include "LogUtils.h"
-#include "Utils.h"
+#include "StatusDataAsset.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -57,14 +56,14 @@ ABoomerangWeapon::ABoomerangWeapon()
 void ABoomerangWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
-	
+
 	Level = LevelUpManager->BoomerangLevel;
 
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
-	
+
 	// initialize with data asset
 	if (WeaponData) {
 		BoomerangDamage = WeaponData->BoomerangDamage[Level] * StatusData->Damage[DamageLevel];
@@ -104,59 +103,47 @@ void ABoomerangWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 void ABoomerangWeapon::SetTargetLocation()
 {
-	int32 NumRays{72};
+	AActor* NearestMonster{nullptr};
+	float NearDistance{FLT_MAX};
 
-	AActor* NearestMonster = nullptr;
-	float NearDistance = FLT_MAX;
+	FVector Start{OwningCharacter->GetActorLocation()};
+	FVector End{Start + OwningCharacter->GetActorForwardVector() * BoomerangRange};
 
-	FVector Start{GetActorLocation()};
+	FCollisionShape CollisionShape{FCollisionShape::MakeSphere(BoomerangRange)};
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	QueryParams.AddIgnoredActor(OwningCharacter);
 
-	// TArray<FHitResult> Hits;
-	// GetWorld()->OverlapMultiByChannel(Hits, GetActorLocation(), FQuat::Identity, ECC_Visibility, );
-	// Hits.Sort()
-	
-	// line trace
-	for (int32 i{}; i < NumRays; ++i) {
-		float Angle{i * (360.f / NumRays)};
-		float RadianAngle{FMath::DegreesToRadians(Angle)};
-
-		FVector End{
-			Start + FVector(
-				FMath::Cos(RadianAngle) * BoomerangRange,
-				FMath::Sin(RadianAngle) * BoomerangRange,
-				0.0f
-			)
-		};
-
-		FHitResult HitResult;
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-		QueryParams.AddIgnoredActor(OwningCharacter);
-	
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams)) {
-			if (HitResult.GetActor()->ActorHasTag(TEXT(""))) {
-				
-			}
-			if (ACharacter* Monster{Cast<ACharacter>(HitResult.GetActor())}) {
-				// hit line - green
-				DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Green, false, 3.0f, 0, 1.0f);
-				float Distance{HitResult.Distance};
+	// trace debug
+	DrawDebugSphere(GetWorld(), Start, BoomerangRange, 32, FColor::Red, false, 3.0f, 0, 1.0f);
+	// sphere trace
+	TArray<FHitResult> HitResults;
+	if (GetWorld()->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, ECC_Visibility, CollisionShape,
+	                                    QueryParams)) {
+		for (const FHitResult& HitResult : HitResults) {
+			AActor* HitActor{HitResult.GetActor()};
+			// check tag
+			if (HitActor && HitActor->ActorHasTag("Monster")) {
+				// find monster : green
+				DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3.0f);
+				float Distance{static_cast<float>((Start - HitResult.ImpactPoint).Length())};
 				if (Distance < NearDistance) {
 					NearDistance = Distance;
-					NearestMonster = Monster;
+					NearestMonster = HitActor;
 				}
-				TargetLocation = NearestMonster->GetActorLocation();
-				MovingDirection = (TargetLocation - InitialLocation).GetSafeNormal();
 			}
 			else {
-				// not monster - purple
-				DrawDebugLine(GetWorld(), Start, End, FColor::Purple, false, 3.0f, 0, 1.0f);
+				// hit but not monster : purple
+				DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Purple, false, 3.0f, 0, 3.0f);
 			}
 		}
-		// nothing hit line - red
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 3.0f, 0, 1.0f);
 	}
-	if (TargetLocation == FVector::ZeroVector) {
+
+	if (NearestMonster) {
+		TargetLocation = NearestMonster->GetActorLocation();
+		MovingDirection = (TargetLocation - InitialLocation).GetSafeNormal();
+	}
+	else { // targetLocation == zero vector
 		TargetLocation = InitialLocation + OwningCharacter->GetActorForwardVector() * BoomerangRange;
 		MovingDirection = OwningCharacter->GetActorForwardVector();
 	}
@@ -190,9 +177,7 @@ void ABoomerangWeapon::DestroyActor()
 }
 
 void ABoomerangWeapon::LevelUp()
-{
-	
-}
+{}
 
 void ABoomerangWeapon::DamageLevelUp()
 {}

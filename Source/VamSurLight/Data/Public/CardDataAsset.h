@@ -57,5 +57,11 @@ public:
 	FText MaxHealthUpdateText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText HealthRegenerationUpdateText;
-	
+
+
+	// extra health
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ExtraHealthImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText ExtraHealthText;
 };

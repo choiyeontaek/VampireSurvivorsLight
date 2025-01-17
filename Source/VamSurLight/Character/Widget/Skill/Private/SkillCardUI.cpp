@@ -26,6 +26,15 @@ void USkillCardUI::SetupCard(const FCardOption& Option, int32 Index)
 {
 	CardIndex = Index;
 
+	if (Option.bIsHealth) {
+		if (CardText) {
+			CardText->SetText(CardData->ExtraHealthText);
+			if (CardImage)
+				CardImage->SetBrushFromTexture(CardData->ExtraHealthImage);
+		}
+		
+		return;
+	}
 	if (Option.bIsWeapon) {
 		// Set weapon
 		if (CardText) {
