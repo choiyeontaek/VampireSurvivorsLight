@@ -107,7 +107,8 @@ public:
 	/// synergy check
 	UPROPERTY()
 	class ASynergyManager* SynergyManager;
-	
+
+	float DefaultSpeed{600.f};
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "movement")
 	float Speed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "state")
@@ -138,4 +139,6 @@ public:
 	int32 MovementSpeedLevel{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MaxHealthLevel{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 DamageLevel{0};
 };

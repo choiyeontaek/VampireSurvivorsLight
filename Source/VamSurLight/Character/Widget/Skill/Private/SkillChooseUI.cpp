@@ -67,7 +67,10 @@ void USkillChooseUI::SetupCards()
 			AllOptions.RemoveAt(RandomIndex);
 		}
 		else {
-			// add health
+			// add extra	health option, if no more upgrades left
+			FCardOption Option;
+			Option.bIsHealth = true;
+			CardOptions.Add(Option);
 		}
 	}
 

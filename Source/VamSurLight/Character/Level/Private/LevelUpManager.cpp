@@ -82,7 +82,10 @@ void ALevelUpManager::ShowSkillChooseUI()
 
 void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 {
-	if (SelectedOption.bIsWeapon) {
+	if (SelectedOption.bIsHealth) {
+		CurrentCharacter->AddHealth(10.f);
+	}
+	else if (SelectedOption.bIsWeapon) {
 		LogUtils::Log("Selected Weapon", static_cast<int32>(SelectedOption.WeaponType));
 		switch (SelectedOption.WeaponType) {
 		case EWeaponType::None:
@@ -133,6 +136,7 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 			break;
 		case EStatusType::DamageUpdate:
 			++DamageLevel;
+			CurrentCharacter->StatusLevelUp(SelectedOption.StatusType);
 			break;
 		case EStatusType::MaxHealthUpdate:
 			++MaxHealthLevel;

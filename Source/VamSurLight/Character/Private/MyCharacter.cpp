@@ -26,6 +26,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
 #include "StatusDataAsset.h" /*status data*/
+#include "Chaos/ChaosPerfTest.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -136,6 +137,8 @@ void AMyCharacter::BeginPlay()
 		AddSpeed = StatusData->MovementSpeed[MovementSpeedLevel];
 	}
 
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed * ((100 + AddSpeed) / 100);
+
 	// add viewport widget
 	CharacterWidget = CreateWidget(GetWorld()->GetFirstPlayerController(), CharacterMainUIClass);
 	if (CharacterWidget) {
@@ -167,7 +170,7 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector Velocity{GetVelocity()};
-	Speed = Velocity.Size() * AddSpeed;
+	Speed = Velocity.Size();
 }
 
 // Called to bind functionality to input
@@ -261,7 +264,9 @@ void AMyCharacter::RegenerateHealth()
 
 void AMyCharacter::AddHealth(float AddHp)
 {
-	return;
+	Health += AddHp;
+	Health = FMath::Min(Health, MaxHealth);
+	UpdateHealthUI();
 }
 
 void AMyCharacter::AddExperience(float ExpAmount)
@@ -440,7 +445,13 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 			SynergyManager->AcquireStatus(EStatusType::MovementSpeedUpdate);
 		}
 		AddSpeed = StatusData->CoolTime[MovementSpeedLevel];
+		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed * ((100 + AddSpeed) / 100);
 		break;
+	case EStatusType::DamageUpdate:
+		++DamageLevel;
+		if (1 == DamageLevel) {
+			SynergyManager->AcquireStatus(EStatusType::DamageUpdate);
+		}
 	default:
 		break;
 	}
