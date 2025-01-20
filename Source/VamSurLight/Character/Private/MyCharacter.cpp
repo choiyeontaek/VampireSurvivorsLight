@@ -16,6 +16,7 @@
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
+#include "DieUI.h"
 #include "LevelUpManager.h"	/*handleLevelUp*/
 #include "SkillAutoAttack.h"
 #include "SkillBoomerang.h"
@@ -105,6 +106,12 @@ AMyCharacter::AMyCharacter()
 	if (Widget.Succeeded()) {
 		CharacterMainUIClass = Widget.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UUserWidget> DieWidgetClass
+		(TEXT("/Game/GameWidget/widget_Die.widget_Die_C"));
+	if (DieWidgetClass.Succeeded()) {
+		GameUIClass = DieWidgetClass.Class;
+	}
+
 
 	// set class
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
@@ -229,7 +236,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 
 		if (Health <= 0) {
 			//LogUtils::Log("PlayerDead");
-			bIsDead = true;
+			CharacterDie();
 		}
 	}
 
@@ -455,4 +462,33 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 	default:
 		break;
 	}
+}
+
+void AMyCharacter::CharacterDie()
+{
+	bIsDead = true;
+
+	// delay
+	
+	DieUI = Cast<UDieUI>(CreateWidget(GetWorld()->GetFirstPlayerController(), GameUIClass));
+
+	if (DieUI) {
+		DieUI->AddToViewport();
+	}
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PlayerController) {
+		PlayerController->SetPause(true);
+		PlayerController->SetInputMode(FInputModeUIOnly());
+	}
+}
+
+void AMyCharacter::CharacterRevive()
+{
+	// delay
+	
+	bIsDead = false;
+
+	Health = MaxHealth;
+	UpdateHealthUI();
 }
