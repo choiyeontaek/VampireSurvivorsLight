@@ -44,7 +44,7 @@ AGuardianWeapon::AGuardianWeapon()
 
 	// Guardian Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/guadianWeapon/sm_guadianAttack.sm_guadianAttack"));
+		(TEXT("/Game/player/weapon/guadianWeapon/boomerang_freefire.boomerang_freefire"));
 	if (StaticMeshAsset.Succeeded()) {
 		GuardianMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}

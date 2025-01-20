@@ -31,13 +31,13 @@ ABoomerangWeapon::ABoomerangWeapon()
 	BoomerangCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// bullet mesh
-	BoomerangMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
+	BoomerangMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoomerangMesh"));
 	BoomerangMesh->SetupAttachment(RootComponent);
 	BoomerangMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// bullet Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/Boomerang/sm_boomerangAttack.sm_boomerangAttack"));
+		(TEXT("/Game/player/weapon/Boomerang/batarang.batarang"));
 	if (StaticMeshAsset.Succeeded()) {
 		BoomerangMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
