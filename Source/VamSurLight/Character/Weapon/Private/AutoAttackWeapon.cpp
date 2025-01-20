@@ -82,7 +82,7 @@ void AAutoAttackWeapon::Tick(float DeltaTime)
 	FVector Direction{GetActorForwardVector()};
 	SetActorLocation(GetActorLocation() + Direction * BulletSpeed * DeltaTime);
 
-	float Distance = FVector::Dist(GetActorLocation(), BulletLocation);
+	float Distance{static_cast<float>(FVector::Dist(GetActorLocation(), BulletLocation))};
 
 	if (Distance > BulletRange) {
 		//LogUtils::Log("Destroy Bullet");

@@ -115,7 +115,6 @@ void ATrainWeapon::StartTrain()
 	//AActor* OwningActor = GetOwner();
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
 	if (OwningCharacter) {
-		//TrainStartDistance = 800.f;
 		// make random angle 0 ~ 360
 		float RandomAngle{2 * PI * FMath::RandRange(0.f, 1.f)};
 		// Polar to Cartesian

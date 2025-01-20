@@ -27,7 +27,7 @@ void USkillChooseUI::SetupCards()
 
 	for (int32 i{static_cast<int32>(EWeaponType::AutoAttack)}; i < static_cast<int32>(EWeaponType::MAX); ++i) {
 		// stop when its 5
-	
+		
 		AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 		LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 		AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
