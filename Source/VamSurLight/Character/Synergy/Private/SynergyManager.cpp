@@ -57,3 +57,66 @@ bool ASynergyManager::CheckSynergy(EWeaponType WeaponType)
 	bool bHasStatus = StatusBitmask & (1 << static_cast<uint32>(WeaponType));
 	return bHasWeapon && bHasStatus;
 }
+
+// Brian Kernighan's Algorithm
+int32 ASynergyManager::GetWeaponCount()
+{
+	uint32 BitMask{WeaponBitmask};
+	int32 Count{};
+	while (BitMask) {
+		// remove 1 on far right
+		// bitmask - 1 : change bits, from 1 on far right to right / ex) 1101000 --> 1100111
+		BitMask = BitMask & (BitMask - 1);
+		++Count;
+	}
+
+	return Count;
+}
+
+int32 ASynergyManager::GetStatusCount()
+{
+	uint32 BitMask{StatusBitmask};
+	int32 Count{};
+	while (BitMask) {
+		BitMask = BitMask & (BitMask - 1);
+		++Count;
+	}
+
+	return Count;
+}
+
+TArray<int32> ASynergyManager::FindSetWeapons()
+{
+	TArray<int32> Location;
+	int32 Index{};
+	uint32 BitMask{WeaponBitmask};
+
+	while (BitMask) {
+		// check last bit is 1
+		if (BitMask & 1) {
+			Location.Add(Index);
+		}
+		// shift for next bit
+		BitMask >>= 1;
+		++Index;
+	}
+	
+	return Location;
+}
+
+TArray<int32> ASynergyManager::FindSetStatus()
+{
+	TArray<int32> Location;
+	int32 Index{};
+	uint32 BitMask{StatusBitmask};
+
+	while (BitMask) {
+		if (BitMask & 1) {
+			Location.Add(Index);
+		}
+		BitMask >>= 1;
+		++Index;
+	}
+	
+	return Location;
+}

@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -24,16 +25,26 @@ ATrainWeapon::ATrainWeapon()
 	TrainCollision->SetSphereRadius(50.f);
 	TrainCollision->SetCollisionProfileName(FName("Weapon"));
 
-	// bullet mesh
-	TrainMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TrainMesh"));
+	// TrainMesh
+	TrainMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrainSkeletalMesh"));
 	TrainMesh->SetupAttachment(RootComponent);
 	TrainMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	TrainMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	
 	// Mesh load
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/trainWeapon/sm_trainAttack.sm_trainAttack"));
-	if (StaticMeshAsset.Succeeded()) {
-		TrainMesh->SetStaticMesh(StaticMeshAsset.Object);
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMeshAsset
+	(TEXT(
+		"/Game/player/weapon/trainWeapon/train_-_british_rail_class_08_rail_blue_livery.train_-_british_rail_class_08_rail_blue_livery"));
+	if (skeletalMeshAsset.Succeeded()) {
+		TrainMesh->SetSkeletalMesh(skeletalMeshAsset.Object);
+	}
+
+	TrainMesh->SetAnimationMode(EAnimationMode::Type::AnimationSingleNode);
+	static ConstructorHelpers::FObjectFinder<UAnimationAsset> AnimAsset
+	(TEXT(
+		"/Game/player/weapon/trainWeapon/train_-_british_rail_class_08_rail_blue_livery_Anim.train_-_british_rail_class_08_rail_blue_livery_Anim"));
+	if (AnimAsset.Succeeded()) {
+		TrainAnimation = AnimAsset.Object;
 	}
 
 	// data asset
@@ -59,16 +70,20 @@ void ATrainWeapon::BeginPlay()
 	Super::BeginPlay();
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
-	
+
 	Level = LevelUpManager->TrainLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
-	
+
 	// initialize with data asset
 	if (WeaponData) {
 		TrainDamage = WeaponData->TrainDamage[Level] * StatusData->Damage[DamageLevel];
 		TrainSpeed = WeaponData->TrainSpeed[Level];
 		TrainMovingLength = WeaponData->TrainMovingLength[Level];
 		TrainStartDistance = WeaponData->TrainStartDistance[Level];
+	}
+
+	if (TrainAnimation) {
+		TrainMesh->PlayAnimation(TrainAnimation, true);
 	}
 
 	StartTrain();
@@ -101,14 +116,10 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 }
 
 void ATrainWeapon::LevelUp()
-{
-	
-}
+{}
 
 void ATrainWeapon::DamageLevelUp()
-{
-	
-}
+{}
 
 void ATrainWeapon::StartTrain()
 {
@@ -130,6 +141,9 @@ void ATrainWeapon::StartTrain()
 		MovingDirection.Normalize();
 
 		SetActorLocation(RandomPosition);
+
+		FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(RandomPosition, OwningCharacter->GetActorLocation());
+		SetActorRotation(SpawnRotation);
 	}
 }
 

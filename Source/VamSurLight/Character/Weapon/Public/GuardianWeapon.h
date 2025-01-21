@@ -65,4 +65,7 @@ public:
 
 	FVector InitialOffset;
 	float InitialAngle;
+
+	UPROPERTY(VisibleAnywhere)
+	class URotatingMovementComponent* RotatingMovement;
 };

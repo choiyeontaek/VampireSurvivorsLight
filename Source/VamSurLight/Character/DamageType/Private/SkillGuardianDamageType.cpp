@@ -5,11 +5,10 @@
 #include "LogUtils.h" /*log*/
 #include "MyCharacter.h" /*character*/
 
-void USkillGuardianDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage,AController* InstigatedBy, AActor* DamageCauser) const {
+void USkillGuardianDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage,
+                                                                AController* InstigatedBy, AActor* DamageCauser) const
+{
 	Super::ApplyDamageEffect_Implementation(DamagedActor, Damage, InstigatedBy, DamageCauser);
-
-	AMyCharacter* Character{Cast<AMyCharacter>(DamagedActor)};
-	if (Character) {
-		LogUtils::Log("SkillGuardianDamageType::ApplyDamageEffect");
-	}
+	
+	LogUtils::Log("SkillGuardianDamageType::ApplyDamageEffect");
 }

@@ -10,6 +10,7 @@
 #include "StatusDataAsset.h"
 #include "Components/SphereComponent.h" /*sphere collision*/
 #include "GameFramework/Character.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/GameplayStatics.h"	/*apply damage*/
 #include "Kismet/KismetMathLibrary.h" /*FindLookAtRotation*/
 
@@ -44,13 +45,15 @@ AGuardianWeapon::AGuardianWeapon()
 
 	// Guardian Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/guadianWeapon/sm_guadianAttack.sm_guadianAttack"));
+		(TEXT("/Game/player/weapon/guadianWeapon/boomerang_freefire.boomerang_freefire"));
 	if (StaticMeshAsset.Succeeded()) {
 		GuardianMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
 
 	// bind overlap event
 	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
+
+	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 }
 
 // Called when the game starts or when spawned
@@ -79,6 +82,10 @@ void AGuardianWeapon::BeginPlay()
 	InitialOffset = (GetActorLocation() - OwningCharacter->GetActorLocation()).GetSafeNormal();
 	// calculate absolute angle
 	InitialAngle = FMath::Atan2(InitialOffset.Y, InitialOffset.X);
+
+	if (RotatingMovement) {
+		RotatingMovement->RotationRate = FRotator(0.f, 360.f, 0.f);
+	}
 }
 
 // Called every frame

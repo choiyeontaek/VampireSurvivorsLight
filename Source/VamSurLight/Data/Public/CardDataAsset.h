@@ -64,4 +64,26 @@ public:
 	UTexture2D* ExtraHealthImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText ExtraHealthText;
+
+	// weapon final
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* AutoAttackImageFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* BoomerangImageFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* TrainImageFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ForceFieldImageFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* GuardianImageFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText AutoAttackTextFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText BoomerangTextFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText TrainTextFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText ForceFieldTextFinal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText GuardianTextFinal;
 };

@@ -6,6 +6,7 @@
 #include "LogUtils.h"
 #include "TrainWeapon.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values

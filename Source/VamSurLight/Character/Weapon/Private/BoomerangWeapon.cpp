@@ -8,6 +8,7 @@
 #include "StatusDataAsset.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -31,13 +32,13 @@ ABoomerangWeapon::ABoomerangWeapon()
 	BoomerangCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// bullet mesh
-	BoomerangMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
+	BoomerangMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoomerangMesh"));
 	BoomerangMesh->SetupAttachment(RootComponent);
 	BoomerangMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// bullet Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/Boomerang/sm_boomerangAttack.sm_boomerangAttack"));
+		(TEXT("/Game/player/weapon/Boomerang/batarang.batarang"));
 	if (StaticMeshAsset.Succeeded()) {
 		BoomerangMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
@@ -48,6 +49,8 @@ ABoomerangWeapon::ABoomerangWeapon()
 	}
 	// bind overlap event
 	BoomerangCollision->OnComponentBeginOverlap.AddDynamic(this, &ABoomerangWeapon::OnOverlapBegin);
+
+	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 
 	//LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 }
@@ -75,6 +78,10 @@ void ABoomerangWeapon::BeginPlay()
 	InitialLocation = GetActorLocation();
 	TargetLocation = FVector::ZeroVector;
 	SetTargetLocation();
+
+	if (RotatingMovement) {
+		RotatingMovement->RotationRate = FRotator(0.f, 480.f, 0.f);
+	}
 }
 
 // Called every frame
