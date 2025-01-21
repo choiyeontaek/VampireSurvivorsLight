@@ -98,7 +98,7 @@ AMyCharacter::AMyCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	// bind overlap event
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::OnOverlapBegin);
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::OnOverlapBegin);
 
 	// get widget
 	static ConstructorHelpers::FClassFinder<UUserWidget> Widget
@@ -190,11 +190,7 @@ void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                   const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp) {
-		//LogUtils::Log("AMyCharacter::OnOverlapBegin ");
-		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UBaseDamageType::StaticClass());
-		//UGameplayStatics::ApplyDamage(OtherActor, BaseAttackDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
-	}
+
 }
 
 float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
@@ -209,29 +205,39 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>()
 			: GetDefault<UDamageType>()
 	};
+	
 	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
 	if (!bIsDead && DamageType) {
-		if (DamageType->IsA(UAutoAttackDamageType::StaticClass())) {
-			LogUtils::Log("Character::TakeDamage - AutoAttackDamageType");
-			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
+		if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_RangeAttack_C")) {
+			LogUtils::Log("Character::TakeDamage - BP_DamageType_RangeAttack_C");
+			FOutputDeviceNull Ar;
+			// function name in blueprint
+			const FString Command{TEXT("RangeAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		else if (DamageType->IsA(USkillGuardianDamageType::StaticClass())) {
-			LogUtils::Log("Character::TakeDamage - SkillGuardianDamageType");
-			DamageType->ApplyDamageEffect(this, DamageAmount, EventInstigator, DamageCauser);
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongRangeAttackangeAttack")) {
+			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongRangeAttackangeAttack");
+			FOutputDeviceNull Ar;
+			const FString Command{TEXT("LongRangeAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_RangeAttack_C")) {
-			LogUtils::Log("Character::TakeDamage - RangeAttack");
-
-			FOutputDeviceNull ar;
-			const FString command = TEXT("RangeAttack");
-
-			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*command, ar, nullptr, true);
-
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongSkill")) {
+			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongSkill");
+			FOutputDeviceNull Ar;
+			const FString Command{TEXT("LongRangeSkillAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossAttack")) {
+			LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
+			FOutputDeviceNull Ar;
+			const FString Command{TEXT("BossAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
+			Health -= Damage;
+		}
+		
 		UpdateHealthUI();
 
 		if (Health <= 0) {
