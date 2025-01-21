@@ -36,6 +36,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Card Data")
 	class UCardDataAsset* CardData;
 
+	UPROPERTY(BlueprintReadOnly)
+	class ALevelUpManager* LevelUpManager;
+
+
 private:
 	UFUNCTION()
 	void OnButtonClicked();

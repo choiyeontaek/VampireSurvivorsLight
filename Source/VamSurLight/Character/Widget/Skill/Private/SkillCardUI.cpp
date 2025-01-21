@@ -1,8 +1,10 @@
 ﻿#include "SkillCardUI.h"
 #include "CardDataAsset.h"
+#include "LevelUpManager.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 USkillCardUI::USkillCardUI(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
@@ -26,46 +28,80 @@ void USkillCardUI::SetupCard(const FCardOption& Option, int32 Index)
 {
 	CardIndex = Index;
 
+	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
+	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
+
 	if (Option.bIsHealth) {
 		if (CardText) {
 			CardText->SetText(CardData->ExtraHealthText);
 			if (CardImage)
 				CardImage->SetBrushFromTexture(CardData->ExtraHealthImage);
 		}
-		
+
 		return;
 	}
 	if (Option.bIsWeapon) {
 		// Set weapon
-		if (CardText) {
+		if (CardText && CardImage) {
 			switch (Option.WeaponType) {
 			case EWeaponType::AutoAttack:
-				CardText->SetText(CardData->AutoAttackText);
-				if (CardImage)
+				if (LevelUpManager->GetWeaponLevel(Option.WeaponType) == 4) {
+					CardText->SetText(CardData->AutoAttackTextFinal);
+					CardImage->SetBrushFromTexture(CardData->AutoAttackImageFinal);
+				}
+				else {
+					CardText->SetText(CardData->AutoAttackText);
 					CardImage->SetBrushFromTexture(CardData->AutoAttackImage);
+				}
+				
 				break;
 			case EWeaponType::Boomerang:
-				CardText->SetText(CardData->BoomerangText);
-				if (CardImage)
+				if (LevelUpManager->GetWeaponLevel(Option.WeaponType) == 4) {
+					CardText->SetText(CardData->BoomerangTextFinal);
+					CardImage->SetBrushFromTexture(CardData->BoomerangImageFinal);
+				}
+				else {
+					CardText->SetText(CardData->BoomerangText);
 					CardImage->SetBrushFromTexture(CardData->BoomerangImage);
+				}
+				
 				break;
 			case EWeaponType::Train:
-				CardText->SetText(CardData->TrainText);
-				if (CardImage)
+				if (LevelUpManager->GetWeaponLevel(Option.WeaponType) == 4) {
+					CardText->SetText(CardData->TrainTextFinal);
+					CardImage->SetBrushFromTexture(CardData->TrainImageFinal);
+				}
+				else {
+					CardText->SetText(CardData->TrainText);
 					CardImage->SetBrushFromTexture(CardData->TrainImage);
+				}
+				
 				break;
 			case EWeaponType::ForceField:
-				CardText->SetText(CardData->ForceFieldText);
-				if (CardImage)
+				if (LevelUpManager->GetWeaponLevel(Option.WeaponType) == 4) {
+					CardText->SetText(CardData->ForceFieldTextFinal);
+					CardImage->SetBrushFromTexture(CardData->ForceFieldImageFinal);
+				}
+				else {
+					CardText->SetText(CardData->ForceFieldText);
 					CardImage->SetBrushFromTexture(CardData->ForceFieldImage);
+				}
+				
 				break;
 			case EWeaponType::Guardian:
-				CardText->SetText(CardData->GuardianText);
-				if (CardImage)
+				if (LevelUpManager->GetWeaponLevel(Option.WeaponType) == 4) {
+					CardText->SetText(CardData->GuardianTextFinal);
+					CardImage->SetBrushFromTexture(CardData->GuardianImageFinal);
+				}
+				else {
+					CardText->SetText(CardData->GuardianText);
 					CardImage->SetBrushFromTexture(CardData->GuardianImage);
+				}
+				
 				break;
 			default:
 				CardText->SetText(FText::FromString(TEXT("Unknown Weapon")));
+				
 				break;
 			}
 		}

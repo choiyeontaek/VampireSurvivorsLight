@@ -43,7 +43,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* TrainCollision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-	UStaticMeshComponent* TrainMesh;
+	class USkeletalMeshComponent* TrainMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
+	class UAnimationAsset* TrainAnimation;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float TrainDamage;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

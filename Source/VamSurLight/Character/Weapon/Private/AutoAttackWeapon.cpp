@@ -97,13 +97,14 @@ void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("AAutoAttackWeapon::OnOverlapBegin", BulletDamage);
 
-		UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, nullptr, this, UAutoAttackDamageType::StaticClass());
 
 		Destroy();
 	}
 }
 
 void AAutoAttackWeapon::DamageLevelUp()
+
 {
 	
 }

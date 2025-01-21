@@ -49,17 +49,24 @@ public:
 	void BoomerangAttack();
 	void ForceFieldAttack();
 	void StatusLevelUp(EStatusType Status);
-
+	void CharacterDie();
+	UFUNCTION(BlueprintCallable)
+	void CharacterRevive();
+	
 public:
 	/// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> CharacterMainUIClass;
 	UPROPERTY()
-	UUserWidget* CharacterWidget;
+	class UUserWidget* CharacterWidget;
 	UPROPERTY()
 	class UCharacterHealthUI* HealthUI;
 	UPROPERTY()
 	class UCharacterExpUI* ExpUI;
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TSubclassOf<UUserWidget> GameUIClass;
+	UPROPERTY()
+	class UDieUI* DieUI;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	class USpringArmComponent *MainSpringArm;	// spring arm
