@@ -216,21 +216,21 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongRangeAttackangeAttack")) {
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongRangeAttackangeAttack_C")) {
 			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongRangeAttackangeAttack");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("LongRangeAttack")};
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongSkill")) {
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongSkill_C")) {
 			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongSkill");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("LongRangeSkillAttack")};
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossAttack")) {
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossAttack_C")) {
 			LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("BossAttack")};
