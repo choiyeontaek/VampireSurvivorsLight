@@ -71,4 +71,7 @@ public:
 	FTimerHandle DestroyTimerHandle;
 
 	void DestroyActor();
+
+	UPROPERTY(VisibleAnywhere)
+	class URotatingMovementComponent* RotatingMovement;
 };

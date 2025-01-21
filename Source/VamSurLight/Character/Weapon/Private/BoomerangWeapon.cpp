@@ -8,6 +8,7 @@
 #include "StatusDataAsset.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -49,6 +50,8 @@ ABoomerangWeapon::ABoomerangWeapon()
 	// bind overlap event
 	BoomerangCollision->OnComponentBeginOverlap.AddDynamic(this, &ABoomerangWeapon::OnOverlapBegin);
 
+	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
+
 	//LevelUpManager = CreateDefaultSubobject<ALevelUpManager>(TEXT("LevelUpManager"));
 }
 
@@ -75,6 +78,10 @@ void ABoomerangWeapon::BeginPlay()
 	InitialLocation = GetActorLocation();
 	TargetLocation = FVector::ZeroVector;
 	SetTargetLocation();
+
+	if (RotatingMovement) {
+		RotatingMovement->RotationRate = FRotator(0.f, 480.f, 0.f);
+	}
 }
 
 // Called every frame

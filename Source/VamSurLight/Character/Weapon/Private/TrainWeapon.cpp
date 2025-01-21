@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -28,7 +29,8 @@ ATrainWeapon::ATrainWeapon()
 	TrainMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TrainSkeletalMesh"));
 	TrainMesh->SetupAttachment(RootComponent);
 	TrainMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	TrainMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	
 	// Mesh load
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMeshAsset
 	(TEXT(
@@ -139,6 +141,9 @@ void ATrainWeapon::StartTrain()
 		MovingDirection.Normalize();
 
 		SetActorLocation(RandomPosition);
+
+		FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(RandomPosition, OwningCharacter->GetActorLocation());
+		SetActorRotation(SpawnRotation);
 	}
 }
 
