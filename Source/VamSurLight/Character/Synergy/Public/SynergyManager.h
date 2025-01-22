@@ -56,6 +56,8 @@ public:
 	int32 GetStatusCount();
 	TArray<int32> FindSetWeapons();
 	TArray<int32> FindSetStatus();
+	bool CheckWeapon(EWeaponType WeaponType);
+	bool CheckStatus(EStatusType StatusType);
 	
 	// status data asset
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")

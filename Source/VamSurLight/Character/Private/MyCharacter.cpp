@@ -12,10 +12,12 @@
 #include "WeaponDataAsset.h" /*weapon data asset*/
 #include "BaseDamageType.h"	/*baseDamage*/
 #include "AutoAttackDamageType.h"	/*autoAttack*/
+#include "CardDataAsset.h"
 #include "SkillGuardianDamageType.h"	/*skillGuardian*/
 #include "Blueprint/UserWidget.h"	/*widget*/
 #include "CharacterHealthUI.h" /*healthUI*/
 #include "CharacterExpUI.h" /*expUI*/
+#include "CharacterSkillListUI.h"
 #include "DieUI.h"
 #include "LevelUpManager.h"	/*handleLevelUp*/
 #include "SkillAutoAttack.h"
@@ -28,7 +30,11 @@
 #include "Misc/OutputDeviceNull.h" /*FOutputDeviceNull */
 #include "StatusDataAsset.h" /*status data*/
 #include "Chaos/ChaosPerfTest.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "Kismet/KismetTextLibrary.h"
 
+class UCardDataAsset;
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -90,6 +96,12 @@ AMyCharacter::AMyCharacter()
 		(TEXT("/Game/Data/dataAsset_status.dataAsset_status"));
 	if (StatusDataAsset.Succeeded()) {
 		StatusData = StatusDataAsset.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UCardDataAsset> CardDataAsset
+		(TEXT("/Game/Data/dataAsset_card.dataAsset_card"));
+	if (CardDataAsset.Succeeded()) {
+		CardData = CardDataAsset.Object;
 	}
 
 	// camera, character movement setting
@@ -160,6 +172,8 @@ void AMyCharacter::BeginPlay()
 		if (ExpUI) {
 			UpdateExpUI();
 		}
+
+		CharacterSkillUI = Cast<UCharacterSkillListUI>(CharacterWidget->GetWidgetFromName(TEXT("widget_skillList")));
 	}
 
 	LogUtils::Log("need remove"); // when player dead
@@ -189,9 +203,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void AMyCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                   const FHitResult& SweepResult)
-{
-
-}
+{}
 
 float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
                                class AController* EventInstigator, AActor* DamageCauser)
@@ -205,7 +217,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>()
 			: GetDefault<UDamageType>()
 	};
-	
+
 	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
 	if (!bIsDead && DamageType) {
 		if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_RangeAttack_C")) {
@@ -237,7 +249,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-		
+
 		UpdateHealthUI();
 
 		if (Health <= 0) {
@@ -475,7 +487,7 @@ void AMyCharacter::CharacterDie()
 	bIsDead = true;
 
 	// delay
-	
+
 	DieUI = Cast<UDieUI>(CreateWidget(GetWorld()->GetFirstPlayerController(), GameUIClass));
 
 	if (DieUI) {
@@ -492,9 +504,333 @@ void AMyCharacter::CharacterDie()
 void AMyCharacter::CharacterRevive()
 {
 	// delay
-	
+
 	bIsDead = false;
 
 	Health = MaxHealth;
 	UpdateHealthUI();
+}
+
+void AMyCharacter::UpdateSkillUI(FCardOption CardOption, int32 level)
+{
+	if (CardOption.bIsWeapon) {
+		switch (CardOption.WeaponType) {
+		case EWeaponType::None:
+			break;
+		case EWeaponType::AutoAttack:
+			CharacterSkillUI->WeaponOneText->SetText(
+				UKismetTextLibrary::Conv_IntToText(level));
+			if (5 == level) {
+				CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->AutoAttackImageFinal);
+			}
+			
+			break;
+		case EWeaponType::ForceField:
+			if (false == SynergyManager->CheckWeapon(EWeaponType::ForceField)) {
+				if (0 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->ForceFieldImage);
+					ForceFieldUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->ForceFieldImage);
+					ForceFieldUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->ForceFieldImage);
+					ForceFieldUIIndex = 3;
+				}
+			}
+
+			if (1 == ForceFieldUIIndex) {
+				CharacterSkillUI->WeaponOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->ForceFieldImageFinal);
+				}
+			}
+			else if (2 == ForceFieldUIIndex) {
+				CharacterSkillUI->WeaponTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->ForceFieldImageFinal);
+				}
+			}
+			else if (3 == ForceFieldUIIndex) {
+				CharacterSkillUI->WeaponThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->ForceFieldImageFinal);
+				}
+			}
+			break;
+		case EWeaponType::Boomerang:
+			if (false == SynergyManager->CheckWeapon(EWeaponType::Boomerang)) {
+				if (0 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->BoomerangImage);
+					BoomerangUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->BoomerangImage);
+					BoomerangUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->BoomerangImage);
+					BoomerangUIIndex = 3;
+				}
+			}
+
+			if (1 == BoomerangUIIndex) {
+				CharacterSkillUI->WeaponOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->BoomerangImageFinal);
+				}
+			}
+			else if (2 == BoomerangUIIndex) {
+				CharacterSkillUI->WeaponTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->BoomerangImageFinal);
+				}
+			}
+			else if (3 == BoomerangUIIndex) {
+				CharacterSkillUI->WeaponThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->BoomerangImageFinal);
+				}
+			}
+			break;
+		case EWeaponType::Guardian:
+			if (false == SynergyManager->CheckWeapon(EWeaponType::Guardian)) {
+				if (0 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->GuardianImage);
+					GuardianUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->GuardianImage);
+					GuardianUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->GuardianImage);
+					GuardianUIIndex = 3;
+				}
+			}
+
+			if (1 == GuardianUIIndex) {
+				CharacterSkillUI->WeaponOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->GuardianImageFinal);
+				}
+			}
+			else if (2 == GuardianUIIndex) {
+				CharacterSkillUI->WeaponTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->GuardianImageFinal);
+				}
+			}
+			else if (3 == GuardianUIIndex) {
+				CharacterSkillUI->WeaponThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->GuardianImageFinal);
+				}
+			}
+			break;
+		case EWeaponType::Train:
+			if (false == SynergyManager->CheckWeapon(EWeaponType::Train)) {
+				if (0 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->TrainImage);
+					TrainUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->TrainImage);
+					TrainUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetWeaponCount()) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->TrainImage);
+					TrainUIIndex = 3;
+				}
+			}
+
+			if (1 == TrainUIIndex) {
+				CharacterSkillUI->WeaponOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponOneImage->SetBrushFromTexture(CardData->TrainImageFinal);
+				}
+			}
+			else if (2 == TrainUIIndex) {
+				CharacterSkillUI->WeaponTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponTwoImage->SetBrushFromTexture(CardData->TrainImageFinal);
+				}
+			}
+			else if (3 == TrainUIIndex) {
+				CharacterSkillUI->WeaponThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+				if (5 == level) {
+					CharacterSkillUI->WeaponThreeImage->SetBrushFromTexture(CardData->TrainImageFinal);
+				}
+			}
+		case EWeaponType::MAX:
+			break;
+		}
+	}
+	else {
+		switch (CardOption.StatusType) {
+		case EStatusType::None:
+			break;
+		case EStatusType::DamageUpdate:
+			if (false == SynergyManager->CheckStatus(EStatusType::DamageUpdate)) {
+				if (0 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusOneImage->SetBrushFromTexture(CardData->DamageUpdateImage);
+					DamageUpdateUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusTwoImage->SetBrushFromTexture(CardData->DamageUpdateImage);
+					DamageUpdateUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusThreeImage->SetBrushFromTexture(CardData->DamageUpdateImage);
+					DamageUpdateUIIndex = 3;
+				}
+			}
+
+			if (1 == DamageUpdateUIIndex) {
+				CharacterSkillUI->StatusOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (2 == DamageUpdateUIIndex) {
+				CharacterSkillUI->StatusTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (3 == DamageUpdateUIIndex) {
+				CharacterSkillUI->StatusThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			break;
+		case EStatusType::CoolTimeUpdate:
+			if (false == SynergyManager->CheckStatus(EStatusType::CoolTimeUpdate)) {
+				if (0 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusOneImage->SetBrushFromTexture(CardData->CoolTimeUpdateImage);
+					CoolTimeUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusTwoImage->SetBrushFromTexture(CardData->CoolTimeUpdateImage);
+					CoolTimeUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusThreeImage->SetBrushFromTexture(CardData->CoolTimeUpdateImage);
+					CoolTimeUIIndex = 3;
+				}
+			}
+
+			if (1 == CoolTimeUIIndex) {
+				CharacterSkillUI->StatusOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (2 == CoolTimeUIIndex) {
+				CharacterSkillUI->StatusTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (3 == CoolTimeUIIndex) {
+				CharacterSkillUI->StatusThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			break;
+		case EStatusType::HealthRegenerationUpdate:
+			if (false == SynergyManager->CheckStatus(EStatusType::HealthRegenerationUpdate)) {
+				if (0 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusOneImage->SetBrushFromTexture(CardData->HealthRegenerationUpdateImage);
+					HealthRegenerationUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusTwoImage->SetBrushFromTexture(CardData->HealthRegenerationUpdateImage);
+					HealthRegenerationUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusThreeImage->SetBrushFromTexture(CardData->HealthRegenerationUpdateImage);
+					HealthRegenerationUIIndex = 3;
+				}
+			}
+
+			if (1 == HealthRegenerationUIIndex) {
+				CharacterSkillUI->StatusOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (2 == HealthRegenerationUIIndex) {
+				CharacterSkillUI->StatusTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (3 == HealthRegenerationUIIndex) {
+				CharacterSkillUI->StatusThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			break;
+		case EStatusType::MovementSpeedUpdate:
+			if (false == SynergyManager->CheckStatus(EStatusType::MovementSpeedUpdate)) {
+				if (0 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusOneImage->SetBrushFromTexture(CardData->MovementSpeedUpdateImage);
+					MovementSpeedUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusTwoImage->SetBrushFromTexture(CardData->MovementSpeedUpdateImage);
+					MovementSpeedUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusThreeImage->SetBrushFromTexture(CardData->MovementSpeedUpdateImage);
+					MovementSpeedUIIndex = 3;
+				}
+			}
+
+			if (1 == MovementSpeedUIIndex) {
+				CharacterSkillUI->StatusOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (2 == MovementSpeedUIIndex) {
+				CharacterSkillUI->StatusTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (3 == MovementSpeedUIIndex) {
+				CharacterSkillUI->StatusThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			break;
+		case EStatusType::MaxHealthUpdate:
+			if (false == SynergyManager->CheckStatus(EStatusType::MaxHealthUpdate)) {
+				if (0 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusOneImage->SetBrushFromTexture(CardData->MaxHealthUpdateImage);
+					MaxHealthUIIndex = 1;
+				}
+				else if (1 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusTwoImage->SetBrushFromTexture(CardData->MaxHealthUpdateImage);
+					MaxHealthUIIndex = 2;
+				}
+				else if (2 == SynergyManager->GetStatusCount()) {
+					CharacterSkillUI->StatusThreeImage->SetBrushFromTexture(CardData->MaxHealthUpdateImage);
+					MaxHealthUIIndex = 3;
+				}
+			}
+
+			if (1 == MaxHealthUIIndex) {
+				CharacterSkillUI->StatusOneText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (2 == MaxHealthUIIndex) {
+				CharacterSkillUI->StatusTwoText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			else if (3 == MaxHealthUIIndex) {
+				CharacterSkillUI->StatusThreeText->SetText(
+					UKismetTextLibrary::Conv_IntToText(level));
+			}
+			break;
+		case EStatusType::MAX:
+			break;
+		}
+	}
 }

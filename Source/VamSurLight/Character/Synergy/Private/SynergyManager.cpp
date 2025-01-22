@@ -120,3 +120,13 @@ TArray<int32> ASynergyManager::FindSetStatus()
 	
 	return Location;
 }
+
+bool ASynergyManager::CheckWeapon(EWeaponType WeaponType)
+{
+	return WeaponBitmask & (1 << static_cast<uint32>(WeaponType));
+}
+
+bool ASynergyManager::CheckStatus(EStatusType StatusType)
+{
+	return StatusBitmask & (1 << static_cast<uint32>(StatusType));
+}

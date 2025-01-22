@@ -87,6 +87,7 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 	}
 	else if (SelectedOption.bIsWeapon) {
 		LogUtils::Log("Selected Weapon", static_cast<int32>(SelectedOption.WeaponType));
+		CurrentCharacter->UpdateSkillUI(SelectedOption, GetWeaponLevel(SelectedOption.WeaponType) + 1);
 		switch (SelectedOption.WeaponType) {
 		case EWeaponType::None:
 			break;
@@ -123,6 +124,7 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 	}
 	else {
 		LogUtils::Log("Selected Status", static_cast<int32>(SelectedOption.StatusType));
+		CurrentCharacter->UpdateSkillUI(SelectedOption, GetStatusLevel(SelectedOption.StatusType) + 1);
 		switch (SelectedOption.StatusType) {
 		case EStatusType::None:
 			break;

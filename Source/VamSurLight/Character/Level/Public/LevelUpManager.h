@@ -24,10 +24,9 @@ private:
 
 	UPROPERTY()
 	class USkillChooseUI* SkillChooseWidget;
-
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<USkillChooseUI> SkillChooseWidgetClass;
-
+	
 	UFUNCTION()
 	void OnOptionSelected(FCardOption SelectedOption);
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SkillChooseUI.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -52,7 +53,8 @@ public:
 	void CharacterDie();
 	UFUNCTION(BlueprintCallable)
 	void CharacterRevive();
-	
+	void UpdateSkillUI(FCardOption CardOption, int32 level);
+
 public:
 	/// widget
 	UPROPERTY(EditAnywhere, Category = "Widget")
@@ -63,6 +65,9 @@ public:
 	class UCharacterHealthUI* HealthUI;
 	UPROPERTY()
 	class UCharacterExpUI* ExpUI;
+	UPROPERTY()
+	class UCharacterSkillListUI* CharacterSkillUI;
+
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> GameUIClass;
 	UPROPERTY()
@@ -82,6 +87,8 @@ public:
 	class UWeaponDataAsset* WeaponData;
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
+	UPROPERTY(EditDefaultsOnly, Category = "Card Data")
+	class UCardDataAsset* CardData;
 
 	UPROPERTY(BlueprintReadOnly)
 	class ALevelUpManager* LevelUpManager;
@@ -148,4 +155,16 @@ public:
 	int32 MaxHealthLevel{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 DamageLevel{0};
+
+	int32 AutoAttackUIIndex;
+	int32 BoomerangUIIndex;
+	int32 TrainUIIndex;
+	int32 ForceFieldUIIndex;
+	int32 GuardianUIIndex;
+	
+	int32 CoolTimeUIIndex;
+	int32 MovementSpeedUIIndex;
+	int32 DamageUpdateUIIndex;
+	int32 MaxHealthUIIndex;
+	int32 HealthRegenerationUIIndex;
 };
