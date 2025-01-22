@@ -2,6 +2,8 @@
 
 
 #include "AutoAttackDamageType.h"
+
+#include "LevelUpManager.h"
 #include "LogUtils.h" /*log*/
 #include "MyCharacter.h" /*character*/
 
@@ -12,6 +14,13 @@ void UAutoAttackDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 	
 	LogUtils::Log("AutoAttackDamageType::ApplyDamageEffect");
 
-	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	//if (LevelUpManager->AutoAttackLevel < 5) {
+		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	//}
+	//else if (LevelUpManager->AutoAttackLevel == 5) {
+		//FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+		//DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	//}
+
 };

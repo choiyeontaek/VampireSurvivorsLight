@@ -99,7 +99,9 @@ void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 
 		UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, nullptr, this, UAutoAttackDamageType::StaticClass());
 
-		Destroy();
+		if (5 != LevelUpManager->AutoAttackLevel) {
+			Destroy();
+		}
 	}
 }
 

@@ -167,4 +167,15 @@ public:
 	int32 DamageUpdateUIIndex;
 	int32 MaxHealthUIIndex;
 	int32 HealthRegenerationUIIndex;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float AutoAttackCoolTime{1};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BoomerangCoolTime{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TrainCoolTime{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float ForceFieldCoolTime{0};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float GuardianCoolTime{0};
 };

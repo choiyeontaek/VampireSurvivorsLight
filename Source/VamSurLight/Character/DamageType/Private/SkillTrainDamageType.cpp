@@ -2,7 +2,7 @@
 
 
 #include "SkillTrainDamageType.h"
-
+#include "LevelUpManager.h"
 #include "LogUtils.h"
 
 void USkillTrainDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage,
@@ -11,5 +11,12 @@ void USkillTrainDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 	Super::ApplyDamageEffect_Implementation(DamagedActor, Damage, InstigatedBy, DamageCauser);
 
 	LogUtils::Log("USkillTrainDamageType::ApplyDamageEffect");
-
+	//if (LevelUpManager->AutoAttackLevel < 5) {
+		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	// }
+	// else if (LevelUpManager->AutoAttackLevel == 5) {
+	// 	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+	// 	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	// }
 }

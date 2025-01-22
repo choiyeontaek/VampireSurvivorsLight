@@ -3,6 +3,7 @@
 #include "SkillChooseUI.h"
 #include "MyCharacter.h"
 #include "LogUtils.h"
+#include "WeaponDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
 ALevelUpManager::ALevelUpManager(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -93,27 +94,32 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 			break;
 		case EWeaponType::AutoAttack:
 			++AutoAttackLevel;
+			CurrentCharacter->AutoAttackCoolTime = CurrentCharacter->WeaponData->BaseAttackCoolTime[AutoAttackLevel];
 			break;
 		case EWeaponType::Boomerang:
 			++BoomerangLevel;
+			CurrentCharacter->BoomerangCoolTime = CurrentCharacter->WeaponData->BoomerangCoolTime[BoomerangLevel];
 			if (1 == BoomerangLevel) {
 				CurrentCharacter->StartAttack(EWeaponType::Boomerang);
 			}
 			break;
 		case EWeaponType::Train:
 			++TrainLevel;
+			CurrentCharacter->TrainCoolTime = CurrentCharacter->WeaponData->TrainCoolTime[TrainLevel];
 			if (1 == TrainLevel) {
 				CurrentCharacter->StartAttack(EWeaponType::Train);
 			}
 			break;
 		case EWeaponType::ForceField:
 			++ForceFieldLevel;
+			CurrentCharacter->ForceFieldCoolTime = CurrentCharacter->WeaponData->ForceFieldCoolTime[ForceFieldLevel];
 			if (1 == ForceFieldLevel) {
 				CurrentCharacter->StartAttack(EWeaponType::ForceField);
 			}
 			break;
 		case EWeaponType::Guardian:
 			++GuardianLevel;
+			CurrentCharacter->GuardianCoolTime = CurrentCharacter->WeaponData->GuardianCoolTime[GuardianLevel];
 			if (1 == GuardianLevel) {
 				CurrentCharacter->StartAttack(EWeaponType::Guardian);
 			}

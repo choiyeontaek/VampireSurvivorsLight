@@ -7,4 +7,5 @@
 void UBaseDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy,AActor* DamageCauser) const
 {
 	//LogUtils::Log("BaseDamageType::ApplyDamageEffect");
+	
 }
