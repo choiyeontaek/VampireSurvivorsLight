@@ -153,8 +153,6 @@ void ALevelUpManager::OnOptionSelected(FCardOption SelectedOption)
 		}
 	}
 
-	LogUtils::Log("Level", AutoAttackLevel);
-
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (PlayerController) {
 		PlayerController->SetPause(false);
