@@ -6,7 +6,6 @@
 #include "LogUtils.h"
 #include "MyCharacter.h"
 #include "WeaponDataAsset.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 void USkillTrainDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage,
                                                              AController* InstigatedBy, AActor* DamageCauser) const
@@ -40,15 +39,17 @@ void USkillTrainDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 	// multiply 100 for 'M' to 'CM'
 	float Height{FMath::Pow(Speed, 2) / (2.f * 9.8f) * 100.f};
 	LogUtils::Log("Height", Height);
-	
+
 	// d = v0^2 / ( 2 * friction * gravity )
 	// multiply 100 for 'M' to 'CM'
 	float MoveDistance{FMath::Pow(Speed, 2) / (2.f * 0.5f * 9.8f) * 100.f};
 	LogUtils::Log("MovingDistance", MoveDistance);
-	
+
 	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-	
+
 	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * MoveDistance);
 	//}
 	
 }
+
+
