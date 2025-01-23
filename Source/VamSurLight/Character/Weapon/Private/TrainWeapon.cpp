@@ -5,6 +5,7 @@
 
 #include "LevelUpManager.h"
 #include "LogUtils.h"
+#include "SkillTrainDamageType.h"
 #include "StatusDataAsset.h"
 #include "WeaponDataAsset.h"
 #include "Components/SphereComponent.h"
@@ -107,11 +108,9 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
                                   const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		//LogUtils::Log();
+		LogUtils::Log("ATrainWeapon::OnOverlapBegin", TrainDamage);
 
-		//UGameplayStatics::ApplyDamage(OtherActor, TrainDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
-
-		//Destroy();
+		UGameplayStatics::ApplyDamage(OtherActor, TrainDamage, GetWorld()->GetFirstPlayerController(), this, USkillTrainDamageType::StaticClass());
 	}
 }
 

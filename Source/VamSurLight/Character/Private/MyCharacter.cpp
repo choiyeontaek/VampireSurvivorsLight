@@ -449,7 +449,7 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 		if (SynergyManager->CheckWeapon(EWeaponType::Boomerang)) {
 			GetWorld()->GetTimerManager().ClearTimer(BoomerangAttackTimerHandle);
 			GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
-			                                BoomerangCoolTime * ((100 - CoolTime) / 100), true);
+			                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
 		}
 		if (SynergyManager->CheckWeapon(EWeaponType::Guardian)) {
 			GetWorld()->GetTimerManager().ClearTimer(GuardianAttackTimerHandle);
@@ -459,12 +459,12 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 		if (SynergyManager->CheckWeapon(EWeaponType::Train)) {
 			GetWorld()->GetTimerManager().ClearTimer(TrainAttackTimerHandle);
 			GetWorldTimerManager().SetTimer(TrainAttackTimerHandle, this, &AMyCharacter::TrainAttack,
-			                                ForceFieldCoolTime * ((100 - CoolTime) / 100), true);
+			                                TrainCoolTime * ((100 - CoolTime) / 100), true);
 		}
 		if (SynergyManager->CheckWeapon(EWeaponType::ForceField)) {
 			GetWorld()->GetTimerManager().ClearTimer(ForceFieldAttackTimerHandle);
 			GetWorldTimerManager().SetTimer(ForceFieldAttackTimerHandle, this, &AMyCharacter::ForceFieldAttack,
-			                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
+			                                ForceFieldCoolTime * ((100 - CoolTime) / 100), true);
 		}
 		break;
 	case EStatusType::HealthRegenerationUpdate:

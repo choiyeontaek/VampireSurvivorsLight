@@ -13,19 +13,15 @@ void USkillGuardianDamageType::ApplyDamageEffect_Implementation(AActor* DamagedA
 	
 	LogUtils::Log("SkillGuardianDamageType::ApplyDamageEffect");
 	
-
-	//if (LevelUpManager->AutoAttackLevel < 5) {
-		AMyCharacter* Character = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	
-		FVector Direction{(DamagedActor->GetActorLocation() - Character->GetActorLocation()).GetSafeNormal()};
+	AMyCharacter* Character{Cast<AMyCharacter>(InstigatedBy->GetCharacter())};
+	if (Character->LevelUpManager->GuardianLevel < 5) {
+		// 주위를 도는 투사체가 적에게 피해를 입히고 뒤로 밀어냅니다.
+		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
 		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
-
-	// }
-	// else if (LevelUpManager->AutoAttackLevel == 5) {
-	// 	AMyCharacter* Character = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	//
-	// 	FVector Direction{(DamagedActor->GetActorLocation() - Character->GetActorLocation()).GetSafeNormal()};
-	// 	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
-	//
-	// }
+	}
+	else if (Character->LevelUpManager->GuardianLevel == 5) {
+		// 영구적으로 주위를 도는 투사체가 적에게 피해를 입히고 뒤로 밀어냅니다.
+		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	}
 }

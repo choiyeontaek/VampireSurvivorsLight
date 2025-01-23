@@ -72,5 +72,27 @@ public:
 	TArray<float> ForceFieldRange;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> ForceFieldCoolTime;
-	
+
+
+	// physics
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AutoAttackForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoomerangForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TrainForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GuardianForce;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ForceFieldForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AutoAttackTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BoomerangTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TrainTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GuardianTime;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ForceFieldTime;
 };

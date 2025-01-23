@@ -5,6 +5,7 @@
 
 #include "LevelUpManager.h"
 #include "LogUtils.h"
+#include "SkillForceFieldDamageType.h"
 #include "WeaponDataAsset.h"
 #include "StatusDataAsset.h"
 #include "Utils.h"
@@ -82,7 +83,13 @@ void AForceFieldWeapon::Tick(float DeltaTime)
 
 void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{}
+{
+	if (OtherActor && (OtherActor != this) && OtherComp) {
+		LogUtils::Log("AForceFieldWeapon::OnOverlapBegin", ForceFieldDamage);
+
+		UGameplayStatics::ApplyDamage(OtherActor, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this, USkillForceFieldDamageType::StaticClass());
+	}
+}
 
 void AForceFieldWeapon::LevelUp()
 {

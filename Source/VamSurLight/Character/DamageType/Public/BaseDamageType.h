@@ -19,7 +19,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy,
 	                                              AActor* DamageCauser) const;
-
-	UPROPERTY(BlueprintReadOnly)
-	class ALevelUpManager* LevelUpManager;
+	
 };

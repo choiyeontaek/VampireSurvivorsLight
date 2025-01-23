@@ -14,5 +14,6 @@ class VAMSURLIGHT_API UAutoAttackDamageType : public UBaseDamageType {
 	GENERATED_BODY()
 public:
 	//UFUNCTION(BlueprintCallable)
-	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const override; 
+	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const override;
+	
 };

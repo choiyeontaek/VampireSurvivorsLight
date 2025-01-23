@@ -30,7 +30,7 @@ void USkillChooseUI::SetupCards()
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ASynergyManager::StaticClass());
 	SynergyManager = Cast<ASynergyManager>(FoundActor);
 
-	LogUtils::Log("111111111111", SynergyManager->WeaponBitmask);
+	//LogUtils::Log("111111111111", SynergyManager->WeaponBitmask);
 	if (3 == SynergyManager->GetWeaponCount()) {
 		TArray<int32> Weapons{SynergyManager->FindSetWeapons()};
 		for (int32 Index : Weapons) {

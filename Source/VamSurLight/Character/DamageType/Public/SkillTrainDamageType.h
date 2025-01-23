@@ -14,5 +14,5 @@ class VAMSURLIGHT_API USkillTrainDamageType : public UBaseDamageType {
 	GENERATED_BODY()
 public:
 	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy, AActor* DamageCauser) const override; 
-
+	
 };

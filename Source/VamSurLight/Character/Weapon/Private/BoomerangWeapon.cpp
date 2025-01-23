@@ -5,6 +5,7 @@
 #include "WeaponDataAsset.h"
 #include "LevelUpManager.h"
 #include "LogUtils.h"
+#include "SkillBoomerangDamageType.h"
 #include "StatusDataAsset.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
@@ -102,9 +103,9 @@ void ABoomerangWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
                                       const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		//LogUtils::Log("AAutoAttackWeapon::OnOverlapBegin", BulletDamage);
+		//LogUtils::Log("ABoomerangWeapon::OnOverlapBegin", BoomerangDamage);
+		UGameplayStatics::ApplyDamage(OtherActor, BoomerangDamage, GetWorld()->GetFirstPlayerController(), this, USkillBoomerangDamageType::StaticClass());
 
-		//UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, nullptr, nullptr, UAutoAttackDamageType::StaticClass());
 	}
 }
 

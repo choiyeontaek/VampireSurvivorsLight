@@ -111,10 +111,9 @@ void AGuardianWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
                                      const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("AGuardianWeapon::OnOverlapBegin");
+		LogUtils::Log("AGuardianWeapon::OnOverlapBegin", GuardianDamage);
 
-		UGameplayStatics::ApplyDamage(OtherActor, GuardianDamage, nullptr, nullptr,
-		                              USkillGuardianDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor, GuardianDamage, GetWorld()->GetFirstPlayerController(), this, USkillGuardianDamageType::StaticClass());
 	}
 }
 
