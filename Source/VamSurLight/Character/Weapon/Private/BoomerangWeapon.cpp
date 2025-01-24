@@ -29,7 +29,7 @@ ABoomerangWeapon::ABoomerangWeapon()
 	// collision
 	BoomerangCollision = CreateDefaultSubobject<USphereComponent>(TEXT("BoomerangCollision"));
 	SetRootComponent(BoomerangCollision);
-	BoomerangCollision->SetSphereRadius(50.f);
+	BoomerangCollision->SetSphereRadius(100.f);
 	BoomerangCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// bullet mesh
@@ -123,7 +123,7 @@ void ABoomerangWeapon::SetTargetLocation()
 	QueryParams.AddIgnoredActor(OwningCharacter);
 
 	// trace debug
-	DrawDebugSphere(GetWorld(), Start, BoomerangRange, 32, FColor::Red, false, 3.0f, 0, 1.0f);
+	//DrawDebugSphere(GetWorld(), Start, BoomerangRange, 32, FColor::Red, false, 3.0f, 0, 1.0f);
 	// sphere trace
 	TArray<FHitResult> HitResults;
 	if (GetWorld()->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, ECC_Visibility, CollisionShape,
@@ -133,7 +133,7 @@ void ABoomerangWeapon::SetTargetLocation()
 			// check tag
 			if (HitActor && HitActor->ActorHasTag("Monster")) {
 				// find monster : green
-				DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3.0f);
+				//DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3.0f);
 				float Distance{static_cast<float>((Start - HitResult.ImpactPoint).Length())};
 				if (Distance < NearDistance) {
 					NearDistance = Distance;
@@ -142,7 +142,7 @@ void ABoomerangWeapon::SetTargetLocation()
 			}
 			else {
 				// hit but not monster : purple
-				DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Purple, false, 3.0f, 0, 3.0f);
+				//DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Purple, false, 3.0f, 0, 3.0f);
 			}
 		}
 	}

@@ -123,8 +123,8 @@ AMyCharacter::AMyCharacter()
 	if (DieWidgetClass.Succeeded()) {
 		GameUIClass = DieWidgetClass.Class;
 	}
-
-
+	
+	
 	// set class
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
 	SkillGuardianAttack = ASkillGuardian::StaticClass();
@@ -188,6 +188,7 @@ void AMyCharacter::BeginPlay()
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
+	
 }
 
 // Called every frame
@@ -335,6 +336,7 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 		break;
 	case EWeaponType::Guardian:
 		SynergyManager->AcquireWeapon(EWeaponType::Guardian);
+		LogUtils::Log("1111111111111111111", GuardianCoolTime);
 		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
 		                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
 		break;
@@ -449,12 +451,12 @@ void AMyCharacter::StatusLevelUp(EStatusType Status)
 		if (SynergyManager->CheckWeapon(EWeaponType::Boomerang)) {
 			GetWorld()->GetTimerManager().ClearTimer(BoomerangAttackTimerHandle);
 			GetWorldTimerManager().SetTimer(BoomerangAttackTimerHandle, this, &AMyCharacter::BoomerangAttack,
-			                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
+			                                BoomerangCoolTime * ((100 - CoolTime) / 100), true);
 		}
 		if (SynergyManager->CheckWeapon(EWeaponType::Guardian)) {
 			GetWorld()->GetTimerManager().ClearTimer(GuardianAttackTimerHandle);
 			GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
-			                                TrainCoolTime * ((100 - CoolTime) / 100), true);
+			                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
 		}
 		if (SynergyManager->CheckWeapon(EWeaponType::Train)) {
 			GetWorld()->GetTimerManager().ClearTimer(TrainAttackTimerHandle);

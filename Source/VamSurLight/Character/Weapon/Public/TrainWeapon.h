@@ -41,7 +41,7 @@ public:
 	class ALevelUpManager* LevelUpManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
-	class USphereComponent* TrainCollision;
+	class UBoxComponent* TrainCollision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
 	class USkeletalMeshComponent* TrainMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)

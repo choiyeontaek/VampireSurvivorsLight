@@ -24,4 +24,5 @@ void USkillGuardianDamageType::ApplyDamageEffect_Implementation(AActor* DamagedA
 		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
 		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
 	}
+
 }

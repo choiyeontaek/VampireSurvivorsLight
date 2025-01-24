@@ -7,8 +7,9 @@
 #include "BaseDamageType.generated.h"
 
 /**
- * ggg
+ * 
  */
+
 UCLASS()
 class VAMSURLIGHT_API UBaseDamageType : public UDamageType {
 	GENERATED_BODY()
@@ -19,5 +20,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyDamageEffect_Implementation(AActor* DamagedActor, float Damage, AController* InstigatedBy,
 	                                              AActor* DamageCauser) const;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	mutable float Height;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	mutable FVector StartLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	mutable FVector EndLocation;
 };

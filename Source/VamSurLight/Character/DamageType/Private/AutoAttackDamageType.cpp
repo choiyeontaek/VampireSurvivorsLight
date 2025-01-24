@@ -23,4 +23,5 @@ void UAutoAttackDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
 		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
 	}
+
 };

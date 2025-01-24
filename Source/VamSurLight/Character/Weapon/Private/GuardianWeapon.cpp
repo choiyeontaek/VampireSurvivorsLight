@@ -35,7 +35,7 @@ AGuardianWeapon::AGuardianWeapon()
 	// collision
 	GuardianCollision = CreateDefaultSubobject<USphereComponent>(TEXT("GuardianCollision"));
 	RootComponent = GuardianCollision;
-	GuardianCollision->SetSphereRadius(50.f);
+	GuardianCollision->SetSphereRadius(70.f);
 	GuardianCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// Guardian mesh

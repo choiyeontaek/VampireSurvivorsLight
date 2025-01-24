@@ -8,6 +8,7 @@
 #include "SkillTrainDamageType.h"
 #include "StatusDataAsset.h"
 #include "WeaponDataAsset.h"
+#include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,9 +22,9 @@ ATrainWeapon::ATrainWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// collision
-	TrainCollision = CreateDefaultSubobject<USphereComponent>(TEXT("TrainCollision"));
+	TrainCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("TrainCollision"));
 	SetRootComponent(TrainCollision);
-	TrainCollision->SetSphereRadius(50.f);
+	TrainCollision->SetBoxExtent(FVector(425.f, 140.f, 400.f));
 	TrainCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// TrainMesh

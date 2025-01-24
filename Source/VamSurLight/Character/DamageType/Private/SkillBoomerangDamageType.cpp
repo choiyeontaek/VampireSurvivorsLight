@@ -24,4 +24,5 @@ void USkillBoomerangDamageType::ApplyDamageEffect_Implementation(AActor* Damaged
 		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
 		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
 	}
+
 }

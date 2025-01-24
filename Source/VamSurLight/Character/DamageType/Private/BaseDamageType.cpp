@@ -8,4 +8,4 @@ void UBaseDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActor, flo
 {
 	//LogUtils::Log("BaseDamageType::ApplyDamageEffect");
 	
-}
+}	
