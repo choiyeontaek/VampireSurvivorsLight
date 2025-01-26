@@ -123,14 +123,14 @@ AMyCharacter::AMyCharacter()
 	if (DieWidgetClass.Succeeded()) {
 		GameUIClass = DieWidgetClass.Class;
 	}
-	
-	
+
 	// set class
 	SkillAutoAttack = ASkillAutoAttack::StaticClass();
 	SkillGuardianAttack = ASkillGuardian::StaticClass();
 	SkillForceFieldAttack = ASkillForceField::StaticClass();
 	SkillTrainAttack = ASkillTrain::StaticClass();
 	SkillBoomerangAttack = ASkillBoomerang::StaticClass();
+	
 }
 
 // Called when the game starts or when spawned

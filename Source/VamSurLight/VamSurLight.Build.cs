@@ -28,6 +28,7 @@ public class VamSurLight : ModuleRules
             "VamSurLight/Character/DamageType/Public",
             "VamSurLight/Character/Widget/Public",
             "VamSurLight/Character/Widget/Skill/Public",
+            "VamSurLight/Monster/Component/Public",
             "VamSurLight/GameUI/Public",
             "VamSurLight/Utility/Public"
         });

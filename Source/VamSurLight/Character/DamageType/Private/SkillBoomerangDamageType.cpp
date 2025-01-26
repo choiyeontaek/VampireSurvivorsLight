@@ -16,8 +16,7 @@ void USkillBoomerangDamageType::ApplyDamageEffect_Implementation(AActor* Damaged
 	AMyCharacter* Character{Cast<AMyCharacter>(InstigatedBy->GetCharacter())};
 	if (Character->LevelUpManager->BoomerangLevel < 5) {
 		//가장 가까운 적에게 되돌아오는 투사체를 발사합니다.
-		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+		
 	}
 	else if (Character->LevelUpManager->BoomerangLevel == 5) {
 		// 투사체가 작은 투사체로 폭발해 원뿔 범위에 피해를 입힙니다.
