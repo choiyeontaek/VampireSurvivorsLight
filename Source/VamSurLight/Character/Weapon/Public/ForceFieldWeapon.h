@@ -22,11 +22,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
-	
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                  int32 OtherBodyIndex);
+
+	void GiveDamage();
 	void LevelUp();
 	void DamageLevelUp();
 
@@ -35,10 +38,10 @@ public:
 	class UWeaponDataAsset* WeaponData;
 	UPROPERTY(EditDefaultsOnly, Category = "Status Data")
 	class UStatusDataAsset* StatusData;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	class ALevelUpManager* LevelUpManager;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ForceFieldCollision;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
@@ -50,10 +53,14 @@ public:
 
 	int32 Level;
 	int32 DamageLevel;
-	
+
 	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
+	UPROPERTY()
+	FTimerHandle AttackStartHandle;
 
 	void FollowPlayer();
 	void DestroyActor();
+
+	AActor* OverlappedActor;
 };

@@ -16,8 +16,7 @@ void USkillForceFieldDamageType::ApplyDamageEffect_Implementation(AActor* Damage
 		
 	if (Character->LevelUpManager->ForceFieldLevel < 5) {
 		// 주변 적에게 피해를 입힙니다.
-		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+		
 	}
 	else if (Character->LevelUpManager->ForceFieldLevel == 5) {
 		// 불타는 영역 안에서 사망한 적은 폭발을 일으킵니다

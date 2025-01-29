@@ -336,7 +336,6 @@ void AMyCharacter::StartAttack(EWeaponType WeaponType)
 		break;
 	case EWeaponType::Guardian:
 		SynergyManager->AcquireWeapon(EWeaponType::Guardian);
-		LogUtils::Log("1111111111111111111", GuardianCoolTime);
 		GetWorldTimerManager().SetTimer(GuardianAttackTimerHandle, this, &AMyCharacter::GuardianAttack,
 		                                GuardianCoolTime * ((100 - CoolTime) / 100), true);
 		break;

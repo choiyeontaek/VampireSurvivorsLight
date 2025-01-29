@@ -33,7 +33,7 @@ AForceFieldWeapon::AForceFieldWeapon()
 	// collision
 	ForceFieldCollision = CreateDefaultSubobject<USphereComponent>(TEXT("ForceFieldCollision"));
 	RootComponent = ForceFieldCollision;
-	ForceFieldCollision->SetSphereRadius(50.f);
+	ForceFieldCollision->SetSphereRadius(250.f);
 	ForceFieldCollision->SetCollisionProfileName(FName("Weapon"));
 
 	// Guardian mesh
@@ -43,35 +43,37 @@ AForceFieldWeapon::AForceFieldWeapon()
 
 	// Guardian Mesh load
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset
-		(TEXT("/Game/player/weapon/forceFieldWeapon/sm_forceFieldAttack.sm_forceFieldAttack"));
+		(TEXT("/Game/player/weapon/forceFieldWeapon/sm_forceField.sm_forceField"));
 	if (StaticMeshAsset.Succeeded()) {
 		ForceFieldMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
 
 	// bind overlap event
 	ForceFieldCollision->OnComponentBeginOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapBegin);
-	
+	ForceFieldCollision->OnComponentEndOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
 void AForceFieldWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
-	
+
 	Level = LevelUpManager->ForceFieldLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
-	
+
 	// initialize with data asset
 	if (WeaponData) {
 		ForceFieldDamage = WeaponData->ForceFieldDamage[Level] * StatusData->Damage[DamageLevel];
 		ForceFieldRange = WeaponData->ForceFieldRange[Level];
 	}
 
+	OverlappedActor = nullptr;
+
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AForceFieldWeapon::DestroyActor,
-									   1.f, false);
+	                                       2.f, false);
 }
 
 // Called every frame
@@ -82,12 +84,35 @@ void AForceFieldWeapon::Tick(float DeltaTime)
 }
 
 void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                       const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("AForceFieldWeapon::OnOverlapBegin", ForceFieldDamage);
+		//LogUtils::Log("AForceFieldWeapon::OnOverlapBegin", ForceFieldDamage);
+		OverlappedActor = OtherActor;
 
-		UGameplayStatics::ApplyDamage(OtherActor, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this, USkillForceFieldDamageType::StaticClass());
+		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AForceFieldWeapon::GiveDamage, 0.5f, true);
+	}
+}
+
+void AForceFieldWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && (OtherActor != this) && OtherComp) {
+		OverlappedActor = nullptr;
+
+		GetWorld()->GetTimerManager().ClearTimer(AttackStartHandle);
+	}
+}
+
+void AForceFieldWeapon::GiveDamage()
+{
+	//getworld
+	if (OverlappedActor) {
+		LogUtils::Log("AForceFieldWeapon::GiveDamage", ForceFieldDamage);
+
+		UGameplayStatics::ApplyDamage(OverlappedActor, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this,
+		                              USkillForceFieldDamageType::StaticClass());
 	}
 }
 
@@ -106,10 +131,10 @@ void AForceFieldWeapon::DamageLevelUp()
 void AForceFieldWeapon::FollowPlayer()
 {
 	AActor* OwningActor = GetOwner();
-	
+
 	if (OwningActor) {
 		FVector NewLocation = OwningActor->GetActorLocation();
-		NewLocation.Z += 100.0f;
+		//NewLocation.Z += 100.0f;
 		SetActorLocation(NewLocation);
 	}
 }
@@ -118,5 +143,3 @@ void AForceFieldWeapon::DestroyActor()
 {
 	Destroy();
 }
-
-

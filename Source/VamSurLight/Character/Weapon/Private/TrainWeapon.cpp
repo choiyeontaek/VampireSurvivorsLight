@@ -75,7 +75,7 @@ void ATrainWeapon::BeginPlay()
 
 	Level = LevelUpManager->TrainLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
-
+	
 	// initialize with data asset
 	if (WeaponData) {
 		TrainDamage = WeaponData->TrainDamage[Level] * StatusData->Damage[DamageLevel];
@@ -110,7 +110,7 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("ATrainWeapon::OnOverlapBegin", TrainDamage);
-
+		
 		UGameplayStatics::ApplyDamage(OtherActor, TrainDamage, GetWorld()->GetFirstPlayerController(), this, USkillTrainDamageType::StaticClass());
 	}
 }

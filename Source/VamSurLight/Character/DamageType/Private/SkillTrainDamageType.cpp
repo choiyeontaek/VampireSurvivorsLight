@@ -48,7 +48,7 @@ void USkillTrainDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 
 	StartLocation = DamagedActor->GetActorLocation();
 	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-
+   
 	EndLocation = StartLocation + Direction * MoveDistance;
 	//DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * MoveDistance);
 	//}
