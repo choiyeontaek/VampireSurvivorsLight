@@ -178,5 +178,10 @@ public:
 	float ForceFieldCoolTime{0};
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float GuardianCoolTime{0};
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TotalDamage{0};
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UActorComponent* RangeComponent;
 };

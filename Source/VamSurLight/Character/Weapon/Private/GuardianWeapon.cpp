@@ -52,6 +52,7 @@ AGuardianWeapon::AGuardianWeapon()
 
 	// bind overlap event
 	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
+	GuardianCollision->OnComponentEndOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapEnd);
 
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 }
@@ -60,22 +61,22 @@ AGuardianWeapon::AGuardianWeapon()
 void AGuardianWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
-	
+
 	AActor* FoundActorLevelUpManager{UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass())};
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
-	
+
 	Level = LevelUpManager->GuardianLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
-	
+
 	// initialize with data asset
 	if (WeaponData) {
 		GuardianDamage = WeaponData->GuardianDamage[Level] * StatusData->Damage[DamageLevel];
 		GuardianSpeed = WeaponData->GuardianSpeed[Level];
 		GuardianRange = WeaponData->GuardianRange[Level];
 	}
-	
+
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AGuardianWeapon::DestroyActor, 3.0f, false);
 
 	// calculate weapon location based on character location
@@ -92,12 +93,15 @@ void AGuardianWeapon::BeginPlay()
 void AGuardianWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (OwningCharacter) {
 		CurrentAngle += GuardianSpeed * DeltaTime;
-		
+
 		float TotalAngle{InitialAngle + CurrentAngle};
-		FVector NewLocation{OwningCharacter->GetActorLocation() + FVector(FMath::Cos(TotalAngle), FMath::Sin(TotalAngle), InitialOffset.Z) * GuardianRange};
+		FVector NewLocation{
+			OwningCharacter->GetActorLocation() + FVector(FMath::Cos(TotalAngle), FMath::Sin(TotalAngle),
+			                                              InitialOffset.Z) * GuardianRange
+		};
 		SetActorLocation(NewLocation);
 
 		// rotate to player
@@ -111,19 +115,30 @@ void AGuardianWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
                                      const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		LogUtils::Log("AGuardianWeapon::OnOverlapBegin", GuardianDamage);
+		//LogUtils::Log("AGuardianWeapon::OnOverlapBegin", GuardianDamage);
+		OverlappedActor = OtherActor;
 
-		UGameplayStatics::ApplyDamage(OtherActor, GuardianDamage, GetWorld()->GetFirstPlayerController(), this, USkillGuardianDamageType::StaticClass());
+		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AGuardianWeapon::GiveDamage, 0.5f, true);
 	}
 }
 
-void AGuardianWeapon::LevelUp()
+void AGuardianWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
+	if (OtherActor && (OtherActor != this) && OtherComp) {
+		OverlappedActor = nullptr;
+
+		GetWorld()->GetTimerManager().ClearTimer(AttackStartHandle);
+	}
 }
 
-void AGuardianWeapon::DamageLevelUp()
-{}
+void AGuardianWeapon::GiveDamage()
+{
+	if (OverlappedActor) {
+		UGameplayStatics::ApplyDamage(OverlappedActor, GuardianDamage, GetWorld()->GetFirstPlayerController(), this,
+		                              USkillGuardianDamageType::StaticClass());
+	}
+}
 
 void AGuardianWeapon::DestroyActor()
 {

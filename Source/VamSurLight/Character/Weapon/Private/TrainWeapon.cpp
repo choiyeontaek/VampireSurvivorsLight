@@ -115,12 +115,6 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	}
 }
 
-void ATrainWeapon::LevelUp()
-{}
-
-void ATrainWeapon::DamageLevelUp()
-{}
-
 void ATrainWeapon::StartTrain()
 {
 	//AActor* OwningActor = GetOwner();

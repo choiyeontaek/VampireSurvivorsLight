@@ -33,6 +33,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Kismet/KismetTextLibrary.h"
+#include "Components/ActorComponent.h"
 
 class UCardDataAsset;
 // Sets default values
@@ -130,7 +131,13 @@ AMyCharacter::AMyCharacter()
 	SkillForceFieldAttack = ASkillForceField::StaticClass();
 	SkillTrainAttack = ASkillTrain::StaticClass();
 	SkillBoomerangAttack = ASkillBoomerang::StaticClass();
-	
+
+	// static ConstructorHelpers::FClassFinder<UActorComponent> RangeComponentClass
+	// 	(TEXT("/Game/CYT_monster/RangeAttack_Monster/component_Range.component_Range_C"));
+	// if (RangeComponentClass.Succeeded()) {
+	// 	RangeComponent = CreateDefaultSubobject<UActorComponent>(this, TEXT("component_Range"),RangeComponentClass.Class);
+	// 	RangeComponent->RegisterComponent();
+	// }
 }
 
 // Called when the game starts or when spawned
@@ -188,7 +195,6 @@ void AMyCharacter::BeginPlay()
 
 	// health generation
 	GetWorldTimerManager().SetTimer(HealthRegenerateHandle, this, &AMyCharacter::RegenerateHealth, 3.0f, true);
-	
 }
 
 // Called every frame
