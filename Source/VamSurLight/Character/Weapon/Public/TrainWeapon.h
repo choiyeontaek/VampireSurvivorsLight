@@ -67,4 +67,12 @@ public:
 	FTimerHandle DestroyTimerHandle;
 
 	void DestroyActor();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float Height;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FVector StartLocation;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FVector EndLocation;
+	
 };
