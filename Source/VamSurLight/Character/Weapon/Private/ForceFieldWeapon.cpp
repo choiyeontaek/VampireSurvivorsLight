@@ -11,6 +11,7 @@
 #include "Utils.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "MyCharacter.h"
 
 
 // Sets default values
@@ -61,6 +62,8 @@ void AForceFieldWeapon::BeginPlay()
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 
+	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+
 	Level = LevelUpManager->ForceFieldLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
 
@@ -91,6 +94,7 @@ void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 		//LogUtils::Log("AForceFieldWeapon::OnOverlapBegin", ForceFieldDamage);
 		OverlappedActor = OtherActor;
 
+
 		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AForceFieldWeapon::GiveDamage, 0.5f, true);
 	}
 }
@@ -111,6 +115,8 @@ void AForceFieldWeapon::GiveDamage()
 	if (OverlappedActor) {
 		LogUtils::Log("AForceFieldWeapon::GiveDamage", ForceFieldDamage);
 
+		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+		Character->TotalDamage += ForceFieldDamage;
 		UGameplayStatics::ApplyDamage(OverlappedActor, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this,
 		                              USkillForceFieldDamageType::StaticClass());
 	}
@@ -134,7 +140,7 @@ void AForceFieldWeapon::FollowPlayer()
 
 	if (OwningActor) {
 		FVector NewLocation = OwningActor->GetActorLocation();
-		//NewLocation.Z += 100.0f;
+		NewLocation.Z -= 80.0f;
 		SetActorLocation(NewLocation);
 	}
 }

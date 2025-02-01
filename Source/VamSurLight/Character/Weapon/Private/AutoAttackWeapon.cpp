@@ -10,6 +10,7 @@
 #include "Components/StaticMeshComponent.h" /*static mesh*/
 #include "Kismet/GameplayStatics.h" /*GetPlayerCharacter*/
 #include "LevelUpManager.h"
+#include "MyCharacter.h"
 
 // Sets default values
 AAutoAttackWeapon::AAutoAttackWeapon()
@@ -97,6 +98,8 @@ void AAutoAttackWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		//LogUtils::Log("AAutoAttackWeapon::OnOverlapBegin", BulletDamage);
 
+		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+		Character->TotalDamage += BulletDamage;
 		UGameplayStatics::ApplyDamage(OtherActor, BulletDamage, GetWorld()->GetFirstPlayerController(), this, UAutoAttackDamageType::StaticClass());
 
 		if (5 != LevelUpManager->AutoAttackLevel) {

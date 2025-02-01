@@ -73,6 +73,8 @@ void ATrainWeapon::BeginPlay()
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);
 
+	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	
 	Level = LevelUpManager->TrainLevel;
 	DamageLevel = LevelUpManager->DamageLevel;
 	
@@ -108,13 +110,14 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                   const FHitResult& SweepResult)
 {
+	AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		LogUtils::Log("ATrainWeapon::OnOverlapBegin", TrainDamage);
-		
+
+		Character->TotalDamage += TrainDamage;
 		UGameplayStatics::ApplyDamage(OtherActor, TrainDamage, GetWorld()->GetFirstPlayerController(), this, USkillTrainDamageType::StaticClass());
 	}
 
-	AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
 	// if (Character->LevelUpManager->TrainLevel < 5) {
 	// 	//FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
 	// 	//DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);

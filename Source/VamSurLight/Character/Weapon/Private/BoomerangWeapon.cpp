@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "MyCharacter.h"
 
 
 // Sets default values
@@ -104,6 +105,8 @@ void ABoomerangWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		//LogUtils::Log("ABoomerangWeapon::OnOverlapBegin", BoomerangDamage);
+		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+		Character->TotalDamage += BoomerangDamage;
 		UGameplayStatics::ApplyDamage(OtherActor, BoomerangDamage, GetWorld()->GetFirstPlayerController(), this, USkillBoomerangDamageType::StaticClass());
 
 	}

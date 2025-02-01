@@ -13,6 +13,7 @@
 #include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/GameplayStatics.h"	/*apply damage*/
 #include "Kismet/KismetMathLibrary.h" /*FindLookAtRotation*/
+#include "MyCharacter.h"
 
 
 // Sets default values
@@ -118,6 +119,7 @@ void AGuardianWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 		//LogUtils::Log("AGuardianWeapon::OnOverlapBegin", GuardianDamage);
 		OverlappedActor = OtherActor;
 
+
 		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AGuardianWeapon::GiveDamage, 0.5f, true);
 	}
 }
@@ -135,6 +137,8 @@ void AGuardianWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 void AGuardianWeapon::GiveDamage()
 {
 	if (OverlappedActor) {
+		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+		Character->TotalDamage += GuardianDamage;
 		UGameplayStatics::ApplyDamage(OverlappedActor, GuardianDamage, GetWorld()->GetFirstPlayerController(), this,
 		                              USkillGuardianDamageType::StaticClass());
 	}

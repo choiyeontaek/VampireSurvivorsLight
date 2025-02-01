@@ -55,6 +55,9 @@ public:
 	int32 DamageLevel;
 
 	UPROPERTY()
+	class ACharacter* OwningCharacter;
+	
+	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 	UPROPERTY()
 	FTimerHandle AttackStartHandle;
