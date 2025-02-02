@@ -14,14 +14,13 @@ void UAutoAttackDamageType::ApplyDamageEffect_Implementation(AActor* DamagedActo
 	
 	LogUtils::Log("AutoAttackDamageType::ApplyDamageEffect");
 	
-	AMyCharacter* Character{Cast<AMyCharacter>(InstigatedBy->GetCharacter())};
-	if (Character->LevelUpManager->AutoAttackLevel < 5) {
-		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
-	}
-	else if (Character->LevelUpManager->AutoAttackLevel == 5) {
-		FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
-		DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
-	}
-
+	//AMyCharacter* Character{Cast<AMyCharacter>(InstigatedBy->GetCharacter())};
+	// if (Character->LevelUpManager->AutoAttackLevel < 5) {
+	// 	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+	// 	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	// }
+	// else if (Character->LevelUpManager->AutoAttackLevel == 5) {
+	// 	FVector Direction{(DamagedActor->GetActorLocation() - DamageCauser->GetActorLocation()).GetSafeNormal()};
+	// 	DamagedActor->SetActorLocation(DamagedActor->GetActorLocation() + Direction * 100.f);
+	// }
 };

@@ -131,13 +131,13 @@ void ATrainWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	float Distance{static_cast<float>((DamagedLocation - CauserLocation).Size())};
 	//LogUtils::Log("Distance", Distance);
 	// F = explosionEnergy / r^2
-	float Force{33472000.f / FMath::Pow(Distance, 2)};
+	float Force{WeaponData->TrainForce / FMath::Pow(Distance, 2)};
 	//LogUtils::Log("Force", Force);
 	// a = f / m
 	float Acceleration{Force / 10.f};
 	//LogUtils::Log("Acceleration", Acceleration);
 	// v0 = a * t
-	float Speed{Acceleration * 0.1f};
+	float Speed{Acceleration * WeaponData->TrainTime};
 	//LogUtils::Log("Speed", Speed);
 	// h = v0^2 / ( 2 * g )
 	// multiply 100 for 'M' to 'CM'

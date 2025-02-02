@@ -73,10 +73,12 @@ void AForceFieldWeapon::BeginPlay()
 		ForceFieldRange = WeaponData->ForceFieldRange[Level];
 	}
 
-	OverlappedActor = nullptr;
+	//OverlappedActor = nullptr;
 
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AForceFieldWeapon::DestroyActor,
 	                                       2.f, false);
+
+	GetWorldTimerManager().SetTimer(AttackStartHandle, this, &AForceFieldWeapon::GiveDamage, 0.3f, true);
 }
 
 // Called every frame
@@ -92,10 +94,7 @@ void AForceFieldWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		//LogUtils::Log("AForceFieldWeapon::OnOverlapBegin", ForceFieldDamage);
-		OverlappedActor = OtherActor;
-
-
-		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AForceFieldWeapon::GiveDamage, 0.5f, true);
+		OverlappingActors.Add(OtherActor);
 	}
 }
 
@@ -103,22 +102,19 @@ void AForceFieldWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		OverlappedActor = nullptr;
-
-		GetWorld()->GetTimerManager().ClearTimer(AttackStartHandle);
+		OverlappingActors.Remove(OtherActor);
 	}
 }
 
 void AForceFieldWeapon::GiveDamage()
 {
-	//getworld
-	if (OverlappedActor) {
-		LogUtils::Log("AForceFieldWeapon::GiveDamage", ForceFieldDamage);
-
-		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
-		Character->TotalDamage += ForceFieldDamage;
-		UGameplayStatics::ApplyDamage(OverlappedActor, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this,
-		                              USkillForceFieldDamageType::StaticClass());
+	for (AActor* Target : OverlappingActors) {
+		if (Target && Target->IsValidLowLevel()) {
+			AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+			Character->TotalDamage += ForceFieldDamage;
+			UGameplayStatics::ApplyDamage(Target, ForceFieldDamage, GetWorld()->GetFirstPlayerController(), this,
+										  USkillForceFieldDamageType::StaticClass());
+		}
 	}
 }
 

@@ -88,6 +88,8 @@ void AGuardianWeapon::BeginPlay()
 	if (RotatingMovement) {
 		RotatingMovement->RotationRate = FRotator(0.f, 360.f, 0.f);
 	}
+
+	GetWorldTimerManager().SetTimer(AttackStartHandle, this, &AGuardianWeapon::GiveDamage, 1.f, true);
 }
 
 // Called every frame
@@ -117,10 +119,7 @@ void AGuardianWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
 		//LogUtils::Log("AGuardianWeapon::OnOverlapBegin", GuardianDamage);
-		OverlappedActor = OtherActor;
-
-
-		GetWorld()->GetTimerManager().SetTimer(AttackStartHandle, this, &AGuardianWeapon::GiveDamage, 0.5f, true);
+		OverlappingActors.Add(OtherActor);
 	}
 }
 
@@ -128,19 +127,19 @@ void AGuardianWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp) {
-		OverlappedActor = nullptr;
-
-		GetWorld()->GetTimerManager().ClearTimer(AttackStartHandle);
+		OverlappingActors.Remove(OtherActor);
 	}
 }
 
 void AGuardianWeapon::GiveDamage()
 {
-	if (OverlappedActor) {
-		AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
-		Character->TotalDamage += GuardianDamage;
-		UGameplayStatics::ApplyDamage(OverlappedActor, GuardianDamage, GetWorld()->GetFirstPlayerController(), this,
-		                              USkillGuardianDamageType::StaticClass());
+	for (AActor* Target : OverlappingActors) {
+		if (Target && Target->IsValidLowLevel()) {
+			AMyCharacter* Character{Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter())};
+			Character->TotalDamage += GuardianDamage;
+			UGameplayStatics::ApplyDamage(Target, GuardianDamage, GetWorld()->GetFirstPlayerController(), this,
+										  USkillGuardianDamageType::StaticClass());
+		}
 	}
 }
 

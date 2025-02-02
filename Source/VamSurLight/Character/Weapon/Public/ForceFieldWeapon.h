@@ -65,5 +65,5 @@ public:
 	void FollowPlayer();
 	void DestroyActor();
 
-	AActor* OverlappedActor;
+	TSet<AActor*> OverlappingActors;
 };

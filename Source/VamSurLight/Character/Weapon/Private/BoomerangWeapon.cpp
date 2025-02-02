@@ -167,7 +167,7 @@ void ABoomerangWeapon::MoveToTarget(float DeltaTime)
 	float Distance{static_cast<float>(FVector::Dist(GetActorLocation(), InitialLocation))};
 	if (Distance > BoomerangRange) {
 		TargetLocation = GetActorLocation();
-		MovingDirection = (InitialLocation - GetActorLocation()).GetSafeNormal();
+		MovingDirection = (OwningCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 		bIsReachTarget = true;
 	}
 }

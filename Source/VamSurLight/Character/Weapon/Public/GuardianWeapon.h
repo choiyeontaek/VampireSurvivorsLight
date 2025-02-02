@@ -72,5 +72,5 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class URotatingMovementComponent* RotatingMovement;
 
-	AActor* OverlappedActor;
+	TSet<AActor*> OverlappingActors;
 };
