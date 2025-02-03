@@ -33,7 +33,7 @@ ASkillAutoAttack::ASkillAutoAttack()
 	if (WeaponDataAsset.Succeeded()) {
 		WeaponData = WeaponDataAsset.Object;
 	}
-	
+
 	// set auto attack weapon class
 	AutoAttackWeapon = AAutoAttackWeapon::StaticClass();
 }
@@ -85,28 +85,31 @@ void ASkillAutoAttack::Attack(int32 Count)
 			LogUtils::Log("No Synergy");
 		}
 	}
-	
-	if (AutoAttackWeapon && GetWorld()) {
-		// rotate character
-		bRotateToMouse = true;
-		// spawn attack 
-		for (int32 i{}; i < Count; i++) {
-			FTimerHandle WaitHandle;
-			GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]() {
-				FVector SpawnLocation = OwningCharacter->GetActorLocation();
-				FRotator SpawnRotation = OwningCharacter->GetActorRotation();
 
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	if (OwningCharacter) {
+		if (AutoAttackWeapon && GetWorld()) {
+			// rotate character
+			bRotateToMouse = true;
+			// spawn attack 
+			for (int32 i{}; i < Count; i++) {
+				FTimerHandle WaitHandle;
+				GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]() {
+					FVector SpawnLocation = OwningCharacter->GetActorLocation() + OwningCharacter->
+						GetActorForwardVector() * 100.f;
+					FRotator SpawnRotation = OwningCharacter->GetActorRotation();
 
-				AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(
-					AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
-			}, 0.1f * (i + 1), false);
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(
+						AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+				}, 0.1f * (i + 1), false);
+			}
+			// if end attack, stop rotate
+			float TotalAttackTime{0.1f * Count};
+			GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ASkillAutoAttack::StopRotateToMouse,
+			                                       TotalAttackTime, false);
 		}
-		// if end attack, stop rotate
-		float TotalAttackTime{0.1f * Count};
-		GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ASkillAutoAttack::StopRotateToMouse,
-		                                       TotalAttackTime, false);
 	}
 }
 
@@ -116,9 +119,7 @@ void ASkillAutoAttack::DestroyActor()
 }
 
 void ASkillAutoAttack::LevelUp()
-{
-	
-}
+{}
 
 void ASkillAutoAttack::RotateToMouse()
 {
@@ -130,7 +131,8 @@ void ASkillAutoAttack::RotateToMouse()
 	if (APlayerController* PC = Cast<APlayerController>(OwningCharacter->GetController())) {
 		FHitResult HitResult;
 		if (PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult)) {
-			FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(OwningCharacter->GetActorLocation(), HitResult.Location);
+			FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(
+				OwningCharacter->GetActorLocation(), HitResult.Location);
 			NewRotation.Pitch = 0.0f;
 			NewRotation.Roll = 0.0f;
 			OwningCharacter->SetActorRotation(NewRotation);
