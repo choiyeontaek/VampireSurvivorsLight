@@ -233,7 +233,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	const UBaseDamageType* DamageType{Cast<UBaseDamageType>(DamageTypeRaw)};
 	if (!bIsDead && DamageType) {
 		if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_RangeAttack_C")) {
-			LogUtils::Log("Character::TakeDamage - BP_DamageType_RangeAttack_C");
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_RangeAttack_C");
 			FOutputDeviceNull Ar;
 			// function name in blueprint
 			const FString Command{TEXT("RangeAttack")};
@@ -241,27 +241,41 @@ float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			Health -= Damage;
 		}
 		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongRangeAttackangeAttack_C")) {
-			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongRangeAttackangeAttack");
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_LongRangeAttackangeAttack");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("LongRangeAttack")};
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
 		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_LongSkill_C")) {
-			LogUtils::Log("Character::TakeDamage - BP_DamageType_LongSkill");
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_LongSkill");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("LongRangeSkillAttack")};
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
 		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossAttack_C")) {
-			LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
 			FOutputDeviceNull Ar;
 			const FString Command{TEXT("BossAttack")};
 			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 			Health -= Damage;
 		}
-
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossSkill_C")) {
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
+			FOutputDeviceNull Ar;
+			const FString Command{TEXT("BossAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
+			Health -= Damage;
+		}
+		else if (DamageType->GetClass()->GetFName() == FName("BP_DamageType_BossSword_C")) {
+			//LogUtils::Log("Character::TakeDamage - BP_DamageType_BossAttack");
+			FOutputDeviceNull Ar;
+			const FString Command{TEXT("BossAttack")};
+			const_cast<UBaseDamageType*>(DamageType)->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
+			Health -= Damage;
+		}
+		
 		UpdateHealthUI();
 
 		if (Health <= 0) {
