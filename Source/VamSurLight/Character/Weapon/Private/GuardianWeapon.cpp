@@ -51,9 +51,6 @@ AGuardianWeapon::AGuardianWeapon()
 		GuardianMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
 
-	// bind overlap event
-	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
-	GuardianCollision->OnComponentEndOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapEnd);
 
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovement"));
 }
@@ -62,6 +59,9 @@ AGuardianWeapon::AGuardianWeapon()
 void AGuardianWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	// bind overlap event
+	GuardianCollision->OnComponentBeginOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapBegin);
+	GuardianCollision->OnComponentEndOverlap.AddDynamic(this, &AGuardianWeapon::OnOverlapEnd);
 
 	OwningCharacter = GetWorld()->GetFirstPlayerController()->GetCharacter();
 

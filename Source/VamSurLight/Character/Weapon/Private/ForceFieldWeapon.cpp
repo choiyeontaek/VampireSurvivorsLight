@@ -48,15 +48,15 @@ AForceFieldWeapon::AForceFieldWeapon()
 		ForceFieldMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
 
-	// bind overlap event
-	ForceFieldCollision->OnComponentBeginOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapBegin);
-	ForceFieldCollision->OnComponentEndOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
 void AForceFieldWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	// bind overlap event
+	ForceFieldCollision->OnComponentBeginOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapBegin);
+	ForceFieldCollision->OnComponentEndOverlap.AddDynamic(this, &AForceFieldWeapon::OnOverlapEnd);
 
 	AActor* FoundActorLevelUpManager = UGameplayStatics::GetActorOfClass(GetWorld(), ALevelUpManager::StaticClass());
 	LevelUpManager = Cast<ALevelUpManager>(FoundActorLevelUpManager);

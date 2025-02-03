@@ -86,14 +86,14 @@ void ASkillAutoAttack::Attack(int32 Count)
 		}
 	}
 
-	if (OwningCharacter) {
-		if (AutoAttackWeapon && GetWorld()) {
-			// rotate character
-			bRotateToMouse = true;
-			// spawn attack 
-			for (int32 i{}; i < Count; i++) {
-				FTimerHandle WaitHandle;
-				GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]() {
+	if (AutoAttackWeapon && GetWorld()) {
+		// rotate character
+		bRotateToMouse = true;
+		// spawn attack 
+		for (int32 i{}; i < Count; i++) {
+			FTimerHandle WaitHandle;
+			GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this]() {
+				if (OwningCharacter) {
 					FVector SpawnLocation = OwningCharacter->GetActorLocation() + OwningCharacter->
 						GetActorForwardVector() * 100.f;
 					FRotator SpawnRotation = OwningCharacter->GetActorRotation();
@@ -101,15 +101,17 @@ void ASkillAutoAttack::Attack(int32 Count)
 					FActorSpawnParameters SpawnParams;
 					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-					AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(
-						AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
-				}, 0.1f * (i + 1), false);
-			}
-			// if end attack, stop rotate
-			float TotalAttackTime{0.1f * Count};
-			GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ASkillAutoAttack::StopRotateToMouse,
-			                                       TotalAttackTime, false);
+					if (OwningCharacter&& AutoAttackWeapon && AutoAttackWeapon->IsValidLowLevelFast() && GetWorld()) {
+						AAutoAttackWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AAutoAttackWeapon>(
+							AutoAttackWeapon, SpawnLocation, SpawnRotation, SpawnParams);
+					}
+				}
+			}, 0.1f * (i + 1), false);
 		}
+		// if end attack, stop rotate
+		float TotalAttackTime{0.1f * Count};
+		GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ASkillAutoAttack::StopRotateToMouse,
+		                                       TotalAttackTime, false);
 	}
 }
 
